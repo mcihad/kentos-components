@@ -22,6 +22,7 @@ import {
   BellIcon,
   BookOpenIcon,
   ChartColumnIcon,
+  FolderOpenIcon,
   FormInputIcon,
   LayersIcon,
   LayoutTemplateIcon,
@@ -49,6 +50,7 @@ import { OverviewPage } from "./pages/overview";
 import { PageLayoutPage } from "./pages/page-layout";
 import { PatternsPage } from "./pages/patterns";
 import { SidebarPage } from "./pages/sidebar";
+import { TabsPage } from "./pages/tabs";
 import { ThemingPage } from "./pages/theming";
 import { TokensPage } from "./pages/tokens";
 
@@ -151,6 +153,14 @@ const pages: ShowcasePage[] = [
     component: DialogsPage,
   },
   {
+    id: "tabs",
+    label: "Sekmeler",
+    group: "Bileşenler",
+    icon: FolderOpenIcon,
+    keywords: ["Tabs", "TabsList", "TabsTrigger", "TabsNav", "sekme", "rozet", "kapatılabilir", "lazy"],
+    component: TabsPage,
+  },
+  {
     id: "sidebar",
     label: "Kenar çubuğu",
     group: "Bileşenler",
@@ -171,7 +181,7 @@ const pages: ShowcasePage[] = [
     label: "Gezinme ve düzen",
     group: "Bileşenler",
     icon: LayoutTemplateIcon,
-    keywords: ["Tabs", "sekme", "Collapsible", "ScrollArea", "Separator", "Kbd"],
+    keywords: ["Collapsible", "ScrollArea", "Separator", "Kbd"],
     component: NavigationPage,
   },
   {

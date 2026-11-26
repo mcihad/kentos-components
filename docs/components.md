@@ -470,10 +470,53 @@ Radix Toolbar (one tab stop, arrow keys inside). `ToolbarButton` and
 
 ## Navigation and layout
 
-### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `tabsListVariants`
+### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `TabsBadge`, `TabsNav`, `TabsNavItem`, `tabsListVariants`
 
-`TabsList` takes `variant="default" | "line"`. For page sections, keep the
-active tab in the URL so links can be shared.
+Sections of a page. `TabsList` `variant`: `default` (segmented track, short
+equal options), `line` (underline with an indicator that slides to the
+active tab, page sections) or `pill` (rounded chips, filter-like choices).
+
+```tsx
+<Tabs defaultValue="issues">
+  <TabsList
+    variant="line"
+    aria-label="Bölümler"
+    action={
+      <Button size="icon-sm" variant="ghost" aria-label="Ekle">
+        <PlusIcon />
+      </Button>
+    }
+  >
+    <TabsTrigger value="issues" icon={BugIcon} badge={12}>
+      Hatalar
+    </TabsTrigger>
+    <TabsTrigger value="ai" icon={BotIcon} badgeVariant="dot">
+      Yapay zekâ
+    </TabsTrigger>
+    <TabsTrigger value="draft" onClose={() => close("draft")}>
+      Taslak
+    </TabsTrigger>
+    <TabsTrigger value="archive" disabled>
+      Arşiv
+    </TabsTrigger>
+  </TabsList>
+  <TabsContent value="issues" mount="lazy">
+    <IssueList />
+  </TabsContent>
+</Tabs>;
+```
+
+| Part                     | Props and behaviour                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Tabs`                   | Radix root (`value`/`defaultValue`/`onValueChange`, `orientation`). Remembers visited tabs for lazy content.                                                                                                                                                                                                                                                                                                                                     |
+| `TabsList`               | `variant`, `fullWidth` (equal widths), `action` (controls after the tabs, outside the scroller), `rowClassName`. A row that does not fit scrolls: the wheel scrolls it sideways until an end (then the page scrolls), touch swipes, edge chevrons appear for mice (`pointer: fine`), the edges fade, and the active tab is scrolled into view on change and resize. Vertical orientation stacks full-width rows (line: marker on the left edge). |
+| `TabsTrigger`            | `icon`, `badge` (numbers above 99 show 99+), `badgeVariant` (`default \| primary \| danger \| warning \| success \| dot`), `onClose` (close button; Delete/Backspace closes the focused tab), `closeLabel`, `disabled`. Closing the active tab is the caller's choice of the next one.                                                                                                                                                           |
+| `TabsContent`            | `mount`: `active` (default, mounted while selected), `lazy` (from the first visit on, kept hidden so state survives), `eager` (always). Children suspend into `fallback` (a skeleton by default), so `React.lazy` sections need no extra boundary.                                                                                                                                                                                               |
+| `TabsNav`, `TabsNavItem` | The same row for links (sections in the URL). `TabsNav`: `label`, `variant` (`line`), `fullWidth`, `action`, `className` (row). `TabsNavItem`: `active`, `disabled`, `icon`, `badge`, `badgeVariant`; with `asChild` wrap a router link and pass the text as `label`.                                                                                                                                                                            |
+| `TabsBadge`              | The badge on its own.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+Keep the active section in the URL when it should be shareable (TabsNav);
+use `Tabs` for state within a card or dialog.
 
 ### `ui/collapsible` — `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent`
 

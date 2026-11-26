@@ -3,55 +3,16 @@ import { Button } from "@kentos/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@kentos/components/ui/collapsible";
 import { ScrollArea } from "@kentos/components/ui/scroll-area";
 import { Separator } from "@kentos/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@kentos/components/ui/tabs";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { Demo, Page } from "../demo";
 
-/** Tabs, collapsibles, scroll areas, separators and keys. */
+/** Collapsibles, scroll areas, separators and keys. */
 export function NavigationPage() {
   return (
     <Page
       title="Gezinme ve düzen"
-      description="Bir sayfanın bölümlerini düzenleyen bileşenler. Bölüm sekmeleri adres çubuğunda tutulmalıdır (ör. ?tab=uyeler) ki bağlantı paylaşılabilsin."
+      description="Bir sayfanın bölümlerini düzenleyen bileşenler: açılır bölümler, kaydırma alanları, ayırıcılar ve klavye tuşları. Sekmeler kendi sayfasındadır."
     >
-      <Demo
-        title="Sekmeler"
-        description="default varyantı kutulu, line varyantı alt çizgili sekmelerdir."
-        className="grid w-full gap-6"
-        code={`<Tabs defaultValue="general">
-  <TabsList>
-    <TabsTrigger value="general">Genel</TabsTrigger>
-    <TabsTrigger value="members">Üyeler</TabsTrigger>
-  </TabsList>
-  <TabsContent value="general">…</TabsContent>
-</Tabs>
-
-<TabsList variant="line">…</TabsList>`}
-      >
-        <Tabs defaultValue="general">
-          <TabsList>
-            <TabsTrigger value="general">Genel</TabsTrigger>
-            <TabsTrigger value="members">Üyeler</TabsTrigger>
-            <TabsTrigger value="usage">Kullanım</TabsTrigger>
-          </TabsList>
-          <TabsContent value="general" className="pt-3 text-sm">
-            Organizasyon adı, saat dilimi ve güvenlik ayarları.
-          </TabsContent>
-          <TabsContent value="members" className="pt-3 text-sm">
-            Üyeler ve davetler.
-          </TabsContent>
-          <TabsContent value="usage" className="pt-3 text-sm">
-            Aylık olay kullanımı.
-          </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="event">
-          <TabsList variant="line">
-            <TabsTrigger value="event">Olay</TabsTrigger>
-            <TabsTrigger value="events">Tüm olaylar</TabsTrigger>
-            <TabsTrigger value="activity">Etkinlik</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </Demo>
       <Demo
         title="Açılır bölüm"
         className="w-full max-w-md"
