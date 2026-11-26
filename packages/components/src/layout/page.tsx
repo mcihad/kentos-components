@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useAppShell } from "./app-shell";
 
 /*
  * The frame of a content page: a header (icon, title, tagline, actions), a
@@ -126,6 +127,7 @@ export function PageWrapper({
   bodyClassName?: string;
 }) {
   const isMobile = useIsMobile(mobile);
+  const shell = useAppShell();
   const hasFooter = showFooter && footer !== undefined && footer !== null && footer !== false;
   const fab = isMobile && actions !== undefined && actions !== null && actions !== false;
   return (
@@ -133,7 +135,12 @@ export function PageWrapper({
       <div
         data-slot="page"
         data-mobile={isMobile || undefined}
-        className={cn("flex min-h-[calc(100svh-var(--topbar-h))] min-w-0 flex-col", className)}
+        className={cn(
+          "flex min-w-0 flex-col",
+          // In an AppShell the main column already fills the window.
+          shell ? "flex-1" : "min-h-[calc(100svh-var(--topbar-h))]",
+          className,
+        )}
         {...props}
       >
         {title ? (
@@ -317,7 +324,7 @@ export function PageFooter({
       data-fixed={fixed || undefined}
       className={cn(
         "mt-auto flex min-h-[calc(var(--footer-h)+env(safe-area-inset-bottom))] shrink-0 items-center justify-between gap-3 border-t bg-(--surface-card) px-4 pb-[env(safe-area-inset-bottom)] md:px-(--gutter) print:hidden",
-        fixed && "sticky bottom-0 z-20",
+        fixed && "sticky bottom-(--shell-bottom,0px) z-20",
         className,
       )}
       {...props}
@@ -350,8 +357,8 @@ function PageFab({
       className={cn(
         "pointer-events-none sticky z-30 h-0 print:hidden",
         footerFixed
-          ? "bottom-[calc(var(--footer-h)+env(safe-area-inset-bottom))]"
-          : "bottom-[env(safe-area-inset-bottom)]",
+          ? "bottom-[calc(var(--footer-h)+env(safe-area-inset-bottom)+var(--shell-bottom,0px))]"
+          : "bottom-[calc(env(safe-area-inset-bottom)+var(--shell-bottom,0px))]",
       )}
     >
       <ActionSheet>

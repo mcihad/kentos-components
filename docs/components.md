@@ -319,6 +319,61 @@ const how = await dialogs.countdown({ seconds: 10, title: "Yönlendiriliyorsunuz
 resolves the value after `onSubmit` succeeded. Never use `window.confirm`,
 `window.prompt` or `window.alert`.
 
+## Application shell
+
+### `layout/app-shell`
+
+`AppShell`, `AppShellSidebar`, `AppShellBanner`, `AppShellHeader`,
+`AppShellMenuButton`, `AppShellBrand`, `AppShellNav`, `AppShellNavItem`,
+`AppShellSearch`, `AppShellActions`, `AppShellSpacer`, `AppShellMain`,
+`AppShellFooter`, `AppShellBottomNav`, `AppShellBottomNavItem`,
+`useAppShell`.
+
+The skeleton of every KentOS application. Each region is a component that
+appears only when used and takes `hidden` to disappear; each places itself
+in a named grid area (`sidebar`, `banner`, `header`, `main`, `footer`,
+`bottom`), so their order and wrapper components do not matter. Regions
+register with the shell and adapt to each other.
+
+```tsx
+<AppShell sidebarStorageKey="app-sidebar">
+  <AppShellSidebar label="Menü">
+    …SidebarHeader, SidebarSearch, SidebarContent, SidebarFooter…
+  </AppShellSidebar>
+  <AppShellBanner tone="warning">Bakım duyurusu</AppShellBanner>
+  <AppShellHeader>
+    <AppShellMenuButton />
+    <AppShellBrand logo={<Logo />} title="İzci" asChild>
+      <Link to="/" />
+    </AppShellBrand>
+    <AppShellSearch placeholder="Ara" onClick={openPalette} />
+    <AppShellActions>
+      <NotificationsMenu />
+    </AppShellActions>
+  </AppShellHeader>
+  <AppShellMain>
+    <Outlet />
+  </AppShellMain>
+  <AppShellFooter>İzci 1.4.0</AppShellFooter>
+</AppShell>;
+```
+
+| Part                                         | Props and behaviour                                                                                                                                                                                                                                                                                                      |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AppShell`                                   | `sidebarStorageKey`, `defaultSidebarCollapsed`, `sidebarShortcut` (⌘/Ctrl letter, default "b", `null` off), `mobile` (force), `height` (a fixed-height box that scrolls inside, for previews), `skipLinkLabel` ("İçeriğe geç"). Fills the window by default; renders the skip link and the sidebar state (`useSidebar`). |
+| `AppShellSidebar`                            | The kit `Sidebar` in the `sidebar` area (sticky rail, drawer on phones).                                                                                                                                                                                                                                                 |
+| `AppShellBanner`                             | `tone`: `info`, `warning`, `danger`, `brand`. Above the app bar in the content column.                                                                                                                                                                                                                                   |
+| `AppShellHeader`                             | Sticky app bar, `--topbar-h` tall.                                                                                                                                                                                                                                                                                       |
+| `AppShellMenuButton`                         | Sidebar present: opens/collapses it. Otherwise, with `AppShellNav`: opens the nav drawer on phones. Neither: renders nothing.                                                                                                                                                                                            |
+| `AppShellBrand`                              | `logo`, `title`, `asChild` (home link). Hidden from md up when a sidebar shows the brand.                                                                                                                                                                                                                                |
+| `AppShellNav`, `AppShellNavItem`             | Horizontal navigation in the app bar (underlined current item) for apps without a sidebar; on phones a left drawer with the same items (`drawerHeader`). Items: `icon`, `label`, `active` or `asChild` link with `aria-current`.                                                                                         |
+| `AppShellSearch`                             | `placeholder`, `shortcut` ("⌘K", display only), `onClick`. Field-like button on desktop, icon on phones.                                                                                                                                                                                                                 |
+| `AppShellActions`, `AppShellSpacer`          | Trailing button group; a flexible gap.                                                                                                                                                                                                                                                                                   |
+| `AppShellMain`                               | `#app-main`, the skip link's target; `contained` (default) keeps pages within `--content-max-wide`. A `PageWrapper` inside fills it.                                                                                                                                                                                     |
+| `AppShellFooter`                             | Quiet status line under the content.                                                                                                                                                                                                                                                                                     |
+| `AppShellBottomNav`, `AppShellBottomNavItem` | Phone tab bar (up to five destinations; items `icon`, `label`, `badge`, `active`/`asChild`), sticky at the bottom; hidden from md up unless `always`. While shown it sets `--shell-bottom`, which `PageFooter` and the page FAB add to their offsets.                                                                    |
+| `useAppShell()`                              | `has(part)`, `navOpen`, `setNavOpen`; null outside a shell.                                                                                                                                                                                                                                                              |
+
 ## Application sidebar
 
 ### `layout/sidebar`

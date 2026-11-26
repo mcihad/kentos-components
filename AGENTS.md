@@ -25,17 +25,17 @@ by Vite + React 19 + Tailwind v4 applications, first of all
 
 ## Repository map
 
-| Path                                    | Content                                                                                            |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `packages/components/src/ui/`           | shadcn/Radix primitives (button, dialog, select, …). Generated-style code, not linted.             |
-| `packages/components/src/common/`       | Generic composites built from the primitives.                                                      |
-| `packages/components/src/charts/`       | `StackedBars`, `Sparkline` (SVG, no chart library).                                                |
-| `packages/components/src/layout/`       | Application frame: `sidebar.tsx` (rail/drawer, search, groups), `page.tsx` (PageWrapper, actions). |
-| `packages/components/src/lib/`          | `utils.ts` (`cn`), `theme.ts` (appearance store), `format.ts` (tr-TR), `search.ts`.                |
-| `packages/components/src/styles/`       | `index.css` (single import for apps), `tokens.css`, `fonts.css`.                                   |
-| `packages/components/src/theme-init.js` | Pre-paint script applying the saved appearance; copied to apps' `public/`.                         |
-| `apps/showcase/`                        | The showcase site (Vite): one page per area, live demos with their code.                           |
-| `docs/`                                 | Reference for agents and developers (English).                                                     |
+| Path                                    | Content                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `packages/components/src/ui/`           | shadcn/Radix primitives (button, dialog, select, …). Generated-style code, not linted.          |
+| `packages/components/src/common/`       | Generic composites built from the primitives.                                                   |
+| `packages/components/src/charts/`       | `StackedBars`, `Sparkline` (SVG, no chart library).                                             |
+| `packages/components/src/layout/`       | Application frame: `app-shell.tsx` (AppShell regions), `sidebar.tsx`, `page.tsx` (PageWrapper). |
+| `packages/components/src/lib/`          | `utils.ts` (`cn`), `theme.ts` (appearance store), `format.ts` (tr-TR), `search.ts`.             |
+| `packages/components/src/styles/`       | `index.css` (single import for apps), `tokens.css`, `fonts.css`.                                |
+| `packages/components/src/theme-init.js` | Pre-paint script applying the saved appearance; copied to apps' `public/`.                      |
+| `apps/showcase/`                        | The showcase site (Vite): one page per area, live demos with their code.                        |
+| `docs/`                                 | Reference for agents and developers (English).                                                  |
 
 ## Absolute rules
 

@@ -5,12 +5,11 @@ How KentOS interfaces put the components together. The showcase's
 
 ## Layout
 
-- **Shell:** `SidebarProvider` with the kit's `Sidebar` (switcher in the
-  header, search, grouped items, account in the footer) and `SidebarInset`
-  holding a sticky top bar of height `--topbar-h` that starts with
-  `SidebarTrigger`; content on the grey page (`bg-background`) in
-  white cards (`card`). Content width up to `--content-max-wide`, gutters
-  `--gutter`.
+- **Shell:** every application is an `AppShell`: an `AppShellSidebar` for
+  admin tools (or `AppShellNav` in the app bar for small sites), an
+  `AppShellHeader` starting with `AppShellMenuButton` and ending with
+  `AppShellActions`, `AppShellMain` around the routes, and on phone-first
+  apps an `AppShellBottomNav`. Add regions instead of writing frames.
 - **Page:** every content page is a `PageWrapper`: icon, title and a
   one-line tagline in the header, actions described with `PageAction*`
   (primary action rightmost, `variant="default"`), the body across the full

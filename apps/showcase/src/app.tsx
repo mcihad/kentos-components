@@ -1,17 +1,21 @@
 import { AppearancePanel } from "@kentos/components/common/appearance-panel";
 import { DialogHost } from "@kentos/components/common/dialog-host";
 import {
-  Sidebar,
+  AppShell,
+  AppShellActions,
+  AppShellHeader,
+  AppShellMain,
+  AppShellMenuButton,
+  AppShellSidebar,
+} from "@kentos/components/layout/app-shell";
+import {
   SidebarBrand,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-  SidebarInset,
   SidebarItem,
-  SidebarProvider,
   SidebarSearch,
-  SidebarTrigger,
 } from "@kentos/components/layout/sidebar";
 import { useAppearance } from "@kentos/components/lib/theme";
 import { Button } from "@kentos/components/ui/button";
@@ -19,6 +23,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Toaster, type ToastTone } from "@kentos/components/ui/sonner";
 import { TooltipProvider } from "@kentos/components/ui/tooltip";
 import {
+  AppWindowIcon,
   BellIcon,
   BookOpenIcon,
   ChartColumnIcon,
@@ -49,6 +54,7 @@ import { OverlaysPage } from "./pages/overlays";
 import { OverviewPage } from "./pages/overview";
 import { PageLayoutPage } from "./pages/page-layout";
 import { PatternsPage } from "./pages/patterns";
+import { ShellPage } from "./pages/shell";
 import { SidebarPage } from "./pages/sidebar";
 import { TabsPage } from "./pages/tabs";
 import { ThemingPage } from "./pages/theming";
@@ -161,6 +167,14 @@ const pages: ShowcasePage[] = [
     component: TabsPage,
   },
   {
+    id: "shell",
+    label: "Uygulama kabuğu",
+    group: "Bileşenler",
+    icon: AppWindowIcon,
+    keywords: ["AppShell", "app bar", "üst çubuk", "alt menü", "bottom nav", "banner", "iskelet", "layout"],
+    component: ShellPage,
+  },
+  {
     id: "sidebar",
     label: "Kenar çubuğu",
     group: "Bileşenler",
@@ -235,8 +249,8 @@ export function App() {
   const groups = [...new Set(pages.map((p) => p.group))];
   return (
     <TooltipProvider>
-      <SidebarProvider storageKey="kentos-showcase-sidebar" className="bg-background">
-        <Sidebar label="Vitrin menüsü">
+      <AppShell sidebarStorageKey="kentos-showcase-sidebar">
+        <AppShellSidebar label="Vitrin menüsü">
           <SidebarHeader>
             <SidebarBrand
               logo={<span className="font-bold text-sm">K</span>}
@@ -273,41 +287,39 @@ export function App() {
           <SidebarFooter>
             <SidebarItem icon={PaletteIcon} label="Görünümü özelleştir" onClick={() => setAppearance(true)} />
           </SidebarFooter>
-        </Sidebar>
-        <SidebarInset>
-          <header className="sticky top-0 z-30 flex h-(--topbar-h) items-center gap-2 border-(--topbar-border) border-b bg-(--topbar-bg) px-2 md:px-3">
-            <SidebarTrigger />
-            <span className="flex min-w-0 items-center gap-1.5 text-sm">
-              <span className="hidden text-muted-foreground sm:inline">{page?.group}</span>
-              <span aria-hidden className="hidden text-subtle sm:inline">
-                /
-              </span>
-              <span className="truncate font-medium">{page?.label}</span>
+        </AppShellSidebar>
+        <AppShellHeader>
+          <AppShellMenuButton />
+          <span className="flex min-w-0 items-center gap-1.5 text-sm">
+            <span className="hidden text-muted-foreground sm:inline">{page?.group}</span>
+            <span aria-hidden className="hidden text-subtle sm:inline">
+              /
             </span>
-            <div className="ml-auto flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label={resolved === "dark" ? "Açık temaya geç" : "Koyu temaya geç"}
-                onClick={() => set({ mode: resolved === "dark" ? "light" : "dark" })}
-              >
-                {resolved === "dark" ? <SunIcon /> : <MoonIcon />}
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setAppearance(true)}>
-                <PaletteIcon />
-                <span className="max-sm:sr-only">Görünüm</span>
-              </Button>
-            </div>
-          </header>
-          <main className="min-w-0 flex-1">
-            <PageMetaContext.Provider value={meta}>
-              <ToastToneContext.Provider value={{ tone: toastTone, setTone: setToastTone }}>
-                <Current key={page?.id} />
-              </ToastToneContext.Provider>
-            </PageMetaContext.Provider>
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
+            <span className="truncate font-medium">{page?.label}</span>
+          </span>
+          <AppShellActions>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={resolved === "dark" ? "Açık temaya geç" : "Koyu temaya geç"}
+              onClick={() => set({ mode: resolved === "dark" ? "light" : "dark" })}
+            >
+              {resolved === "dark" ? <SunIcon /> : <MoonIcon />}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setAppearance(true)}>
+              <PaletteIcon />
+              <span className="max-sm:sr-only">Görünüm</span>
+            </Button>
+          </AppShellActions>
+        </AppShellHeader>
+        <AppShellMain contained={false}>
+          <PageMetaContext.Provider value={meta}>
+            <ToastToneContext.Provider value={{ tone: toastTone, setTone: setToastTone }}>
+              <Current key={page?.id} />
+            </ToastToneContext.Provider>
+          </PageMetaContext.Provider>
+        </AppShellMain>
+      </AppShell>
       <Sheet open={appearance} onOpenChange={setAppearance}>
         <SheetContent side="right" className="w-[min(22rem,100vw)] gap-0 overflow-y-auto sm:max-w-none">
           <SheetHeader>
