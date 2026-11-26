@@ -46,7 +46,7 @@ import { Demo, Page } from "../demo";
 const sections: { id: string; label: string; icon: LucideIcon; badge?: number }[] = [
   { id: "overview", label: "Genel bakış", icon: CompassIcon },
   { id: "issues", label: "Hatalar", icon: BugIcon, badge: 12 },
-  { id: "dashboards", label: "Panolar", icon: LayoutDashboardIcon },
+  { id: "dashboards", label: "Panolar", icon: LayoutDashboardIcon, badge: 4 },
   { id: "projects", label: "Projeler", icon: BoxesIcon },
   { id: "settings", label: "Ayarlar", icon: SettingsIcon },
 ];
@@ -203,7 +203,10 @@ function PhoneExample() {
             icon={s.icon}
             label={s.label}
             badge={s.badge}
-            badgeLabel={s.badge ? `${s.badge} açık hata` : undefined}
+            badgeLabel={
+              s.badge ? (s.id === "issues" ? `${s.badge} açık hata` : `${s.badge} pano`) : undefined
+            }
+            badgeTone={s.id === "issues" ? "danger" : "neutral"}
             active={section === s.id}
             {...link(s.id, setSection)}
           />

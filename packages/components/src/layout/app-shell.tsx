@@ -527,6 +527,7 @@ export function AppShellBottomNavItem({
   label,
   badge,
   badgeLabel,
+  badgeTone = "danger",
   active,
   asChild = false,
   className,
@@ -538,6 +539,8 @@ export function AppShellBottomNavItem({
   badge?: number;
   /** What the count means for screen readers, e.g. "12 açık hata". */
   badgeLabel?: string;
+  /** danger for counts that need attention, neutral for plain totals. */
+  badgeTone?: "danger" | "neutral";
   active?: boolean;
   asChild?: boolean;
   children?: ReactNode;
@@ -559,7 +562,12 @@ export function AppShellBottomNavItem({
         {badge ? (
           <span
             aria-hidden={badgeLabel ? true : undefined}
-            className="absolute -top-1 right-1.5 inline-flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-(--danger-bg) px-1 font-semibold text-(--danger-fg) text-2xs tabular leading-none"
+            className={cn(
+              "absolute -top-1 right-1.5 inline-flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full px-1 font-semibold text-2xs tabular leading-none",
+              badgeTone === "danger"
+                ? "bg-(--danger-bg) text-(--danger-fg)"
+                : "bg-(--surface-active) text-foreground shadow-[0_0_0_1px_var(--border-default)]",
+            )}
           >
             {badge > 99 ? "99+" : badge}
           </span>
