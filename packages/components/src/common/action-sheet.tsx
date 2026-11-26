@@ -69,6 +69,7 @@ export function ActionSheetContent({
   cancelLabel = "Vazgeç",
   showCancel = true,
   className,
+  bodyClassName,
   children,
   ...props
 }: Omit<ComponentProps<typeof DialogPrimitive.Content>, "title"> & {
@@ -79,6 +80,8 @@ export function ActionSheetContent({
   hideTitle?: boolean;
   cancelLabel?: string;
   showCancel?: boolean;
+  /** Classes for the scrolling area around the children. */
+  bodyClassName?: string;
 }) {
   const panel = useRef<HTMLDivElement | null>(null);
   const backdrop = useRef<HTMLDivElement | null>(null);
@@ -184,7 +187,12 @@ export function ActionSheetContent({
           </div>
         </div>
         {/* A primary item placed directly in the sheet moves to the top. */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-2 pb-2 *:data-[variant=primary]:order-first">
+        <div
+          className={cn(
+            "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-2 pb-2 *:data-[variant=primary]:order-first",
+            bodyClassName,
+          )}
+        >
           {children}
         </div>
         {showCancel ? (

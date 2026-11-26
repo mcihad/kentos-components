@@ -217,6 +217,108 @@ A row of native radio buttons for 2–4 exclusive options (keyboard: arrows).
 `variant`: `default | outline`; `size`: `sm | default | lg`. `ToggleGroup`
 takes `type="single" | "multiple"` and passes `variant`/`size` to items.
 
+## Choices
+
+### `common/choice-card` — `CheckboxCard`, `SwitchCard`, `RadioCardGroup`, `RadioCard`
+
+Options that need a sentence of explanation, as cards. The whole card is the
+label; the real Radix control sits inside (keyboard, forms, screen readers
+as usual) and the description is linked with `aria-describedby`. The checked
+card takes the brand border and `--surface-brand-subtle`.
+
+Shared props: `title` (required), `description`, `icon` (a tile before the
+text), `aside` (price, badge at the end of the title line), plus the control's
+own props (`checked`/`onCheckedChange`, `value`, `disabled`, `id`,
+`aria-invalid`).
+
+```tsx
+<RadioCardGroup value={plan} onValueChange={setPlan} columns={3} aria-label="Plan">
+  <RadioCard value="free" title="Ücretsiz" description="3 proje, 7 gün saklama" aside="₺0" />
+  <RadioCard value="team" title="Ekip" description="Sınırsız proje" aside={<Badge>Önerilen</Badge>} />
+</RadioCardGroup>
+
+<div className="grid gap-2.5 sm:grid-cols-3">
+  <CheckboxCard icon={MailIcon} title="E-posta" description="Her yeni hata için" checked={mail} onCheckedChange={(v) => setMail(v === true)} />
+</div>
+
+<SwitchCard title="Haftalık özet" description="Pazartesi sabahı" checked={weekly} onCheckedChange={setWeekly} />
+```
+
+`RadioCardGroup` `columns` (1–4) applies from `sm` up; phones stack. Use
+`SwitchCard` for settings that apply at once, `CheckboxCard` inside forms.
+
+### `common/combobox` — `Combobox`, `MultiSelect`, type `ComboboxOption`
+
+Searchable pickers: a dropdown under the field on desktop, a bottom sheet
+with a fixed search box on phones (`mobile` forces either). Matching is
+Turkish-aware (`lib/search`): "cankaya" finds "Çankaya", and `keywords`
+are searched too.
+
+```ts
+type ComboboxOption = {
+  value: string;
+  label: string;
+  description?: ReactNode;
+  icon?: ComponentType;
+  group?: string; // heading; groups keep first-appearance order
+  keywords?: string[]; // extra search words (codes, old names)
+  disabled?: boolean;
+};
+```
+
+```tsx
+<Combobox id="district" options={districts} value={district} onValueChange={setDistrict}
+  placeholder="İlçe seçin" searchPlaceholder="İlçe ya da plaka ara" clearable />
+
+<MultiSelect id="tags" options={tags} value={picked} onValueChange={setPicked}
+  placeholder="Etiket ekleyin" maxBadges={3} />
+
+// Server-side search: options are shown as given.
+<Combobox options={data ?? []} onSearchChange={setQuery} loading={isFetching} value={v} onValueChange={setV} />
+```
+
+| Prop                                                        | Notes                                                           |
+| ----------------------------------------------------------- | --------------------------------------------------------------- |
+| `value` / `onValueChange`                                   | `string \| null` (Combobox), `string[]` (MultiSelect)           |
+| `placeholder`, `searchPlaceholder`, `emptyText`, `title`    | field text, search box, no-match text, phone sheet title        |
+| `clearable`, `clearLabel`                                   | Combobox: × that sets `null`                                    |
+| `maxBadges`, `removeLabel`, `clearLabel`                    | MultiSelect: badges before "+n"; per-badge and clear-all labels |
+| `onSearchChange`, `loading`                                 | server-side search                                              |
+| `id`, `disabled`, `aria-label`, `aria-invalid`, `className` | on the field                                                    |
+
+Pick with Enter or a click; Combobox closes, MultiSelect stays open (its
+phone sheet's button reads "Bitti (n)"). Use `Select` for short fixed lists
+(under ~7 options) and these for long or searchable ones.
+
+### `ui/slider` — `Slider`
+
+Radix slider with kit styling. One thumb per value (`[v]` or `[from, to]`);
+arrows step, Page Up/Down ×10, Home/End to the ends.
+
+| Prop                                                                     | Notes                                                                 |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `value`/`defaultValue`, `onValueChange`, `onValueCommit`                 | Radix                                                                 |
+| `min`, `max`, `step`, `minStepsBetweenThumbs`, `orientation`, `disabled` | Radix                                                                 |
+| `thumbLabels`                                                            | accessible name per thumb (required: a `Label` does not reach thumbs) |
+| `formatValue`                                                            | value bubble above the thumb while dragged or focused                 |
+| `marks`                                                                  | `{ value, label? }[]` labels under the track                          |
+
+```tsx
+<Slider
+  value={range}
+  onValueChange={setRange}
+  min={0}
+  max={500}
+  step={10}
+  formatValue={(v) => `₺${v}`}
+  thumbLabels={["En düşük", "En yüksek"]}
+  marks={[
+    { value: 0, label: "₺0" },
+    { value: 500, label: "₺500" },
+  ]}
+/>;
+```
+
 ## Feedback
 
 ### `ui/alert` — `Alert`, `AlertTitle`, `AlertDescription`, `AlertActions`, `AlertDismiss`, `alertVariants`
@@ -695,7 +797,8 @@ footer to one row (pagination, totals, save/cancel).
 ### `common/action-sheet` — `ActionSheet`, `ActionSheetTrigger`, `ActionSheetContent`, `ActionSheetItem`, `ActionSheetGroup`, `ActionSheetSeparator`, `ActionSheetClose`
 
 Bottom sheet on Radix Dialog. `ActionSheetContent` takes `title` (required),
-`description`, `hideTitle`, `cancelLabel` ("Vazgeç"), `showCancel`.
+`description`, `hideTitle`, `cancelLabel` ("Vazgeç"), `showCancel`,
+`bodyClassName` (the scrolling area around the children).
 `ActionSheetItem` takes `icon`, `label`, `description`, `variant`
 (`default | primary | destructive`), `keepOpen`, `asChild`; choosing an item
 closes the sheet. Drag the handle down to dismiss (over 28% of the height or

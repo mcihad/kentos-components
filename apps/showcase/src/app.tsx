@@ -31,6 +31,7 @@ import {
   FormInputIcon,
   LayersIcon,
   LayoutTemplateIcon,
+  ListChecksIcon,
   type LucideIcon,
   MessageSquareWarningIcon,
   MoonIcon,
@@ -49,6 +50,7 @@ import {
 import { type ComponentType, useEffect, useState } from "react";
 import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
+import { ChoicesPage } from "./pages/choices";
 import { DataPage } from "./pages/data";
 import { DataTablePage } from "./pages/data-table";
 import { DialogsPage } from "./pages/dialogs";
@@ -138,6 +140,25 @@ const pages: ShowcasePage[] = [
       "2FA",
     ],
     component: InputsPage,
+  },
+  {
+    id: "choices",
+    label: "Seçim bileşenleri",
+    group: "Bileşenler",
+    icon: ListChecksIcon,
+    keywords: [
+      "Combobox",
+      "MultiSelect",
+      "Slider",
+      "CheckboxCard",
+      "RadioCard",
+      "SwitchCard",
+      "kart",
+      "çoklu seçim",
+      "kaydırıcı",
+      "aralık",
+    ],
+    component: ChoicesPage,
   },
   {
     id: "feedback",
