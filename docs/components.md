@@ -319,6 +319,61 @@ arrows step, Page Up/Down ×10, Home/End to the ends.
 />;
 ```
 
+## Dates
+
+### `common/calendar` — `Calendar`, type `CalendarProps`
+
+A Turkish month calendar, weeks from Monday. `mode="single"` (default,
+`value: Date | null`, `onValueChange(day)`) or `mode="range"`
+(`value: DateRange`, `onValueChange(range)`; the first pick sets `from`
+with `to: null`, the second sets `to`, ordered; a preview follows the
+pointer; `maxDays` limits the length).
+
+| Prop                       | Notes                                                              |
+| -------------------------- | ------------------------------------------------------------------ |
+| `month`, `onMonthChange`   | first shown month (controlled); defaults to the selection or today |
+| `numberOfMonths`           | 1 or 2 (side by side from `sm`)                                    |
+| `min`, `max`, `isDisabled` | unpickable days (struck through)                                   |
+| `autoFocus`                | focus the selected or current day on mount                         |
+
+Keyboard: arrows (day/week), Home/End (week ends), Page Up/Down (month,
+Shift: year), Enter/Space to pick; one tab stop for the days. The caption
+opens a month grid with year arrows. Day buttons are named
+"26 Kasım 2026 Perşembe, bugün" and use `aria-pressed`.
+
+### `common/date-picker` — `DatePicker`, `DateRangePicker`
+
+Field buttons that open a `Calendar` (dropdown on desktop, bottom sheet on
+phones; `mobile` forces either).
+
+```tsx
+<DatePicker id="due" value={due} onValueChange={setDue} clearable min={today()} />
+<DateRangePicker id="period" value={period} onValueChange={setPeriod} maxDays={31} max={today()} />
+```
+
+- Shared: `placeholder`, `min`, `max`, `isDisabled`, `clearable`,
+  `clearLabel`, `disabled`, `id`, `aria-label`, `aria-invalid`, `className`.
+- `DatePicker`: `value: Date | null`; `showToday` ("Bugün" button, default
+  on); `format` (default `formatDay`: "26 Kas 2026"). Picking closes it.
+- `DateRangePicker`: `value: DateRange` (`{ from, to }`, nulls when empty);
+  `presets` (default `defaultRangePresets`: Bugün, Dün, Son 7/30/90 gün, Bu
+  ay, Geçen ay, Bu yıl; `[]` hides them; a column on desktop, chips on
+  phones); `maxDays`. Two months on desktop, one on phones. The range is
+  applied when its end is picked or a preset is chosen; closing earlier
+  discards the half-picked range. The field writes "3 – 9 Kas 2026".
+
+### `lib/date`
+
+Day helpers (a day is a local-midnight `Date`; weeks start Monday):
+`startOfDay`, `today`, `addDays`, `addMonths` (clamps the day),
+`startOfMonth`, `endOfMonth`, `startOfWeek`, `isSameDay`, `isSameMonth`,
+`compareDays`, `isBetween`, `clampDay`, `daysInRange`, `monthGrid` (6×7).
+Formatting (tr-TR): `formatDay` ("26 Kas 2026"), `formatDayLong`,
+`formatMonthYear`, `formatMonth`, `weekdayNames`, `formatRange` ("28 Eki –
+3 Kas 2026"). `parseDay` reads "26.11.2026", "26/11/26", "2026-11-26" (null
+for impossible dates). Types `DateRange`, `DateRangePreset`;
+`defaultRangePresets`.
+
 ## Feedback
 
 ### `ui/alert` — `Alert`, `AlertTitle`, `AlertDescription`, `AlertActions`, `AlertDismiss`, `alertVariants`

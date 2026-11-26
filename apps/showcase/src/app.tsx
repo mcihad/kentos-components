@@ -26,6 +26,7 @@ import {
   AppWindowIcon,
   BellIcon,
   BookOpenIcon,
+  CalendarDaysIcon,
   ChartColumnIcon,
   FolderOpenIcon,
   FormInputIcon,
@@ -53,6 +54,7 @@ import { ButtonsPage } from "./pages/buttons";
 import { ChoicesPage } from "./pages/choices";
 import { DataPage } from "./pages/data";
 import { DataTablePage } from "./pages/data-table";
+import { DatesPage } from "./pages/dates";
 import { DialogsPage } from "./pages/dialogs";
 import { DrawerPage } from "./pages/drawer";
 import { FeedbackPage } from "./pages/feedback";
@@ -159,6 +161,14 @@ const pages: ShowcasePage[] = [
       "aralık",
     ],
     component: ChoicesPage,
+  },
+  {
+    id: "dates",
+    label: "Tarihler",
+    group: "Bileşenler",
+    icon: CalendarDaysIcon,
+    keywords: ["Calendar", "DatePicker", "DateRangePicker", "takvim", "tarih", "aralık", "dönem"],
+    component: DatesPage,
   },
   {
     id: "feedback",
