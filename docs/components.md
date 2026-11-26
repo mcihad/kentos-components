@@ -151,11 +151,22 @@ use a toast for the result of an action, a dialog when an answer is needed.
 Placeholder block; give it the shape of the content (`h-5 w-1/2`). Prefer
 skeletons to spinners for loading lists and pages.
 
-### `ui/sonner` — `Toaster`
+### `ui/sonner` — `Toaster`, `tintedToastClassNames`, type `ToastTone`
 
-Sonner with the kit's styling: card surface, coloured icon per type, a
-close button, kit buttons for `action` and `cancel`. Mount once (see
-integration), then call from anywhere:
+Sonner with the kit's styling: a close button and kit buttons for `action`
+and `cancel`. `tone` picks the look for the whole application:
+
+- `"plain"` (default): every toast on the card surface, the type shown by a
+  coloured icon.
+- `"tinted"`: success, error, warning and info toasts filled with their
+  status colours (`--status-*-bg/-border/-fg`, laid over the card colour so
+  they stay opaque on dark mode's translucent fills); plain and loading
+  toasts stay on the card.
+
+To tint a single toast under the plain tone:
+`toast.error("Ödeme alınamadı", { classNames: tintedToastClassNames })`.
+
+Mount once (see integration), then call from anywhere:
 
 ```ts
 import { toast } from "sonner";

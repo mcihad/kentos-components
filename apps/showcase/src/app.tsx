@@ -16,7 +16,7 @@ import {
 import { useAppearance } from "@kentos/components/lib/theme";
 import { Button } from "@kentos/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@kentos/components/ui/sheet";
-import { Toaster } from "@kentos/components/ui/sonner";
+import { Toaster, type ToastTone } from "@kentos/components/ui/sonner";
 import { TooltipProvider } from "@kentos/components/ui/tooltip";
 import {
   BellIcon,
@@ -37,7 +37,7 @@ import {
   TableIcon,
 } from "lucide-react";
 import { type ComponentType, useEffect, useState } from "react";
-import { type PageMeta, PageMetaContext } from "./demo";
+import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
 import { DataPage } from "./pages/data";
 import { DialogsPage } from "./pages/dialogs";
@@ -198,6 +198,7 @@ function currentId() {
 
 /** The showcase site: a sidebar of sections and the selected page. */
 export function App() {
+  const [toastTone, setToastTone] = useState<ToastTone>("plain");
   const [active, setActive] = useState(currentId);
   const [appearance, setAppearance] = useState(false);
   const { resolved, setAppearance: set } = useAppearance();
@@ -290,7 +291,9 @@ export function App() {
           </header>
           <main className="min-w-0 flex-1">
             <PageMetaContext.Provider value={meta}>
-              <Current key={page?.id} />
+              <ToastToneContext.Provider value={{ tone: toastTone, setTone: setToastTone }}>
+                <Current key={page?.id} />
+              </ToastToneContext.Provider>
             </PageMetaContext.Provider>
           </main>
         </SidebarInset>
@@ -306,7 +309,7 @@ export function App() {
           <AppearancePanel className="px-4 pb-6" />
         </SheetContent>
       </Sheet>
-      <Toaster position="bottom-right" />
+      <Toaster position="bottom-right" tone={toastTone} />
       <DialogHost />
     </TooltipProvider>
   );

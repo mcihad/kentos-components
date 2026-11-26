@@ -2,6 +2,7 @@ import { CopyButton } from "@kentos/components/common/copy-button";
 import { PageWrapper } from "@kentos/components/layout/page";
 import { cn } from "@kentos/components/lib/utils";
 import { Button } from "@kentos/components/ui/button";
+import type { ToastTone } from "@kentos/components/ui/sonner";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon } from "lucide-react";
 import { type ComponentType, createContext, type ReactNode, useContext, useState } from "react";
 
@@ -13,6 +14,12 @@ export type PageMeta = {
 };
 
 export const PageMetaContext = createContext<PageMeta>({});
+
+/** The showcase's toast tone, switchable from the feedback page. */
+export const ToastToneContext = createContext<{
+  tone: ToastTone;
+  setTone: (tone: ToastTone) => void;
+}>({ tone: "plain", setTone: () => {} });
 
 /**
  * A showcase page on the kit's PageWrapper: icon, title and description in

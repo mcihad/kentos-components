@@ -1,3 +1,4 @@
+import { Segmented } from "@kentos/components/common/segmented";
 import { EmptyState, ErrorState } from "@kentos/components/common/states";
 import { Alert, AlertActions, AlertDescription, AlertDismiss, AlertTitle } from "@kentos/components/ui/alert";
 import { Badge } from "@kentos/components/ui/badge";
@@ -11,13 +12,14 @@ import {
   SparklesIcon,
   TriangleAlertIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
-import { Demo, Page } from "../demo";
+import { Demo, Page, ToastToneContext } from "../demo";
 
 /** Alerts, badges, skeletons, toasts, empty and error states. */
 export function FeedbackPage() {
   const [quota, setQuota] = useState(true);
+  const { tone, setTone } = useContext(ToastToneContext);
   return (
     <Page
       title="Geri bildirim"
@@ -104,9 +106,13 @@ export function FeedbackPage() {
       </Demo>
       <Demo
         title="Bildirimler (toast)"
-        description="Olanı doğrulayan ya da bir hatayı bildiren kısa mesajlar; sağ altta belirir, kendiliğinden kaybolur. Toaster uygulamanın kökünde bir kez yer alır, toast() her yerden çağrılır. Eylemin adını tekrarlayın: “Kaydet” → “Kaydedildi”."
-        code={`// Uygulama kökünde bir kez
-<Toaster position="bottom-right" />
+        description="Olanı doğrulayan ya da bir hatayı bildiren kısa mesajlar; sağ altta belirir, kendiliğinden kaybolur. Toaster uygulamanın kökünde bir kez yer alır, toast() her yerden çağrılır. Düz görünümde türü ikon belirtir; renkli (tinted) görünümde başarı, hata, uyarı ve bilgi kendi renk zeminiyle gelir. Eylemin adını tekrarlayın: “Kaydet” → “Kaydedildi”."
+        code={`// Uygulama kökünde bir kez; tone="tinted" türleri renkli zeminde gösterir
+<Toaster position="bottom-right" tone="tinted" />
+
+// Yalnızca bir bildirimi renklendirmek için
+import { tintedToastClassNames } from "@kentos/components/ui/sonner";
+toast.error("Ödeme alınamadı", { classNames: tintedToastClassNames });
 
 import { toast } from "sonner";
 toast.success("Proje ayarları kaydedildi");
@@ -124,6 +130,17 @@ toast.promise(save(), {
   error: (e) => errorMessage(e),
 });`}
       >
+        <Segmented
+          label="Bildirim görünümü"
+          value={tone}
+          onChange={setTone}
+          options={[
+            { value: "plain", label: "Düz" },
+            { value: "tinted", label: "Renkli" },
+          ]}
+          className="w-full sm:w-auto"
+        />
+        <div className="hidden h-6 w-px bg-border sm:block" />
         <Button variant="outline" onClick={() => toast.success("Proje ayarları kaydedildi")}>
           Başarılı
         </Button>
