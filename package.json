@@ -1,0 +1,17 @@
+{
+  "name": "kentos-components",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -C apps/showcase dev",
+    "build": "pnpm -C apps/showcase build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -C packages/components test",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.8"
+  }
+}

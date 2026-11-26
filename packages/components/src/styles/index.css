@@ -1,0 +1,15 @@
+/*
+ * Everything a KentOS interface needs from the design system, in one import:
+ *
+ *   @import "@kentos/components/styles/index.css";
+ *
+ * Tailwind, its animations, the typefaces, the design tokens, and the
+ * component sources for Tailwind to scan (so their classes are generated).
+ * Import it from the application's main CSS file; add application tokens after.
+ */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./fonts.css";
+@import "./tokens.css";
+
+@source "../";
