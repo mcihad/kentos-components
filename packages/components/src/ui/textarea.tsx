@@ -8,7 +8,8 @@ const sizesItself =
 
 function Textarea({
   className,
-  minRows = 3,
+  rows,
+  minRows = rows ?? 3,
   maxRows,
   showCount = false,
   style,
@@ -19,7 +20,7 @@ function Textarea({
   ref,
   ...props
 }: React.ComponentProps<"textarea"> & {
-  /** Height to start with, in lines (default 3). */
+  /** Height to start with, in lines (default: rows, else 3). A min-h-* class overrides it. */
   minRows?: number;
   /** Stop growing here and scroll instead. */
   maxRows?: number;
@@ -55,14 +56,17 @@ function Textarea({
         fit();
         onChange?.(e);
       }}
-      style={{
-        minHeight: `calc(${minRows}lh + 1rem + 2px)`,
-        maxHeight: maxRows ? `calc(${maxRows}lh + 1rem + 2px)` : undefined,
-        ...style,
-      }}
+      rows={rows}
+      style={
+        {
+          "--textarea-min": `calc(${minRows}lh + 1rem + 2px)`,
+          "--textarea-max": maxRows ? `calc(${maxRows}lh + 1rem + 2px)` : undefined,
+          ...style,
+        } as React.CSSProperties
+      }
       className={cn(
-        "flex field-sizing-content w-full resize-none rounded-md border border-(--input-border) bg-(--input-bg) px-2.5 py-2 text-base text-foreground leading-normal outline-none transition-[color,box-shadow,border-color] duration-(--duration-fast) placeholder:text-subtle hover:border-(--input-border-hover) focus-visible:border-(--input-border-focus) focus-visible:shadow-(--focus-shadow) focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-(--surface-muted) disabled:opacity-70 aria-invalid:border-destructive aria-invalid:focus-visible:shadow-(--shadow-focus-danger) md:text-sm",
-        maxRows && "overflow-y-auto",
+        "flex field-sizing-content min-h-(--textarea-min) w-full resize-none rounded-md border border-(--input-border) bg-(--input-bg) px-2.5 py-2 text-base text-foreground leading-normal outline-none transition-[color,box-shadow,border-color] duration-(--duration-fast) placeholder:text-subtle hover:border-(--input-border-hover) focus-visible:border-(--input-border-focus) focus-visible:shadow-(--focus-shadow) focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-(--surface-muted) disabled:opacity-70 aria-invalid:border-destructive aria-invalid:focus-visible:shadow-(--shadow-focus-danger) md:text-sm",
+        maxRows && "max-h-(--textarea-max) overflow-y-auto",
         className,
       )}
       {...props}
