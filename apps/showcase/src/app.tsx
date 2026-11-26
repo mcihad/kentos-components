@@ -39,6 +39,7 @@ import {
   PanelLeftIcon,
   PanelRightIcon,
   PanelsTopLeftIcon,
+  Rows3Icon,
   SunIcon,
   SwatchBookIcon,
   TableIcon,
@@ -47,6 +48,7 @@ import { type ComponentType, useEffect, useState } from "react";
 import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
 import { DataPage } from "./pages/data";
+import { DataTablePage } from "./pages/data-table";
 import { DialogsPage } from "./pages/dialogs";
 import { DrawerPage } from "./pages/drawer";
 import { FeedbackPage } from "./pages/feedback";
@@ -215,6 +217,14 @@ const pages: ShowcasePage[] = [
     icon: ChartColumnIcon,
     keywords: ["StatStrip", "tablo", "grafik", "StackedBars", "Sparkline", "Avatar", "CopyButton"],
     component: DataPage,
+  },
+  {
+    id: "data-table",
+    label: "Veri tablosu",
+    group: "Bileşenler",
+    icon: Rows3Icon,
+    keywords: ["DataTable", "Pagination", "tablo", "sayfalama", "sıralama", "sütun", "server side", "sunucu"],
+    component: DataTablePage,
   },
   {
     id: "patterns",

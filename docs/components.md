@@ -647,6 +647,56 @@ use `Tabs` for state within a card or dialog.
 
 A responsive grid of cards (2 → 3 → 4/5/6 columns by count).
 
+### `common/data-table` — `DataTable`, types `DataColumn`, `SortState`, `SortValue`
+
+A plain table for showing records (not a spreadsheet): sortable columns, a
+column chooser, pagination, loading/refreshing/empty/error states, row
+clicks, and a card list on phones. No table library: columns are plain
+objects.
+
+```tsx
+const columns: DataColumn<Project>[] = [
+  { id: "name", header: "Proje", value: (p) => p.name, sortable: true, hideable: false, mobile: "title" },
+  { id: "events", header: "Olay", value: (p) => p.events, sortable: true, align: "end",
+    cell: (p) => formatNumber(p.events) },
+  { id: "owner", header: "Sorumlu", value: (p) => p.owner, hidden: true },
+];
+
+// In the browser
+<DataTable columns={columns} rows={projects} getRowId={(p) => p.id} pageSize={20} pageSizes={[20, 50]}
+           defaultSort={{ id: "events", desc: true }} columnsStorageKey="projects-columns" itemLabel="proje" />
+
+// On the server
+<DataTable columns={columns} rows={q.data?.rows ?? []} getRowId={(p) => p.id} manual
+           sort={sort} onSortChange={(s) => { setSort(s); setPage(1); }}
+           loading={q.isPending} refreshing={q.isFetching && !q.isPending}
+           pagination={{ page, onPageChange: setPage, pageSize: 20, total: q.data?.total ?? 0 }} />
+```
+
+| Prop                                  | Meaning                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `columns`                             | `id`, `header` (also the chooser and phone-card label), `value` (sorting and default cell), `cell`, `sortable`, `align` (`end` for numbers and dates, which also get tabular figures), `width`, `hideable` (default true), `hidden` (hidden by default), `mobile` (`title`, `detail`, `hidden`), `className`. |
+| `rows`, `getRowId`, `caption`         | Data, a stable key, the screen-reader caption.                                                                                                                                                                                                                                                                |
+| `sort`, `defaultSort`, `onSortChange` | Controlled or uncontrolled sort. A header click cycles ascending → descending → the data's order; headers carry `aria-sort`. Browser sorting compares numbers, bigints, dates and Turkish text (numeric-aware).                                                                                               |
+| `manual`                              | Server mode: the table neither sorts nor pages; it reports choices.                                                                                                                                                                                                                                           |
+| `pageSize`, `pageSizes`               | Browser paging (resets to page 1 on sort and when the data shrinks).                                                                                                                                                                                                                                          |
+| `pagination`                          | Server paging: `Pagination` props rendered under the table.                                                                                                                                                                                                                                                   |
+| `loading`, `refreshing`               | Skeleton rows on first load; dimmed rows and waiting controls while a new page or sort loads.                                                                                                                                                                                                                 |
+| `empty`, `error`                      | Replace the rows / the table.                                                                                                                                                                                                                                                                                 |
+| `columnsStorageKey`                   | Remembers hidden columns in the browser. The chooser keeps at least one column and offers "Varsayılana dön".                                                                                                                                                                                                  |
+| `toolbar`                             | Controls before the column chooser (search, filters).                                                                                                                                                                                                                                                         |
+| `onRowClick`, `rowClassName`          | Clickable rows (Enter works too).                                                                                                                                                                                                                                                                             |
+| `mobile`                              | Forces the card layout (`true`) or the table (`false`); by default below md the rows become cards and sorting moves into a select.                                                                                                                                                                            |
+
+### `common/pagination` — `Pagination`, `pageWindow`
+
+`page` (1-based), `onPageChange`, `pageSize`, `pageSizes` +
+`onPageSizeChange` (a "20 / sayfa" select), `itemLabel`, `disabled`, and
+either `total` (numbered: "21–40 / 245 hata", first/previous, page numbers
+with gaps, next/last; on phones "2 / 13") or `hasNextPage` (cursor APIs:
+previous/next only). `pageWindow(page, pageCount)` returns the numbers and
+gaps shown.
+
 ### `common/table` — `theadClass`, `thClass`, `trClass`, `tdClass`
 
 Class strings for native tables: tinted header, density-driven row height,
