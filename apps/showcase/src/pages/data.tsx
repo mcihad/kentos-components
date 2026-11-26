@@ -70,7 +70,7 @@ export function DataPage() {
       </Demo>
       <Demo
         title="Tablo"
-        description="table.ts tasarım sisteminin tablo sınıflarını verir: renkli başlık satırı, yoğunluğa uyan satır yüksekliği, sakin üzerine gelme."
+        description="table.ts tasarım sisteminin tablo sınıflarını verir: etiket gibi duran başlık (zeminsiz, küçük büyük harfler, altında belirgin çizgi), yoğunluğa uyan satır yüksekliği, sakin üzerine gelme. Sütun seçici, sıralama ve sayfalama gerekiyorsa DataTable kullanın."
         className="block p-0"
         code={`import { tdClass, thClass, theadClass, trClass } from "@kentos/components/common/table";
 

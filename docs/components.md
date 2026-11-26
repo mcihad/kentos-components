@@ -702,7 +702,7 @@ gaps shown.
 
 ### `common/table` — `theadClass`, `thClass`, `trClass`, `tdClass`
 
-Class strings for native tables: tinted header, density-driven row height,
+Class strings for native tables: a header that reads as labels (no fill, small spaced capitals, a firm rule under it), density-driven row height,
 quiet hover. Numbers: `text-right tabular`. On phones, render a list instead
 of the table (`md:hidden` list + `hidden md:block` table).
 
