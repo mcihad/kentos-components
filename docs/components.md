@@ -873,6 +873,104 @@ Radix Toolbar (one tab stop, arrow keys inside). `ToolbarButton` and
 `ToolbarToggleItem` take `icon`, `label`, `showLabel`; with an icon and no
 `showLabel` the label moves into a tooltip. Height matches small buttons.
 
+## Content layout
+
+### `ui/card` — `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent`, `CardFooter`
+
+The basic surface (`card` utility) with `--card-p` padding, which follows
+density. Prefer it to hand-written `className="card"` blocks with their own
+padding.
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Son 24 saat</CardTitle>
+    <CardDescription>Projedeki yeni hatalar</CardDescription>
+    <CardAction>
+      <Button variant="ghost" size="sm">
+        Tümü
+      </Button>
+    </CardAction>
+  </CardHeader>
+  <CardContent>…</CardContent>
+  <CardFooter divider>
+    <Button variant="outline" size="sm">
+      Tümünü gör
+    </Button>
+  </CardFooter>
+</Card>;
+```
+
+| Part          | Props                                                                                  |
+| ------------- | -------------------------------------------------------------------------------------- |
+| `Card`        | `tone` (`default`, `muted`, `brand`), `interactive` (hover/focus for links), `asChild` |
+| `CardHeader`  | `divider` (rule below; use before lists and tables); grid with `CardAction` top right  |
+| `CardTitle`   | `h3`; `asChild` for another heading level                                              |
+| `CardContent` | `flush` (no side padding: tables, row lists that pad themselves with `px-(--card-p)`)  |
+| `CardFooter`  | `divider` (rule above)                                                                 |
+
+A whole-card link: `<Card asChild interactive><Link …>…</Link></Card>`.
+
+### `ui/accordion` — `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`
+
+Radix Accordion. `type="single"` (with `collapsible` to allow closing all) or
+`type="multiple"`; `variant`: `plain` (rules between items), `contained`
+(one card), `separated` (a card per item). `AccordionTrigger` takes `icon`,
+`description` (a line under the title) and `aside` (badge, count). The
+content's height animates (`kentos-accordion-*` keyframes; off with reduced
+motion).
+
+```tsx
+<Accordion type="single" collapsible variant="contained" defaultValue="keys">
+  <AccordionItem value="keys">
+    <AccordionTrigger icon={KeyRoundIcon} description="DSN ve ingest anahtarları">
+      Anahtarlar
+    </AccordionTrigger>
+    <AccordionContent>…</AccordionContent>
+  </AccordionItem>
+</Accordion>;
+```
+
+### `common/description-list` — `DescriptionList`, `DescriptionItem`
+
+Label–value pairs in a `<dl>`. Empty values render a dash (read as "Yok").
+
+| Prop (`DescriptionList`) | Notes                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `layout`                 | `rows` (label column + value; stacks on phones), `inline` (value right-aligned: side panels), `grid` (label above value) |
+| `divided`                | rules between rows (`rows`, `inline`)                                                                                    |
+| `columns`                | `grid`: 2, 3 or 4 from `sm` (phones: 1 or 2)                                                                             |
+| `labelWidth`             | `rows`: label column width, default `10rem`                                                                              |
+
+`DescriptionItem`: `label` (required), children (the value), `hint` (muted
+line under the value), `mono` (keys, hashes, URLs).
+
+```tsx
+<DescriptionList layout="rows" divided>
+  <DescriptionItem label="Proje">e-Belediye</DescriptionItem>
+  <DescriptionItem label="DSN" mono>
+    {dsn}
+  </DescriptionItem>
+</DescriptionList>;
+```
+
+### `common/timeline` — `Timeline`, `TimelineItem`
+
+Events along a vertical line (`<ol>`). `Timeline compact` uses small dots.
+`TimelineItem`: `title` (required), `time` + `dateTime` (a `<time>`),
+`icon` (in a circle; compact shows a dot), `tone` (`default`, `brand`,
+`success`, `warning`, `danger`, `muted`), `pending` (hollow marker, dashed
+line), children (details under the title).
+
+```tsx
+<Timeline>
+  <TimelineItem icon={BugIcon} tone="danger" title="Hata ilk kez görüldü" time="3 gün önce" dateTime={iso}>
+    TimeoutException, OdemeServisi.Tahsil
+  </TimelineItem>
+  <TimelineItem tone="muted" pending title="Sürümde doğrulanacak" />
+</Timeline>;
+```
+
 ## Navigation and layout
 
 ### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `TabsBadge`, `TabsNav`, `TabsNavItem`, `tabsListVariants`

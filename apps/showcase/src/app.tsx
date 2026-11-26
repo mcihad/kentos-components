@@ -31,6 +31,7 @@ import {
   FolderOpenIcon,
   FormInputIcon,
   LayersIcon,
+  LayoutListIcon,
   LayoutTemplateIcon,
   ListChecksIcon,
   type LucideIcon,
@@ -52,6 +53,7 @@ import { type ComponentType, useEffect, useState } from "react";
 import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
 import { ChoicesPage } from "./pages/choices";
+import { ContentPage } from "./pages/content";
 import { DataPage } from "./pages/data";
 import { DataTablePage } from "./pages/data-table";
 import { DatesPage } from "./pages/dates";
@@ -169,6 +171,23 @@ const pages: ShowcasePage[] = [
     icon: CalendarDaysIcon,
     keywords: ["Calendar", "DatePicker", "DateRangePicker", "takvim", "tarih", "aralık", "dönem"],
     component: DatesPage,
+  },
+  {
+    id: "content",
+    label: "İçerik düzeni",
+    group: "Bileşenler",
+    icon: LayoutListIcon,
+    keywords: [
+      "Card",
+      "kart",
+      "Accordion",
+      "akordeon",
+      "DescriptionList",
+      "Timeline",
+      "zaman çizelgesi",
+      "dl",
+    ],
+    component: ContentPage,
   },
   {
     id: "feedback",

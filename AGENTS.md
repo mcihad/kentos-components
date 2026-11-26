@@ -16,10 +16,12 @@ component kit. Read this file first; the details are in `docs/`:
 
 The **KentOS design system** ("KentOS Yönetim" kit) as one package,
 `@kentos/components`: design tokens and theme scopes in Tailwind CSS v4,
-25 shadcn/ui (new-york) primitives on Radix, a few generic composites
-(form field, stat cards, empty/error states, segmented control, appearance
-panel, copy button, avatar, table classes), two charts and Turkish
-formatting helpers. It is consumed as **TypeScript source** (no build step)
+shadcn/ui (new-york) primitives on Radix, composites built on them (form
+field, input groups, OTP, choice cards, combobox and multi-select,
+calendar and date pickers, description list, timeline, data table,
+dialogs, drawer, menus, stat cards, empty/error states, appearance panel,
+avatar, table classes), the application shell and page frame, two charts
+and Turkish formatting and date helpers. It is consumed as **TypeScript source** (no build step)
 by Vite + React 19 + Tailwind v4 applications, first of all
 [izci](../kentos-izci).
 
