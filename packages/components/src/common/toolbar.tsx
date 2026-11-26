@@ -34,7 +34,7 @@ export function Toolbar({ className, ...props }: ComponentProps<typeof ToolbarPr
 }
 
 const controlClass =
-  "inline-flex h-full min-w-[calc(var(--control-h-sm)-6px)] items-center justify-center gap-1.5 rounded-[calc(var(--radius-md)-2px)] px-2 font-semibold text-muted-foreground text-xs outline-none transition-colors duration-(--duration-fast) hover:bg-(--surface-hover) hover:text-foreground focus-visible:shadow-(--focus-shadow) disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-(--surface-selected) data-[state=on]:text-strong [&_svg]:size-4 [&_svg]:shrink-0";
+  "inline-flex h-full min-w-[calc(var(--control-h-sm)-6px)] items-center justify-center gap-1.5 rounded-[max(calc(var(--radius-md)-2px),0px)] px-2 font-semibold text-muted-foreground text-xs outline-none transition-colors duration-(--duration-fast) hover:bg-(--surface-hover) hover:text-foreground focus-visible:shadow-(--focus-shadow) disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-(--surface-selected) data-[state=on]:text-strong [&_svg]:size-4 [&_svg]:shrink-0";
 
 function withTooltip(element: ReactElement, label: string, show: boolean) {
   if (!show) return element;

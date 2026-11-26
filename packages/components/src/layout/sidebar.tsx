@@ -606,14 +606,14 @@ export function SidebarSeparator({ className, ...props }: ComponentProps<"hr">) 
 // with an accent bar. Active styling follows data-active or aria-current so
 // router links that set aria-current="page" need no extra prop.
 const itemClass = cn(
-  "relative flex h-10 w-full shrink-0 items-center gap-2.5 rounded-md px-2.5 text-left font-medium text-(--sidebar-fg) text-sm outline-none transition-colors duration-(--duration-fast) md:h-9",
+  "relative flex h-[max(var(--control-h-md),2.5rem)] w-full shrink-0 items-center gap-2.5 rounded-md px-2.5 text-left font-medium text-(--sidebar-fg) text-sm outline-none transition-colors duration-(--duration-fast) md:h-(--control-h-md)",
   "hover:bg-(--sidebar-item-hover) hover:text-(--sidebar-item-active-fg) focus-visible:shadow-(--focus-shadow) data-[state=open]:bg-(--sidebar-item-hover)",
   "[&_svg]:opacity-85 hover:[&_svg]:opacity-100",
   "before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-full before:bg-(--sidebar-accent-fg) before:opacity-0 before:transition-opacity",
   "data-[active=true]:bg-(--sidebar-item-active-bg) data-[active=true]:font-semibold data-[active=true]:text-(--sidebar-item-active-fg) data-[active=true]:before:opacity-100 data-[active=true]:[&_svg]:opacity-100",
   "aria-[current=page]:bg-(--sidebar-item-active-bg) aria-[current=page]:font-semibold aria-[current=page]:text-(--sidebar-item-active-fg) aria-[current=page]:before:opacity-100 aria-[current=page]:[&_svg]:opacity-100",
   "data-[icon-only=true]:justify-center data-[icon-only=true]:px-0 data-[icon-only=true]:before:hidden",
-  "data-[nested=true]:h-9 data-[nested=true]:px-2.5 data-[nested=true]:font-normal data-[nested=true]:before:-left-2.5 md:data-[nested=true]:h-8",
+  "data-[nested=true]:h-[max(var(--control-h-sm),2.25rem)] data-[nested=true]:px-2.5 data-[nested=true]:font-normal data-[nested=true]:before:-left-2.5 md:data-[nested=true]:h-(--control-h-sm)",
 );
 
 const badgeClass =

@@ -81,13 +81,13 @@ const triggerClass = cn(
   "group-data-[variant=default]/tabs-list:h-full group-data-[variant=default]/tabs-list:rounded-md group-data-[variant=default]/tabs-list:px-3 group-data-[variant=default]/tabs-list:hover:text-foreground",
   "group-data-[variant=default]/tabs-list:data-[state=active]:bg-(--surface-card) group-data-[variant=default]/tabs-list:data-[state=active]:text-strong group-data-[variant=default]/tabs-list:data-[state=active]:shadow-(--shadow-xs)",
   // Underline
-  "group-data-[variant=line]/tabs-list:min-h-11 group-data-[variant=line]/tabs-list:rounded-t-md group-data-[variant=line]/tabs-list:px-3.5 md:group-data-[variant=line]/tabs-list:min-h-10",
+  "group-data-[variant=line]/tabs-list:min-h-[max(var(--control-h-lg),2.75rem)] group-data-[variant=line]/tabs-list:rounded-t-md group-data-[variant=line]/tabs-list:px-3.5 md:group-data-[variant=line]/tabs-list:min-h-(--control-h-lg)",
   "group-data-[variant=line]/tabs-list:hover:bg-(--surface-hover) group-data-[variant=line]/tabs-list:hover:text-foreground group-data-[variant=line]/tabs-list:data-[state=active]:text-(--tabs-fg-active)",
   // Pills
-  "group-data-[variant=pill]/tabs-list:h-9 group-data-[variant=pill]/tabs-list:rounded-full group-data-[variant=pill]/tabs-list:px-3.5 md:group-data-[variant=pill]/tabs-list:h-8",
+  "group-data-[variant=pill]/tabs-list:h-[max(var(--control-h-sm),2.25rem)] group-data-[variant=pill]/tabs-list:rounded-full group-data-[variant=pill]/tabs-list:px-3.5 md:group-data-[variant=pill]/tabs-list:h-(--control-h-sm)",
   "group-data-[variant=pill]/tabs-list:hover:bg-(--surface-hover) group-data-[variant=pill]/tabs-list:hover:text-foreground group-data-[variant=pill]/tabs-list:data-[state=active]:bg-brand-subtle group-data-[variant=pill]/tabs-list:data-[state=active]:text-brand-ink",
   // Vertical: full-width rows; the line variant marks the active one on the left edge
-  "group-data-[orientation=vertical]/tabs:h-auto group-data-[orientation=vertical]/tabs:min-h-10 group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[orientation=vertical]/tabs:rounded-md",
+  "group-data-[orientation=vertical]/tabs:h-auto group-data-[orientation=vertical]/tabs:min-h-(--control-h-md) group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[orientation=vertical]/tabs:rounded-md",
   "group-data-[orientation=vertical]/tabs:group-data-[variant=line]/tabs-list:data-[state=active]:bg-(--surface-selected) group-data-[orientation=vertical]/tabs:group-data-[variant=line]/tabs-list:data-[state=active]:shadow-[inset_2px_0_0_var(--tabs-indicator)]",
   // Equal widths
   "group-data-[full=true]/tabs-list:flex-1",

@@ -80,9 +80,12 @@ Use them through Tailwind's arbitrary-value syntax: `h-(--control-h-md)`,
 
 ## Type
 
-- Families: `--font-family-sans` (Plus Jakarta Sans by default; Inter or IBM
-  Plex Sans via `.font-inter` / `.font-plex`) and `--font-family-mono`
-  (JetBrains Mono) → `font-sans`, `font-mono`. Monospace is for code and
+- Families: `--font-family-sans` (`--font-stack-jakarta` by default;
+  `--font-stack-inter` / `--font-stack-plex` via `.font-inter` /
+  `.font-plex`) and `--font-family-mono` (JetBrains Mono) → `font-sans`,
+  `font-mono`. `fonts.css` imports Fontsource's variable-font stylesheets,
+  whose family names end in "Variable"; refer to the stacks, never to a
+  family name, so a renamed or self-hosted font changes in one place. Monospace is for code and
   identifiers only; ligatures are off for code.
 - Scale (`@theme`): `text-2xs` 12px, `text-xs` 13px, `text-sm` 14px,
   `text-md` 15px (body), `text-base` 16px, `text-lg` 18px, `text-xl` 20px,

@@ -5,9 +5,9 @@ import { cn } from "../lib/utils";
 import { Segmented } from "./segmented";
 
 const fonts: { value: FontChoice; label: string; hint: string; family: string }[] = [
-  { value: "jakarta", label: "Plus Jakarta Sans", hint: "Varsayılan", family: '"Plus Jakarta Sans"' },
-  { value: "inter", label: "Inter", hint: "Yoğun tablolar için", family: '"Inter"' },
-  { value: "plex", label: "IBM Plex Sans", hint: "Resmî, belge gibi", family: '"IBM Plex Sans"' },
+  { value: "jakarta", label: "Plus Jakarta Sans", hint: "Varsayılan", family: "var(--font-stack-jakarta)" },
+  { value: "inter", label: "Inter", hint: "Yoğun tablolar için", family: "var(--font-stack-inter)" },
+  { value: "plex", label: "IBM Plex Sans", hint: "Resmî, belge gibi", family: "var(--font-stack-plex)" },
 ];
 
 const accents: { value: Accent; label: string; color: string }[] = [

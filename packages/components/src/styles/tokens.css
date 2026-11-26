@@ -129,8 +129,13 @@
 
 /* Foundations: type, controls, layout frame, borders, elevation, motion. */
 :root {
-  --font-family-sans: "Plus Jakarta Sans";
-  --font-family-mono: "JetBrains Mono";
+  /* Family names as Fontsource declares them (see fonts.css); the plain
+     names follow in case an application installs the fonts itself. */
+  --font-stack-jakarta: "Plus Jakarta Sans Variable", "Plus Jakarta Sans";
+  --font-stack-inter: "Inter Variable", "Inter";
+  --font-stack-plex: "IBM Plex Sans Variable", "IBM Plex Sans";
+  --font-family-sans: var(--font-stack-jakarta);
+  --font-family-mono: "JetBrains Mono Variable", "JetBrains Mono";
 
   --tracking-tight: -0.015em;
   --tracking-caps: 0.08em;
@@ -370,13 +375,13 @@
 /* 3. Theme scopes. Each is one class on <html>; they compose.
    FONT: the interface family; code always uses JetBrains Mono. */
 .font-jakarta {
-  --font-family-sans: "Plus Jakarta Sans";
+  --font-family-sans: var(--font-stack-jakarta);
 }
 .font-inter {
-  --font-family-sans: "Inter";
+  --font-family-sans: var(--font-stack-inter);
 }
 .font-plex {
-  --font-family-sans: "IBM Plex Sans";
+  --font-family-sans: var(--font-stack-plex);
 }
 
 /* DENSITY: control heights, row height, gutters. Standard needs no class. */
