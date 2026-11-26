@@ -44,6 +44,7 @@ import {
   SunIcon,
   SwatchBookIcon,
   TableIcon,
+  TextCursorInputIcon,
 } from "lucide-react";
 import { type ComponentType, useEffect, useState } from "react";
 import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
@@ -54,6 +55,7 @@ import { DialogsPage } from "./pages/dialogs";
 import { DrawerPage } from "./pages/drawer";
 import { FeedbackPage } from "./pages/feedback";
 import { FormsPage } from "./pages/forms";
+import { InputsPage } from "./pages/inputs";
 import { MenusPage } from "./pages/menus";
 import { NavigationPage } from "./pages/navigation";
 import { OverlaysPage } from "./pages/overlays";
@@ -106,7 +108,7 @@ const pages: ShowcasePage[] = [
     label: "Düğmeler",
     group: "Bileşenler",
     icon: MousePointerClickIcon,
-    keywords: ["Button", "Toggle", "ToggleGroup", "buton"],
+    keywords: ["Button", "ButtonGroup", "SplitButton", "loading", "yükleniyor", "buton"],
     component: ButtonsPage,
   },
   {
@@ -116,6 +118,26 @@ const pages: ShowcasePage[] = [
     icon: FormInputIcon,
     keywords: ["Input", "Select", "Checkbox", "Switch", "RadioGroup", "Field", "Segmented", "Textarea"],
     component: FormsPage,
+  },
+  {
+    id: "inputs",
+    label: "Girdiler",
+    group: "Bileşenler",
+    icon: TextCursorInputIcon,
+    keywords: [
+      "InputGroup",
+      "SearchInput",
+      "PasswordInput",
+      "NumberInput",
+      "Textarea",
+      "OtpInput",
+      "arama",
+      "parola",
+      "sayı",
+      "kod",
+      "2FA",
+    ],
+    component: InputsPage,
   },
   {
     id: "feedback",

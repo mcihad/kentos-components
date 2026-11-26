@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../lib/utils"
+import { Loader2Icon } from "lucide-react"
 import { Slot } from "radix-ui"
 
 // KentOS buttons: semibold, 6px corners, heights from the density scope. Below
@@ -46,21 +47,51 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  loading = false,
+  loadingText,
+  disabled,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    /** Work is running: a spinner replaces the icon and the button waits. */
+    loading?: boolean
+    /** Text while loading, e.g. "Kaydediliyor…"; the label stays otherwise. */
+    loadingText?: React.ReactNode
   }) {
-  const Comp = asChild ? Slot.Root : "button"
-
+  if (asChild) {
+    return (
+      <Slot.Root
+        data-slot="button"
+        data-variant={variant}
+        data-size={size}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      >
+        {children}
+      </Slot.Root>
+    )
+  }
   return (
-    <Comp
+    <button
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      data-loading={loading || undefined}
+      aria-busy={loading || undefined}
+      disabled={disabled || loading}
+      className={cn(
+        buttonVariants({ variant, size }),
+        // While loading the label's own icons give way to the spinner.
+        "data-[loading]:disabled:opacity-80 data-[loading]:[&>svg:not([data-spinner])]:hidden",
+        className
+      )}
       {...props}
-    />
+    >
+      {loading ? <Loader2Icon data-spinner aria-hidden className="animate-spin" /> : null}
+      {loading && loadingText !== undefined ? loadingText : children}
+    </button>
   )
 }
 

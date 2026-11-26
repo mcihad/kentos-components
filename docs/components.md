@@ -18,28 +18,131 @@ Conventions shared by all components:
 
 ### `ui/button` — `Button`, `buttonVariants`
 
-| Prop      | Values                                                                                                           |
-| --------- | ---------------------------------------------------------------------------------------------------------------- |
-| `variant` | `default` (primary, one per view), `secondary`, `outline`, `ghost`, `destructive` (irreversible actions), `link` |
-| `size`    | `xs`, `sm`, `default`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`                                             |
-| `asChild` | render the child (links)                                                                                         |
+| Prop          | Values                                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `variant`     | `default` (primary, one per view), `secondary`, `outline`, `ghost`, `destructive` (irreversible actions), `link` |
+| `size`        | `xs`, `sm`, `default`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`                                             |
+| `asChild`     | render the child (links)                                                                                         |
+| `loading`     | disables the button, sets `aria-busy`, shows a spinner (replacing the button's own icons)                        |
+| `loadingText` | label while `loading` ("Kaydediliyor…"); without it the label stays                                              |
 
 ```tsx
 <Button><PlusIcon />Proje oluştur</Button>
 <Button variant="outline" size="sm">Vazgeç</Button>
 <Button variant="ghost" size="icon" aria-label="Ayarlar"><SettingsIcon /></Button>
+<Button loading={save.isPending} loadingText="Kaydediliyor…"><SaveIcon />Kaydet</Button>
 ```
 
 Rules: label says the action ("Kaydet", "Hatayı çöz"); icon-only buttons need
-`aria-label`; while pending, `disabled` plus a progress label ("Kaydediliyor…").
+`aria-label`; while pending use `loading` (not a hand-made spinner).
 `buttonVariants({ variant, size })` gives the classes for non-button elements.
+`loading` is ignored with `asChild`.
+
+### `common/button-group` — `ButtonGroup`, `SplitButton`
+
+`ButtonGroup` draws adjacent buttons as one control: borders merge and only
+the outer corners stay round. `orientation="horizontal" | "vertical"`.
+
+```tsx
+<ButtonGroup>
+  <Button variant="outline" size="icon-sm" aria-label="Uzaklaş">
+    <ZoomOutIcon />
+  </Button>
+  <Button variant="outline" size="sm">
+    %100
+  </Button>
+  <Button variant="outline" size="icon-sm" aria-label="Yakınlaş">
+    <ZoomInIcon />
+  </Button>
+</ButtonGroup>;
+```
+
+`SplitButton` is the main action plus a chevron that opens an `ActionMenu`
+(dropdown on desktop, bottom sheet on phones).
+
+| Prop                                 | Type                                                          | Notes                                              |
+| ------------------------------------ | ------------------------------------------------------------- | -------------------------------------------------- |
+| `label`, `icon`, `onClick`           | main action                                                   | required except `icon`                             |
+| `entries`                            | `MenuEntry[]`                                                 | same entries as `ActionMenu`                       |
+| `menuLabel`                          | `string`                                                      | chevron's name and sheet title; "Diğer seçenekler" |
+| `variant`, `size`                    | `default\|outline\|secondary\|destructive`, `sm\|default\|lg` |                                                    |
+| `loading`, `loadingText`, `disabled` |                                                               | loading also locks the chevron                     |
 
 ## Form controls
 
-### `ui/input` — `Input`; `ui/textarea` — `Textarea`
+### `ui/input` — `Input`
 
-Native elements with kit styling. Mark invalid fields with `aria-invalid`.
+Native input with kit styling. Mark invalid fields with `aria-invalid`.
 Inputs use 16px text below `md` so iOS does not zoom.
+
+### `ui/textarea` — `Textarea`
+
+Grows with its text (CSS `field-sizing: content`, with a scrollHeight
+fallback). Extra props: `minRows` (default 3), `maxRows` (then it scrolls),
+`showCount` (a "12/140" counter under the field, using `maxLength`; it turns
+the warning colour at 90%).
+
+```tsx
+<Textarea minRows={2} maxRows={6} />
+<Textarea value={v} onChange={(e) => setV(e.target.value)} maxLength={140} showCount />
+```
+
+### `common/input-group` — `InputGroup`, `InputGroupInput`, `InputGroupAddon`, `InputGroupButton`, `SearchInput`, `PasswordInput`, `NumberInput`
+
+An input with icons, text or small buttons attached. The group draws the
+border, hover, focus ring, disabled and invalid state (`aria-invalid` on the
+inner input); the inner input is bare. Use it instead of absolutely
+positioned icons.
+
+```tsx
+<InputGroup>
+  <InputGroupAddon><GlobeIcon /></InputGroupAddon>
+  <InputGroupInput id="host" placeholder="alt-alan" />
+  <InputGroupAddon align="end">.kentos.dev</InputGroupAddon>
+</InputGroup>
+
+<InputGroup>
+  <InputGroupInput readOnly value={url} />
+  <InputGroupAddon align="end">
+    <InputGroupButton aria-label="Kopyala" onClick={copy}><CopyIcon /></InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>
+```
+
+Ready-made fields (other input props pass through to the inner input, so
+`id`, `placeholder`, `aria-label`, `autoComplete` work as usual):
+
+| Component       | Props                                                                                   | Behaviour                                                                                |
+| --------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `SearchInput`   | `value`, `onValueChange`, `shortcut?`, `clearLabel?`                                    | glass icon; clear button while there is text; Escape clears; `shortcut` hint while empty |
+| `PasswordInput` | `showLabel?`, `hideLabel?`                                                              | eye button toggles visibility (`aria-pressed`)                                           |
+| `NumberInput`   | `value: number \| null`, `onValueChange`, `min?`, `max?`, `step?`, `prefix?`, `suffix?` | −/+ buttons, ↑/↓ (Shift ×10), Turkish decimal comma, clamps on blur, `role="spinbutton"` |
+
+### `common/otp-input` — `OtpInput`
+
+One-time code boxes (two-factor, e-mail verification). Underneath it is one
+real input with `autocomplete="one-time-code"`, so typing, pasting the whole
+code, SMS autofill, backspace and screen readers behave normally. The boxes
+shrink to fit narrow screens.
+
+```tsx
+<OtpInput
+  id="code"
+  value={code}
+  onValueChange={setCode}
+  onComplete={verify}
+  groupSize={3}
+  aria-invalid={bad}
+/>;
+```
+
+| Prop                     | Type                          | Notes                            |
+| ------------------------ | ----------------------------- | -------------------------------- |
+| `length`                 | `number`                      | default 6                        |
+| `value`, `onValueChange` | `string`                      | controlled                       |
+| `onComplete`             | `(value) => void`             | when the last character arrives  |
+| `mode`                   | `"numeric" \| "alphanumeric"` | alphanumeric upper-cases letters |
+| `groupSize`              | `number`                      | a dash after every n boxes       |
 
 ### `ui/label` — `Label`
 
