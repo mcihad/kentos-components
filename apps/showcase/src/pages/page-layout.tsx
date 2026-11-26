@@ -23,6 +23,8 @@ import {
 } from "@kentos/components/layout/page";
 import { Badge } from "@kentos/components/ui/badge";
 import { Button } from "@kentos/components/ui/button";
+import { Label } from "@kentos/components/ui/label";
+import { Switch } from "@kentos/components/ui/switch";
 import {
   ArchiveIcon,
   BoxesIcon,
@@ -142,7 +144,7 @@ function Pagination() {
   );
 }
 
-function ExamplePage({ mobile }: { mobile?: boolean }) {
+function ExamplePage({ mobile, showFooter = true }: { mobile?: boolean; showFooter?: boolean }) {
   return (
     <PageWrapper
       mobile={mobile}
@@ -153,6 +155,7 @@ function ExamplePage({ mobile }: { mobile?: boolean }) {
       meta={<Badge variant="outline">9</Badge>}
       actions={<ProjectActions />}
       footer={<Pagination />}
+      showFooter={showFooter}
       footerFixed
     >
       <ProjectList />
@@ -182,6 +185,7 @@ const pageCode = `<PageWrapper
     </>
   }
   footer={<Pagination />}
+  showFooter // the footer is hidden by default
   footerFixed
 >
   <ProjectList />
@@ -190,7 +194,7 @@ const pageCode = `<PageWrapper
 const parts: [string, string][] = [
   [
     "PageWrapper",
-    "Sayfa çerçevesi: icon, title, description (slogan), meta, actions, footer, footerFixed, padded. İçerik bütün genişliği doldurur; kenar boşlukları yoğunluk seçimine göre değişir.",
+    "Sayfa çerçevesi: icon, title, description (slogan), meta, breadcrumb, filters, actions, footer + showFooter (varsayılan kapalı), footerFixed, padded. İçerik bütün genişliği doldurur; kenar boşlukları yoğunluk seçimine göre değişir.",
   ],
   [
     "PageHeader / PageBody / PageFooter",
@@ -226,6 +230,7 @@ const parts: [string, string][] = [
 /** The page frame, actions, toolbar, floating button and bottom sheet. */
 export function PageLayoutPage() {
   const [view, setView] = useState("list");
+  const [footer, setFooter] = useState(true);
   return (
     <Page
       title="Sayfa düzeni"
@@ -233,12 +238,16 @@ export function PageLayoutPage() {
     >
       <Demo
         title="Tam sayfa"
-        description="Araç çubuğu, “daha fazla” menüsü ve ana işlem başlıkta; sayfalama sabit alt çubukta. Alt çubuğun yüksekliği kenar çubuğunun alt bölümüyle aynıdır (--footer-h). Ekran daraldığında aynı örnek telefon düzenine geçer."
+        description="Araç çubuğu, “daha fazla” menüsü ve ana işlem başlıkta; sayfalama sabit alt çubukta. Alt çubuk varsayılan olarak kapalıdır, showFooter ile açılır. Alt çubuğun yüksekliği kenar çubuğunun alt bölümüyle aynıdır (--footer-h). Ekran daraldığında aynı örnek telefon düzenine geçer."
         className="block p-0 md:p-0"
         code={pageCode}
       >
+        <div className="flex items-center gap-2.5 border-b px-4 py-3 text-sm">
+          <Switch id="page-footer-toggle" checked={footer} onCheckedChange={setFooter} />
+          <Label htmlFor="page-footer-toggle">Alt çubuğu göster</Label>
+        </div>
         <div className="isolate h-[540px] overflow-y-auto overscroll-contain bg-background">
-          <ExamplePage />
+          <ExamplePage showFooter={footer} />
         </div>
       </Demo>
       <Demo

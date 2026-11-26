@@ -16,8 +16,8 @@ export const PageMetaContext = createContext<PageMeta>({});
 
 /**
  * A showcase page on the kit's PageWrapper: icon, title and description in
- * the header, demos across the full width, previous/next links in the fixed
- * footer (level with the sidebar footer).
+ * the header, demos across the full width. Previous/next links are passed as
+ * the footer, which stays hidden (PageWrapper's default) unless showFooter.
  */
 export function Page({
   title,

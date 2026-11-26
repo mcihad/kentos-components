@@ -1,9 +1,11 @@
-import { ChevronDownIcon, EllipsisIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, EllipsisIcon } from "lucide-react";
 import { Slot } from "radix-ui";
 import {
+  Children,
   type ComponentProps,
   type ComponentType,
   createContext,
+  Fragment,
   type ReactNode,
   useContext,
   useRef,
@@ -82,10 +84,13 @@ export function PageWrapper({
   title,
   description,
   meta,
+  breadcrumb,
   actions,
+  filters,
   actionsLabel = "İşlemler",
   fabIcon = EllipsisIcon,
   footer,
+  showFooter = false,
   footerFixed = false,
   padded = true,
   mobile,
@@ -100,12 +105,18 @@ export function PageWrapper({
   description?: ReactNode;
   /** Small elements beside the title, e.g. a status badge. */
   meta?: ReactNode;
+  /** Where the page sits, above the title: a PageBreadcrumb. */
+  breadcrumb?: ReactNode;
   /** PageAction, PageActionMenu, PageActionToolbar and PageActionSeparator elements. */
   actions?: ReactNode;
+  /** Selects and toggles that filter the page; they stay visible on phones. */
+  filters?: ReactNode;
   /** Name of the floating button and title of the sheet on phones. */
   actionsLabel?: string;
   fabIcon?: Icon;
   footer?: ReactNode;
+  /** The footer is hidden unless this is set, so pages opt in (or toggle it at run time). */
+  showFooter?: boolean;
   /** Keeps the footer at the bottom of the screen while the body scrolls. */
   footerFixed?: boolean;
   /** Gutters around the body; false for edge-to-edge content (maps, tables). */
@@ -115,6 +126,7 @@ export function PageWrapper({
   bodyClassName?: string;
 }) {
   const isMobile = useIsMobile(mobile);
+  const hasFooter = showFooter && footer !== undefined && footer !== null && footer !== false;
   const fab = isMobile && actions !== undefined && actions !== null && actions !== false;
   return (
     <MobileContext.Provider value={isMobile}>
@@ -125,7 +137,15 @@ export function PageWrapper({
         {...props}
       >
         {title ? (
-          <PageHeader icon={icon} title={title} description={description} meta={meta} actions={actions} />
+          <PageHeader
+            icon={icon}
+            title={title}
+            description={description}
+            meta={meta}
+            breadcrumb={breadcrumb}
+            actions={actions}
+            filters={filters}
+          />
         ) : null}
         <PageBody padded={padded} className={cn(fab && "pb-24", bodyClassName)}>
           {children}
@@ -135,12 +155,12 @@ export function PageWrapper({
             label={actionsLabel}
             icon={fabIcon}
             description={title}
-            footerFixed={footerFixed && !!footer}
+            footerFixed={footerFixed && hasFooter}
           >
             {actions}
           </PageFab>
         ) : null}
-        {footer ? <PageFooter fixed={footerFixed}>{footer}</PageFooter> : null}
+        {hasFooter ? <PageFooter fixed={footerFixed}>{footer}</PageFooter> : null}
       </div>
     </MobileContext.Provider>
   );
@@ -152,7 +172,9 @@ export function PageHeader({
   title,
   description,
   meta,
+  breadcrumb,
   actions,
+  filters,
   className,
   children,
 }: {
@@ -160,8 +182,14 @@ export function PageHeader({
   title: string;
   description?: ReactNode;
   meta?: ReactNode;
+  breadcrumb?: ReactNode;
   /** Shown on desktop; PageWrapper moves them into the floating button on phones. */
   actions?: ReactNode;
+  /**
+   * Controls that change what the page shows (project, environment, period):
+   * beside the actions on desktop, a scrolling row under the heading on phones.
+   */
+  filters?: ReactNode;
   className?: string;
   /** Content under the heading, e.g. tabs or filters. */
   children?: ReactNode;
@@ -172,6 +200,7 @@ export function PageHeader({
       data-slot="page-header"
       className={cn("px-4 pt-4 pb-3 md:px-(--gutter) md:pt-5 md:pb-4", className)}
     >
+      {breadcrumb ? <div className="mb-2.5">{breadcrumb}</div> : null}
       <div className="flex items-start gap-3 md:items-center md:gap-4">
         {HeaderIcon ? (
           <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-(--border-brand)/25 bg-brand-subtle text-brand-ink md:size-11">
@@ -189,10 +218,60 @@ export function PageHeader({
             <p className="mt-0.5 text-muted-foreground text-sm leading-snug">{description}</p>
           ) : null}
         </div>
-        {actions && !isMobile ? <PageActions>{actions}</PageActions> : null}
+        {!isMobile && (filters || actions) ? (
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 print:hidden">
+            {filters ? (
+              <div data-slot="page-filters" className="flex flex-wrap items-center gap-2">
+                {filters}
+              </div>
+            ) : null}
+            {actions ? <PageActions>{actions}</PageActions> : null}
+          </div>
+        ) : null}
       </div>
+      {isMobile && filters ? (
+        <div
+          data-slot="page-filters"
+          className="scrollbar-none -mx-4 mt-3 flex items-center gap-2 overflow-x-auto px-4 *:shrink-0 print:hidden"
+        >
+          {filters}
+        </div>
+      ) : null}
       {children ? <div className="mt-3">{children}</div> : null}
     </header>
+  );
+}
+
+/**
+ * Links to the pages above this one, separated by chevrons; the last child
+ * is the current page.
+ *
+ *   <PageBreadcrumb>
+ *     <Link to="/projects">Projeler</Link>
+ *     <span className="font-mono">e-belediye</span>
+ *   </PageBreadcrumb>
+ */
+export function PageBreadcrumb({ className, children }: { className?: string; children: ReactNode }) {
+  const items = Children.toArray(children);
+  return (
+    <nav
+      aria-label="Konum"
+      data-slot="page-breadcrumb"
+      className={cn(
+        "flex min-w-0 items-center gap-1.5 text-muted-foreground text-sm [&_a:hover]:text-foreground [&_a]:-my-2 [&_a]:py-2 [&_a]:transition-colors",
+        className,
+      )}
+    >
+      {items.map((item, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: positions are the identity of breadcrumb steps.
+        <Fragment key={i}>
+          {i > 0 ? <ChevronRightIcon aria-hidden className="size-3.5 shrink-0" /> : null}
+          <span className={cn("min-w-0 truncate", i === items.length - 1 && i > 0 && "text-foreground")}>
+            {item}
+          </span>
+        </Fragment>
+      ))}
+    </nav>
   );
 }
 
@@ -237,7 +316,7 @@ export function PageFooter({
       data-slot="page-footer"
       data-fixed={fixed || undefined}
       className={cn(
-        "mt-auto flex min-h-[calc(var(--footer-h)+env(safe-area-inset-bottom))] shrink-0 items-center justify-between gap-3 border-t bg-(--surface-card) px-4 pb-[env(safe-area-inset-bottom)] md:px-(--gutter)",
+        "mt-auto flex min-h-[calc(var(--footer-h)+env(safe-area-inset-bottom))] shrink-0 items-center justify-between gap-3 border-t bg-(--surface-card) px-4 pb-[env(safe-area-inset-bottom)] md:px-(--gutter) print:hidden",
         fixed && "sticky bottom-0 z-20",
         className,
       )}
@@ -269,7 +348,7 @@ function PageFab({
       ref={strip}
       data-slot="page-fab"
       className={cn(
-        "pointer-events-none sticky z-30 h-0",
+        "pointer-events-none sticky z-30 h-0 print:hidden",
         footerFixed
           ? "bottom-[calc(var(--footer-h)+env(safe-area-inset-bottom))]"
           : "bottom-[env(safe-area-inset-bottom)]",

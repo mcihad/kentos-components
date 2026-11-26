@@ -14,7 +14,9 @@ How KentOS interfaces put the components together. The showcase's
 - **Page:** every content page is a `PageWrapper`: icon, title and a
   one-line tagline in the header, actions described with `PageAction*`
   (primary action rightmost, `variant="default"`), the body across the full
-  width, a fixed `PageFooter` for pagination or save/cancel. Phones get the
+  width, and (opt-in with `showFooter`) a fixed footer for pagination or
+  save/cancel; filters go in `filters`, a trail of parent pages in
+  `breadcrumb`. Phones get the
   actions in a floating button and bottom sheet automatically.
 - **Lists:** a `card` with rows separated by `divide-y`; tables on desktop,
   a list on phones (`md:hidden` / `hidden md:block`). Below `sm`, list cards
