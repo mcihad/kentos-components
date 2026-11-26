@@ -98,6 +98,12 @@
   --chrome-500: #193352;
   --chrome-400: #234062;
 
+  /* The accent's darkest steps. Shadows, overlays, tooltips, headings and the
+     dark-mode chrome derive from them, so an accent recolours the whole
+     interface, not only buttons and the sidebar. Navy needs no class. */
+  --tint-900: var(--navy-900);
+  --tint-950: var(--navy-950);
+
   --violet-50: #f6f4ff;
   --violet-100: #ece8fd;
   --violet-200: #dbd3f7;
@@ -155,11 +161,19 @@
 
   /* Shadows are navy-tinted: grey shadows over the cool greys read dirty.
      Flat, bordered cards are the default; shadow is for what floats. */
-  --shadow-xs: 0 1px 2px rgb(7 40 86 / 0.06);
-  --shadow-sm: 0 1px 2px rgb(7 40 86 / 0.06), 0 1px 3px rgb(7 40 86 / 0.07);
-  --shadow-md: 0 2px 4px rgb(7 40 86 / 0.05), 0 6px 14px rgb(7 40 86 / 0.08);
-  --shadow-lg: 0 2px 6px rgb(7 40 86 / 0.05), 0 10px 28px rgb(7 40 86 / 0.12);
-  --shadow-xl: 0 4px 10px rgb(7 40 86 / 0.06), 0 20px 52px rgb(7 40 86 / 0.16);
+  --shadow-xs: 0 1px 2px color-mix(in oklab, var(--tint-900) 6%, transparent);
+  --shadow-sm:
+    0 1px 2px color-mix(in oklab, var(--tint-900) 6%, transparent),
+    0 1px 3px color-mix(in oklab, var(--tint-900) 7%, transparent);
+  --shadow-md:
+    0 2px 4px color-mix(in oklab, var(--tint-900) 5%, transparent),
+    0 6px 14px color-mix(in oklab, var(--tint-900) 8%, transparent);
+  --shadow-lg:
+    0 2px 6px color-mix(in oklab, var(--tint-900) 5%, transparent),
+    0 10px 28px color-mix(in oklab, var(--tint-900) 12%, transparent);
+  --shadow-xl:
+    0 4px 10px color-mix(in oklab, var(--tint-900) 6%, transparent),
+    0 20px 52px color-mix(in oklab, var(--tint-900) 16%, transparent);
   --shadow-focus: 0 0 0 var(--ring-w) rgb(46 99 176 / 0.32);
   --shadow-focus-danger: 0 0 0 var(--ring-w) rgb(179 54 54 / 0.28);
 
@@ -193,7 +207,7 @@
   --surface-active: var(--neutral-200);
   --surface-selected: var(--navy-50);
   --surface-brand-subtle: var(--navy-50);
-  --surface-overlay: rgb(4 24 56 / 0.55);
+  --surface-overlay: color-mix(in oklab, var(--tint-950) 55%, transparent);
 
   --text-strong: var(--navy-900);
   --text-body: var(--neutral-900);
@@ -209,8 +223,8 @@
   --border-brand: var(--navy-800);
   --focus-ring: var(--navy-600);
   --focus-shadow: var(--shadow-focus);
-  --scrollbar-thumb: rgb(7 40 86 / 0.18);
-  --scrollbar-thumb-hover: rgb(7 40 86 / 0.32);
+  --scrollbar-thumb: color-mix(in oklab, var(--tint-900) 18%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklab, var(--tint-900) 32%, transparent);
   --scrollbar-thumb-inverse: rgb(255 255 255 / 0.22);
 
   /* Primary actions. */
@@ -279,7 +293,7 @@
   --topbar-bg: var(--neutral-0);
   --topbar-border: var(--border-subtle);
 
-  --tooltip-bg: var(--navy-950);
+  --tooltip-bg: var(--tint-950);
   --tooltip-fg: #ffffff;
 
   --tabs-fg-active: var(--navy-800);
@@ -295,7 +309,7 @@
   --surface-active: var(--chrome-600);
   --surface-selected: var(--chrome-600);
   --surface-brand-subtle: var(--chrome-600);
-  --surface-overlay: rgb(3 12 27 / 0.72);
+  --surface-overlay: color-mix(in oklab, var(--chrome-900) 72%, transparent);
 
   --text-strong: #ffffff;
   --text-body: #e5eaf2;
@@ -426,8 +440,8 @@
   --shadow-xs: none;
   --shadow-sm: none;
   --shadow-md: none;
-  --shadow-lg: 0 0 0 1px rgb(7 40 86 / 0.1);
-  --shadow-xl: 0 0 0 1px rgb(7 40 86 / 0.12);
+  --shadow-lg: 0 0 0 1px color-mix(in oklab, var(--tint-900) 10%, transparent);
+  --shadow-xl: 0 0 0 1px color-mix(in oklab, var(--tint-900) 12%, transparent);
   --card-shadow: none;
   --card-border-color: var(--border-default);
 }
@@ -442,6 +456,9 @@
 /* ACCENT: moves the brand colour (primary buttons, tabs, links, focus,
    selection) and the sidebar. Lacivert needs no class. */
 .accent-teal {
+  --tint-900: var(--teal-900);
+  --tint-950: var(--teal-950);
+  --text-strong: color-mix(in oklab, var(--teal-900) 78%, var(--neutral-950));
   --brand-bg: var(--teal-600);
   --brand-bg-hover: var(--teal-500);
   --brand-bg-active: var(--teal-800);
@@ -462,6 +479,9 @@
   --sidebar-accent-fg: var(--teal-300);
 }
 .accent-violet {
+  --tint-900: var(--violet-900);
+  --tint-950: var(--violet-950);
+  --text-strong: color-mix(in oklab, var(--violet-900) 78%, var(--neutral-950));
   --brand-bg: var(--violet-700);
   --brand-bg-hover: var(--violet-600);
   --brand-bg-active: var(--violet-900);
@@ -482,6 +502,9 @@
   --sidebar-accent-fg: var(--violet-300);
 }
 .accent-green {
+  --tint-900: var(--green-900);
+  --tint-950: var(--green-950);
+  --text-strong: color-mix(in oklab, var(--green-900) 78%, var(--neutral-950));
   --brand-bg: var(--green-700);
   --brand-bg-hover: var(--green-600);
   --brand-bg-active: var(--green-900);
@@ -502,6 +525,9 @@
   --sidebar-accent-fg: var(--green-300);
 }
 .accent-amber {
+  --tint-900: var(--amber-900);
+  --tint-950: var(--amber-950);
+  --text-strong: color-mix(in oklab, var(--amber-900) 78%, var(--neutral-950));
   --brand-bg: var(--amber-700);
   --brand-bg-hover: var(--amber-600);
   --brand-bg-active: var(--amber-900);
@@ -522,6 +548,9 @@
   --sidebar-accent-fg: var(--amber-300);
 }
 .accent-neutral {
+  --tint-900: var(--neutral-900);
+  --tint-950: var(--neutral-950);
+  --text-strong: color-mix(in oklab, var(--neutral-900) 78%, var(--neutral-950));
   --brand-bg: var(--neutral-800);
   --brand-bg-hover: var(--neutral-700);
   --brand-bg-active: var(--neutral-950);
@@ -539,6 +568,20 @@
   --sidebar-fg-muted: rgb(244 246 248 / 0.62);
   --sidebar-menu-bg: var(--neutral-700);
   --sidebar-accent-fg: var(--neutral-300);
+}
+
+/* Dark surfaces of the other accents: the navy chrome ramp rebuilt from the
+   accent's darkest steps (same lightness steps), so dark mode takes the
+   accent's hue too. */
+.dark:is(.accent-teal, .accent-violet, .accent-green, .accent-amber, .accent-neutral) {
+  --chrome-900: color-mix(in oklab, var(--tint-950) 50%, #000);
+  --chrome-800: color-mix(in oklab, var(--tint-950) 76%, #000);
+  --chrome-700: color-mix(in oklab, var(--tint-950), #fff 4%);
+  --chrome-600: color-mix(in oklab, var(--tint-900), #fff 5%);
+  --chrome-500: color-mix(in oklab, var(--tint-900), #fff 13%);
+  --chrome-400: color-mix(in oklab, var(--tint-900), #fff 21%);
+  /* The light accent blocks tint headings; dark mode keeps them white. */
+  --text-strong: #ffffff;
 }
 
 /* Dark + accent: two classes beat either one, so the rail sinks into the dark
@@ -683,11 +726,19 @@
   --radius-xl: 14px;
   --radius-2xl: 20px;
 
-  --shadow-xs: 0 1px 2px rgb(7 40 86 / 0.06);
-  --shadow-sm: 0 1px 2px rgb(7 40 86 / 0.06), 0 1px 3px rgb(7 40 86 / 0.07);
-  --shadow-md: 0 2px 4px rgb(7 40 86 / 0.05), 0 6px 14px rgb(7 40 86 / 0.08);
-  --shadow-lg: 0 2px 6px rgb(7 40 86 / 0.05), 0 10px 28px rgb(7 40 86 / 0.12);
-  --shadow-xl: 0 4px 10px rgb(7 40 86 / 0.06), 0 20px 52px rgb(7 40 86 / 0.16);
+  --shadow-xs: 0 1px 2px color-mix(in oklab, var(--tint-900) 6%, transparent);
+  --shadow-sm:
+    0 1px 2px color-mix(in oklab, var(--tint-900) 6%, transparent),
+    0 1px 3px color-mix(in oklab, var(--tint-900) 7%, transparent);
+  --shadow-md:
+    0 2px 4px color-mix(in oklab, var(--tint-900) 5%, transparent),
+    0 6px 14px color-mix(in oklab, var(--tint-900) 8%, transparent);
+  --shadow-lg:
+    0 2px 6px color-mix(in oklab, var(--tint-900) 5%, transparent),
+    0 10px 28px color-mix(in oklab, var(--tint-900) 12%, transparent);
+  --shadow-xl:
+    0 4px 10px color-mix(in oklab, var(--tint-900) 6%, transparent),
+    0 20px 52px color-mix(in oklab, var(--tint-900) 16%, transparent);
 }
 
 @theme inline {

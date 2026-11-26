@@ -7,14 +7,25 @@ properties, in layers:
    (brand), `teal`, `neutral` (cool grey, `0`–`950`), `green`, `amber`, `red`,
    `violet` and steps `50, 100, … 900, 950`. Generated in OKLCH for even
    perceptual steps, written as sRGB hex. **Only token definitions use
-   ramps.** Plus `--chrome-*` (dark-mode navy surfaces) and categorical chart
-   colours `--cat-1` … `--cat-8`.
+   ramps.** Plus `--chrome-*` (dark-mode surfaces), `--tint-900` /
+   `--tint-950` (the accent's darkest steps) and categorical chart colours
+   `--cat-1` … `--cat-8`.
 2. **Semantic tokens** — what components read (below).
 3. **Theme scopes** — classes on `<html>` that redefine semantic tokens:
    `.dark`, `.font-*`, `.density-*`, `.radius-*`, `.accent-*`, `.elevation-*`.
 4. **Bridge** — shadcn names (`--background`, `--primary`, …) mapped to
    semantic tokens, exposed to Tailwind with `@theme inline` as
    `bg-background`, `text-primary`, `border-border`, ….
+
+## Accent tint
+
+The accent (`.accent-*`) sets the brand tokens and `--tint-900` /
+`--tint-950`. Everything that used to be navy-tinted derives from the tint:
+shadows and scrollbars (`color-mix(in oklab, var(--tint-900) N%,
+transparent)`), the dialog overlay, the tooltip, light-mode headings
+(`--text-strong`) and, in dark mode, the whole `--chrome-*` ramp (rebuilt
+from the tint for non-navy accents). Never hardcode a navy rgb value: mix the
+tint instead, or the accent will stop at the sidebar.
 
 ## Semantic colours
 

@@ -2,6 +2,9 @@
 
 Users personalise the interface per browser with six choices. Each choice is
 a scope class on `<html>` that redefines tokens; components need no props.
+The accent recolours the whole interface (brand, headings, shadows,
+overlays, tooltips, sidebar and the dark-mode surfaces); see "Accent tint"
+in [tokens.md](tokens.md).
 
 | Choice      | Values (default first)                                |
 | ----------- | ----------------------------------------------------- |
