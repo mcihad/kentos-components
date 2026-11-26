@@ -203,6 +203,7 @@ function PhoneExample() {
             icon={s.icon}
             label={s.label}
             badge={s.badge}
+            badgeLabel={s.badge ? `${s.badge} açık hata` : undefined}
             active={section === s.id}
             {...link(s.id, setSection)}
           />
@@ -320,7 +321,7 @@ export function ShellPage() {
   <AppShellHeader>…</AppShellHeader>
   <AppShellMain>…</AppShellMain>
   <AppShellBottomNav>
-    <AppShellBottomNavItem icon={BugIcon} label="Hatalar" badge={12} asChild><Link to="/issues" /></AppShellBottomNavItem>
+    <AppShellBottomNavItem icon={BugIcon} label="Hatalar" badge={12} badgeLabel="12 açık hata" asChild><Link to="/issues" /></AppShellBottomNavItem>
     …
   </AppShellBottomNav>
 </AppShell>`}

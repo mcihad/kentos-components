@@ -526,6 +526,7 @@ export function AppShellBottomNavItem({
   icon: Icon,
   label,
   badge,
+  badgeLabel,
   active,
   asChild = false,
   className,
@@ -535,6 +536,8 @@ export function AppShellBottomNavItem({
   icon: ComponentType<{ className?: string }>;
   label: string;
   badge?: number;
+  /** What the count means for screen readers, e.g. "12 açık hata". */
+  badgeLabel?: string;
   active?: boolean;
   asChild?: boolean;
   children?: ReactNode;
@@ -554,13 +557,17 @@ export function AppShellBottomNavItem({
       <span className="relative grid h-7 w-14 place-items-center rounded-full transition-colors duration-(--duration-fast) group-aria-[current=page]/bottom:bg-brand-subtle">
         <Icon className="size-5" />
         {badge ? (
-          <span className="absolute -top-1 right-1.5 inline-flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-(--danger-bg) px-1 font-semibold text-(--danger-fg) text-2xs tabular leading-none">
+          <span
+            aria-hidden={badgeLabel ? true : undefined}
+            className="absolute -top-1 right-1.5 inline-flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-(--danger-bg) px-1 font-semibold text-(--danger-fg) text-2xs tabular leading-none"
+          >
             {badge > 99 ? "99+" : badge}
           </span>
         ) : null}
       </span>
       <Slot.Slottable>{children}</Slot.Slottable>
       <span className="max-w-full truncate">{label}</span>
+      {badge && badgeLabel ? <span className="sr-only">, {badgeLabel}</span> : null}
     </Comp>
   );
 }
