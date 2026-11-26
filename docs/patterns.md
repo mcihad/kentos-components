@@ -11,8 +11,11 @@ How KentOS interfaces put the components together. The showcase's
   `SidebarTrigger`; content on the grey page (`bg-background`) in
   white cards (`card`). Content width up to `--content-max-wide`, gutters
   `--gutter`.
-- **Page header:** title (`text-xl font-semibold`), one-line description in
-  `text-muted-foreground text-sm`, the primary action at the top right.
+- **Page:** every content page is a `PageWrapper`: icon, title and a
+  one-line tagline in the header, actions described with `PageAction*`
+  (primary action rightmost, `variant="default"`), the body across the full
+  width, a fixed `PageFooter` for pagination or save/cancel. Phones get the
+  actions in a floating button and bottom sheet automatically.
 - **Lists:** a `card` with rows separated by `divide-y`; tables on desktop,
   a list on phones (`md:hidden` / `hidden md:block`). Below `sm`, list cards
   run edge to edge (`max-sm:-mx-4 max-sm:rounded-none max-sm:border-x-0`).

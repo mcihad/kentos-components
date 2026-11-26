@@ -24,10 +24,10 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import { UserAvatar } from "../common/user-avatar";
 import { matchesQuery, matchRange } from "../lib/search";
+import { useIsMobile } from "../lib/use-mobile";
 import { cn } from "../lib/utils";
 import { Button } from "../ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
@@ -95,23 +95,6 @@ export function useSidebar(): SidebarState {
 // the flyout menu a collapsible opens on the icon rail.
 type Level = { nested: boolean; parentMatched: boolean; flyout: boolean };
 const LevelContext = createContext<Level>({ nested: false, parentMatched: false, flyout: false });
-
-const mobileQuery = "(max-width: 767px)";
-
-function subscribeMobile(onChange: () => void) {
-  const media = window.matchMedia(mobileQuery);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-
-function useIsMobile(force?: boolean) {
-  const matches = useSyncExternalStore(
-    subscribeMobile,
-    () => window.matchMedia(mobileQuery).matches,
-    () => false,
-  );
-  return force ?? matches;
-}
 
 function readStored(key: string | undefined, fallback: boolean) {
   if (!key) return fallback;
@@ -885,7 +868,11 @@ export function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-footer"
-      className={cn("shrink-0 border-(--sidebar-border) border-t", iconOnly ? "p-2" : "p-2.5", className)}
+      className={cn(
+        "flex min-h-(--footer-h) shrink-0 flex-col justify-center border-(--sidebar-border) border-t",
+        iconOnly ? "px-2" : "px-2.5",
+        className,
+      )}
       {...props}
     />
   );

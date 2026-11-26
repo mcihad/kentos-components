@@ -266,6 +266,89 @@ labels are short nouns ("Hatalar", not "Hataları görüntüle"); add
 `keywords` for synonyms and English terms users may type; at most one level
 of nesting.
 
+## Page frame and actions
+
+### `layout/page`
+
+`PageWrapper`, `PageHeader`, `PageActions`, `PageBody`, `PageFooter`,
+`PageAction`, `PageActionMenu`, `PageActionToolbar`, `PageActionSeparator`,
+`PageActionDesktop`.
+
+The frame of every content page: header (icon tile, title, tagline, meta,
+actions), a body that fills the width with density-aware gutters, and an
+optional footer of height `--footer-h` (the sidebar footer's height) that can
+stay fixed. On phones the actions move into an extended floating button that
+opens an `ActionSheet`; it hides while the page scrolls down.
+
+```tsx
+<PageWrapper
+  icon={BoxesIcon}
+  title="Projeler"
+  description="Hata ve olay toplayan uygulamalarınız"
+  meta={<Badge variant="outline">9</Badge>}
+  actions={
+    <>
+      <PageActionToolbar label="Liste">
+        <PageAction icon={RefreshCwIcon} label="Yenile" onClick={refetch} />
+        <PageActionSeparator />
+        <PageAction
+          icon={DownloadIcon}
+          label="Dışa aktar"
+          description="CSV dosyası olarak indir"
+          onClick={exportCsv}
+        />
+      </PageActionToolbar>
+      <PageActionMenu icon={EllipsisIcon} label="Diğer işlemler" hideLabel>
+        <PageAction icon={Trash2Icon} label="Seçilenleri sil" variant="destructive" onClick={remove} />
+      </PageActionMenu>
+      <PageAction icon={PlusIcon} label="Proje oluştur" variant="default" onClick={create} />
+    </>
+  }
+  footer={<Pagination />}
+  footerFixed
+>
+  …
+</PageWrapper>;
+```
+
+| Part                     | Props and behaviour                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PageWrapper`            | `icon`, `title`, `description`, `meta`, `actions`, `actionsLabel` (FAB and sheet title, default "İşlemler"), `fabIcon`, `footer`, `footerFixed`, `padded` (false for edge-to-edge content), `mobile` (force layout), `bodyClassName`. Minimum height: viewport minus `--topbar-h`; pass `className="min-h-full"` inside a fixed-height preview. Without `title` no header is drawn. |
+| `PageHeader`             | `icon`, `title`, `description`, `meta`, `actions` (desktop only), `children` (tabs or filters under the heading).                                                                                                                                                                                                                                                                   |
+| `PageBody`, `PageFooter` | Body with `padded`; footer with `fixed` (sticky to the bottom of the scroll container, so it also works in framed previews). Footer lays out its children `justify-between`.                                                                                                                                                                                                        |
+| `PageAction`             | `icon`, `label`, `description` (sheet only), `variant` (`outline` default; `default` for the page's one primary action, which also goes first in the sheet; `destructive`), `hideLabel` (icon button with tooltip), `asChild` (links), `disabled`, `onClick`.                                                                                                                       |
+| `PageActionMenu`         | `icon`, `label`, `variant`, `hideLabel`, `align`; children are `PageAction`s. Dropdown on desktop, titled group in the sheet.                                                                                                                                                                                                                                                       |
+| `PageActionToolbar`      | `label`; children are `PageAction`s (icon buttons) or toolbar controls. Joined toolbar on desktop, titled group in the sheet.                                                                                                                                                                                                                                                       |
+| `PageActionSeparator`    | Divider for the surface it is on.                                                                                                                                                                                                                                                                                                                                                   |
+| `PageActionDesktop`      | Children appear in the header only (e.g. a search field).                                                                                                                                                                                                                                                                                                                           |
+
+Rules: one `variant="default"` action per page; give actions that end up in
+the sheet a `description` when the label alone is ambiguous; keep the
+footer to one row (pagination, totals, save/cancel).
+
+### `common/action-sheet` — `ActionSheet`, `ActionSheetTrigger`, `ActionSheetContent`, `ActionSheetItem`, `ActionSheetGroup`, `ActionSheetSeparator`, `ActionSheetClose`
+
+Bottom sheet on Radix Dialog. `ActionSheetContent` takes `title` (required),
+`description`, `hideTitle`, `cancelLabel` ("Vazgeç"), `showCancel`.
+`ActionSheetItem` takes `icon`, `label`, `description`, `variant`
+(`default | primary | destructive`), `keepOpen`, `asChild`; choosing an item
+closes the sheet. Drag the handle down to dismiss (over 28% of the height or
+a flick); a short drag springs back. Only `transform` and `opacity` animate
+(keyframes `kentos-sheet-*` in `tokens.css`, timing `--duration-sheet`,
+`--ease-sheet`); items rise in one after another.
+
+### `common/fab` — `Fab`, `useHideOnScroll`
+
+`Fab` props: `icon` (default plus), `label`, `extended`, `hidden`. It has no
+position; place it with `className`. `useHideOnScroll(ref)` returns true
+while the nearest scrolling ancestor (or the window) scrolls down.
+
+### `common/toolbar` — `Toolbar`, `ToolbarButton`, `ToolbarToggleGroup`, `ToolbarToggleItem`, `ToolbarSeparator`
+
+Radix Toolbar (one tab stop, arrow keys inside). `ToolbarButton` and
+`ToolbarToggleItem` take `icon`, `label`, `showLabel`; with an icon and no
+`showLabel` the label moves into a tooltip. Height matches small buttons.
+
 ## Navigation and layout
 
 ### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `tabsListVariants`

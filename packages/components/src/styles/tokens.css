@@ -145,6 +145,8 @@
   --gutter: 24px;
   --card-p: 20px;
   --row-h: 44px;
+  /* Shared by the sidebar footer and page footers so their tops line up. */
+  --footer-h: 64px;
 
   --border-w: 1px;
   --border-w-focus: 2px;
@@ -167,12 +169,17 @@
   --duration-panel: 320ms;
   --ease-out: cubic-bezier(0.16, 0.84, 0.44, 1);
   --ease-entrance: cubic-bezier(0.05, 0.7, 0.1, 1);
+  /* Bottom sheets: a long, decelerating glide like native sheets. */
+  --duration-sheet: 460ms;
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
 }
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-panel: 0ms;
+    /* Not zero: the sheet waits for animationend before unmounting. */
+    --duration-sheet: 1ms;
   }
 }
 
@@ -371,6 +378,7 @@
   --row-h: 38px;
   --gutter: 16px;
   --card-p: 16px;
+  --footer-h: 56px;
 }
 .density-roomy {
   --control-h-sm: 34px;
@@ -384,6 +392,7 @@
   --row-h: 52px;
   --gutter: 32px;
   --card-p: 28px;
+  --footer-h: 72px;
 }
 
 /* RADIUS: moderate (6px controls, 10px cards) needs no class. */
@@ -833,5 +842,120 @@
   /* The end of a horizontally scrolling strip fades out, showing there is more. */
   .fade-end {
     mask-image: linear-gradient(to right, black calc(100% - 2rem), transparent);
+  }
+}
+
+/* Bottom sheet (common/action-sheet) and floating action button motion.
+   Only transform and opacity animate, so the compositor runs them on the GPU
+   without layout or paint. While dragging, the sheet writes --sheet-drag and
+   --sheet-backdrop; the closing animation starts from those values, so a
+   released sheet glides on instead of jumping back. */
+@keyframes kentos-sheet-in {
+  from {
+    transform: translate3d(0, calc(100% + 2rem), 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes kentos-sheet-out {
+  from {
+    transform: translate3d(0, var(--sheet-drag, 0px), 0);
+  }
+  to {
+    transform: translate3d(0, calc(100% + 2rem), 0);
+  }
+}
+@keyframes kentos-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes kentos-backdrop-out {
+  from {
+    opacity: var(--sheet-backdrop, 1);
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes kentos-rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes kentos-pop-in {
+  from {
+    opacity: 0;
+    transform: scale3d(0.6, 0.6, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@layer components {
+  .kentos-sheet {
+    will-change: transform;
+    backface-visibility: hidden;
+    contain: layout paint style;
+  }
+  .kentos-sheet[data-state="open"] {
+    animation: kentos-sheet-in var(--duration-sheet) var(--ease-sheet) both;
+  }
+  .kentos-sheet[data-state="closed"] {
+    animation: kentos-sheet-out calc(var(--duration-sheet) * 0.7) var(--ease-sheet) both;
+  }
+  .kentos-sheet[data-dragging]:not([data-state="closed"]) {
+    animation: none;
+    transform: translate3d(0, var(--sheet-drag, 0px), 0);
+  }
+  .kentos-sheet[data-settling]:not([data-state="closed"]) {
+    animation: none;
+    transform: translate3d(0, 0, 0);
+    transition: transform calc(var(--duration-sheet) * 0.8) var(--ease-sheet);
+  }
+  .kentos-backdrop {
+    will-change: opacity;
+  }
+  .kentos-backdrop[data-state="open"] {
+    animation: kentos-backdrop-in var(--duration-sheet) var(--ease-sheet) both;
+  }
+  .kentos-backdrop[data-state="closed"] {
+    animation: kentos-backdrop-out calc(var(--duration-sheet) * 0.7) var(--ease-sheet) both;
+  }
+  .kentos-backdrop[data-dragging]:not([data-state="closed"]) {
+    animation: none;
+    opacity: var(--sheet-backdrop, 1);
+  }
+  /* Items rise in one after another once the sheet is under way. */
+  .kentos-sheet[data-state="open"] .kentos-sheet-item {
+    animation: kentos-rise-in var(--duration-sheet) var(--ease-sheet) both;
+    animation-delay: calc(60ms + var(--i, 0) * 28ms);
+  }
+  .kentos-fab {
+    will-change: transform, opacity;
+    transition:
+      transform var(--duration-panel) var(--ease-sheet),
+      opacity var(--duration-panel) var(--ease-sheet),
+      box-shadow var(--duration-fast) var(--ease-out);
+    animation: kentos-pop-in var(--duration-sheet) var(--ease-sheet) backwards;
+  }
+  .kentos-fab:active {
+    transform: scale3d(0.92, 0.92, 1);
+  }
+  .kentos-fab[data-hidden] {
+    opacity: 0;
+    transform: translate3d(0, calc(100% + 24px), 0);
+    pointer-events: none;
   }
 }

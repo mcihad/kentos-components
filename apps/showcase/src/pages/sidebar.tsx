@@ -58,7 +58,7 @@ function ExampleApp({ mobile, defaultCollapsed }: { mobile?: boolean; defaultCol
       mobile={mobile}
       defaultCollapsed={defaultCollapsed}
       toggleShortcut={null}
-      className="h-[560px] min-h-0 overflow-hidden"
+      className="isolate h-[560px] min-h-0 overflow-hidden"
     >
       <Sidebar label="Örnek menü" className="h-full">
         <SidebarHeader>
@@ -252,7 +252,7 @@ export function SidebarPage() {
       <Demo
         title="Tam menü"
         description="Organizasyon değiştirici, arama, gruplar, katlanan grup, alt öğeli Ayarlar ve kullanıcı menüsü. Ekran daraldığında aynı örnek çekmece olarak çalışır."
-        className="block p-0"
+        className="block p-0 md:p-0"
         code={fullCode}
       >
         <ExampleApp />
@@ -260,7 +260,7 @@ export function SidebarPage() {
       <Demo
         title="Daraltılmış ray"
         description="Yalnızca simgeler görünür; adlar ipucunda, rozetler nokta olarak çıkar. Alt öğeli öğeler sağa açılan bir menüdür, arama düğmesi menüyü genişletip kutuya odaklanır."
-        className="block p-0"
+        className="block p-0 md:p-0"
         code={`<SidebarProvider defaultCollapsed>…</SidebarProvider>
 
 // Kontrollü kullanım
@@ -271,7 +271,7 @@ export function SidebarPage() {
       <Demo
         title="Telefon görünümü"
         description="md kırılma noktasının altında menü, üst çubuktaki düğmeyle açılan bir çekmecedir. Bir sayfa seçildiğinde kendiliğinden kapanır; çentikli ekranlarda güvenli alan boşlukları korunur. Bu örnek, geniş ekranda da çekmeceyi göstermek için mobile ile zorlanmıştır."
-        className="block p-0"
+        className="block p-0 md:p-0"
         code={`// Normalde ekran genişliğine göre kendiliğinden seçilir.
 <SidebarProvider mobile>…</SidebarProvider>`}
       >

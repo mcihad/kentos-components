@@ -1,26 +1,68 @@
 import { CopyButton } from "@kentos/components/common/copy-button";
+import { PageWrapper } from "@kentos/components/layout/page";
 import { cn } from "@kentos/components/lib/utils";
-import { ChevronDownIcon } from "lucide-react";
-import { type ReactNode, useState } from "react";
+import { Button } from "@kentos/components/ui/button";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon } from "lucide-react";
+import { type ComponentType, createContext, type ReactNode, useContext, useState } from "react";
 
-/** A showcase page: a title, what the components are for, then demos. */
+/** What the shell knows about the current page: its icon and neighbours. */
+export type PageMeta = {
+  icon?: ComponentType<{ className?: string }>;
+  prev?: { href: string; label: string };
+  next?: { href: string; label: string };
+};
+
+export const PageMetaContext = createContext<PageMeta>({});
+
+/**
+ * A showcase page on the kit's PageWrapper: icon, title and description in
+ * the header, demos across the full width, previous/next links in the fixed
+ * footer (level with the sidebar footer).
+ */
 export function Page({
   title,
   description,
+  actions,
   children,
 }: {
   title: string;
   description: ReactNode;
+  actions?: ReactNode;
   children: ReactNode;
 }) {
+  const { icon, prev, next } = useContext(PageMetaContext);
   return (
-    <article className="mx-auto grid w-full max-w-5xl gap-10 px-4 py-8 sm:px-8">
-      <header className="grid gap-2">
-        <h1 className="font-semibold text-2xl tracking-(--tracking-tight)">{title}</h1>
-        <div className="max-w-3xl text-muted-foreground leading-relaxed">{description}</div>
-      </header>
-      {children}
-    </article>
+    <PageWrapper
+      icon={icon}
+      title={title}
+      description={description}
+      actions={actions}
+      footerFixed
+      footer={
+        <>
+          {prev ? (
+            <Button variant="ghost" size="sm" asChild className="min-w-0">
+              <a href={prev.href}>
+                <ArrowLeftIcon />
+                <span className="truncate">{prev.label}</span>
+              </a>
+            </Button>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <Button variant="ghost" size="sm" asChild className="min-w-0">
+              <a href={next.href}>
+                <span className="truncate">{next.label}</span>
+                <ArrowRightIcon />
+              </a>
+            </Button>
+          ) : null}
+        </>
+      }
+    >
+      <div className="grid gap-8 pt-2 md:gap-10">{children}</div>
+    </PageWrapper>
   );
 }
 
@@ -49,7 +91,7 @@ export function Demo({
         ) : null}
       </div>
       <div className="card overflow-hidden">
-        <div className={cn("flex flex-wrap items-center gap-3 p-6", className)}>{children}</div>
+        <div className={cn("flex flex-wrap items-center gap-3 p-4 md:p-6", className)}>{children}</div>
         <div className="border-t">
           <button
             type="button"

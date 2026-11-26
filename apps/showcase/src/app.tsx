@@ -29,11 +29,13 @@ import {
   MousePointerClickIcon,
   PaletteIcon,
   PanelLeftIcon,
+  PanelsTopLeftIcon,
   SunIcon,
   SwatchBookIcon,
   TableIcon,
 } from "lucide-react";
 import { type ComponentType, useEffect, useState } from "react";
+import { type PageMeta, PageMetaContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
 import { DataPage } from "./pages/data";
 import { FeedbackPage } from "./pages/feedback";
@@ -41,6 +43,7 @@ import { FormsPage } from "./pages/forms";
 import { NavigationPage } from "./pages/navigation";
 import { OverlaysPage } from "./pages/overlays";
 import { OverviewPage } from "./pages/overview";
+import { PageLayoutPage } from "./pages/page-layout";
 import { PatternsPage } from "./pages/patterns";
 import { SidebarPage } from "./pages/sidebar";
 import { ThemingPage } from "./pages/theming";
@@ -122,6 +125,14 @@ const pages: ShowcasePage[] = [
     component: SidebarPage,
   },
   {
+    id: "page",
+    label: "Sayfa düzeni",
+    group: "Bileşenler",
+    icon: PanelsTopLeftIcon,
+    keywords: ["PageWrapper", "PageAction", "Toolbar", "ActionSheet", "Fab", "footer", "alt menü"],
+    component: PageLayoutPage,
+  },
+  {
     id: "navigation",
     label: "Gezinme ve düzen",
     group: "Bileşenler",
@@ -164,8 +175,18 @@ export function App() {
     window.addEventListener("hashchange", on);
     return () => window.removeEventListener("hashchange", on);
   }, []);
-  const page = pages.find((p) => p.id === active) ?? pages[0];
+  const index = Math.max(
+    0,
+    pages.findIndex((p) => p.id === active),
+  );
+  const page = pages[index];
   const Current = page?.component ?? OverviewPage;
+  const neighbour = (p: ShowcasePage | undefined) => (p ? { href: `#/${p.id}`, label: p.label } : undefined);
+  const meta: PageMeta = {
+    icon: page?.icon,
+    prev: neighbour(pages[index - 1]),
+    next: neighbour(pages[index + 1]),
+  };
   const groups = [...new Set(pages.map((p) => p.group))];
   return (
     <TooltipProvider>
@@ -211,7 +232,13 @@ export function App() {
         <SidebarInset>
           <header className="sticky top-0 z-30 flex h-(--topbar-h) items-center gap-2 border-(--topbar-border) border-b bg-(--topbar-bg) px-2 md:px-3">
             <SidebarTrigger />
-            <span className="truncate font-medium text-sm">{page?.label}</span>
+            <span className="flex min-w-0 items-center gap-1.5 text-sm">
+              <span className="hidden text-muted-foreground sm:inline">{page?.group}</span>
+              <span aria-hidden className="hidden text-subtle sm:inline">
+                /
+              </span>
+              <span className="truncate font-medium">{page?.label}</span>
+            </span>
             <div className="ml-auto flex items-center gap-1">
               <Button
                 variant="ghost"
@@ -228,7 +255,9 @@ export function App() {
             </div>
           </header>
           <main className="min-w-0 flex-1">
-            <Current />
+            <PageMetaContext.Provider value={meta}>
+              <Current key={page?.id} />
+            </PageMetaContext.Provider>
           </main>
         </SidebarInset>
       </SidebarProvider>
