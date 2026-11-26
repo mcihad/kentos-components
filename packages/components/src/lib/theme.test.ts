@@ -11,12 +11,20 @@ describe("classesOf", () => {
       classesOf({
         mode: "dark",
         font: "inter",
+        mono: "fira",
         density: "compact",
         radius: "soft",
         accent: "teal",
         elevation: "raised",
       }),
-    ).toEqual(["font-inter", "density-compact", "radius-soft", "accent-teal", "elevation-raised"]);
+    ).toEqual([
+      "font-inter",
+      "mono-fira",
+      "density-compact",
+      "radius-soft",
+      "accent-teal",
+      "elevation-raised",
+    ]);
   });
 
   it("leaves the light/dark mode to the dark class", () => {

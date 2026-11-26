@@ -82,8 +82,9 @@ Use them through Tailwind's arbitrary-value syntax: `h-(--control-h-md)`,
 
 - Families: `--font-family-sans` (`--font-stack-jakarta` by default;
   `--font-stack-inter` / `--font-stack-plex` via `.font-inter` /
-  `.font-plex`) and `--font-family-mono` (JetBrains Mono) → `font-sans`,
-  `font-mono`. `fonts.css` imports Fontsource's variable-font stylesheets,
+  `.font-plex`) and `--font-family-mono` (`--font-stack-mono-jetbrains` by
+  default; Fira Code, IBM Plex Mono or the system's monospace via `.mono-fira`
+  / `.mono-plex` / `.mono-system`) → `font-sans`, `font-mono`. `fonts.css` imports Fontsource's variable-font stylesheets,
   whose family names end in "Variable"; refer to the stacks, never to a
   family name, so a renamed or self-hosted font changes in one place. Monospace is for code and
   identifiers only; ligatures are off for code.
@@ -113,6 +114,7 @@ Use them through Tailwind's arbitrary-value syntax: `h-(--control-h-md)`,
 | -------------------------------------------------------------------------------- | --------------------------------------- |
 | `dark`                                                                           | dark mode (layered navy surfaces)       |
 | `font-inter`, `font-plex`                                                        | interface typeface (default Jakarta)    |
+| `mono-fira`, `mono-plex`, `mono-system`                                          | code typeface (default JetBrains Mono)  |
 | `density-compact`, `density-roomy`                                               | control heights, row heights, gutters   |
 | `radius-square`, `radius-tight`, `radius-soft`                                   | corner radii (default moderate)         |
 | `accent-teal`, `accent-violet`, `accent-green`, `accent-amber`, `accent-neutral` | brand colour (default navy)             |

@@ -3,7 +3,7 @@ import { type BarLayer, type Point, StackedBars } from "@kentos/components/chart
 import { CopyButton, SecretValue } from "@kentos/components/common/copy-button";
 import { StatStrip } from "@kentos/components/common/stat-strip";
 import { tdClass, thClass, theadClass, trClass } from "@kentos/components/common/table";
-import { UserAvatar } from "@kentos/components/common/user-avatar";
+import { type AvatarPerson, UserAvatar, UserAvatarGroup } from "@kentos/components/common/user-avatar";
 import {
   formatBytes,
   formatCompact,
@@ -33,6 +33,15 @@ const rows = [
   { id: "KALEM-1A", title: "NullReferenceException", events: 1204, users: 88, status: "Açık" },
   { id: "KALEM-2C", title: "TimeoutException: ödeme sağlayıcısı", events: 342, users: 51, status: "Açık" },
   { id: "KALEM-3F", title: "Rapor oluşturulamadı", events: 12, users: 3, status: "Çözüldü" },
+];
+
+const people: AvatarPerson[] = [
+  { name: "Ayşe Yılmaz", status: "online" },
+  { name: "Mehmet Kaya", status: "away" },
+  { name: "Zeynep Demir", status: "busy" },
+  { name: "Can Öztürk", status: "offline" },
+  { name: "Elif Şahin" },
+  { name: "Burak Çelik" },
 ];
 
 /** Numbers, tables, charts, avatars and copyable values. */
@@ -115,15 +124,35 @@ export function DataPage() {
       </Demo>
       <Demo
         title="Avatar"
-        code={`<UserAvatar name="Ayşe Yılmaz" className="size-8" />
-<UserAvatar name="Mehmet Kaya" src="/avatar.png" />`}
+        description="Resim yoksa adın baş harfleri, ada göre hep aynı renkte görünür. Altı boyut; kişiler yuvarlak, kurumlar köşelidir. Durum noktası çevrimiçi, uzakta, meşgul ve çevrimdışını gösterir; grup fazlasını +N ile toplar ve adları ipucunda verir."
+        className="grid w-full gap-6"
+        code={`<UserAvatar name="Ayşe Yılmaz" size="lg" status="online" tooltip />
+<UserAvatar name="Nilüfer Belediyesi" shape="square" size="lg" />
+<UserAvatarGroup label="Atananlar" max={4} people={[{ name: "Ayşe Yılmaz" }, { name: "Mehmet Kaya", status: "away" }, …]} />`}
       >
-        <UserAvatar name="Ayşe Yılmaz" className="size-8" />
-        <UserAvatar name="Mehmet Kaya" className="size-8" />
-        <UserAvatar name="İzci" />
-        <Avatar>
-          <AvatarFallback>KS</AvatarFallback>
-        </Avatar>
+        <div className="flex flex-wrap items-end gap-3">
+          {(["xs", "sm", "default", "lg", "xl", "2xl"] as const).map((size) => (
+            <UserAvatar key={size} name="Ayşe Yılmaz" size={size} tooltip />
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          {people.map((p) => (
+            <UserAvatar key={p.name} name={p.name} status={p.status} size="lg" tooltip />
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <UserAvatar name="Nilüfer Belediyesi" shape="square" size="lg" tooltip />
+          <UserAvatar name="Bursa Büyükşehir" shape="square" size="lg" tooltip />
+          <UserAvatar name="Kent kart" shape="square" size="xl" tooltip />
+          <Avatar shape="square" size="xl">
+            <AvatarFallback>KS</AvatarFallback>
+          </Avatar>
+        </div>
+        <div className="flex flex-wrap items-center gap-6">
+          <UserAvatarGroup label="Atananlar" people={people} max={4} />
+          <UserAvatarGroup label="Ekip" people={people.slice(0, 3)} size="sm" />
+          <UserAvatarGroup label="Takip edenler" people={[...people, ...people]} max={6} size="lg" />
+        </div>
       </Demo>
       <Demo
         title="Kopyalanabilir değerler"

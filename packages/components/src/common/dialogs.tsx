@@ -209,6 +209,7 @@ export function ConfirmDialog({
   cancelLabel = "Vazgeç",
   confirmText,
   confirmTextLabel,
+  confirmDisabled = false,
   onConfirm,
   onCancel,
   errorFallback = "İşlem tamamlanamadı. Yeniden deneyin.",
@@ -226,6 +227,8 @@ export function ConfirmDialog({
   /** Text the user must type to enable the confirm button. */
   confirmText?: string;
   confirmTextLabel?: ReactNode;
+  /** Keeps the confirm button off, e.g. until an acknowledgement in children is ticked. */
+  confirmDisabled?: boolean;
   onConfirm: () => unknown | Promise<unknown>;
   onCancel?: () => void;
   errorFallback?: string;
@@ -243,7 +246,10 @@ export function ConfirmDialog({
     }
   }, [open]);
 
-  const blocked = confirmText !== undefined && typed.trim() !== confirmText;
+  // Case does not matter: e-mail addresses and slugs are typed as people remember them.
+  const blocked =
+    confirmDisabled ||
+    (confirmText !== undefined && typed.trim().toLowerCase() !== confirmText.toLowerCase());
   const run = async () => {
     if (blocked || pending) return;
     setError(undefined);

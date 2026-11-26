@@ -1,7 +1,8 @@
 /*
  * Typefaces of the KentOS design system: Plus Jakarta Sans (default), Inter
  * and IBM Plex Sans for the interface, switched with the .font-* scopes in
- * tokens.css; JetBrains Mono for code, identifiers and figures.
+ * tokens.css; JetBrains Mono (default), Fira Code or IBM Plex Mono for
+ * code, identifiers and figures, switched with the .mono-* scopes.
  *
  * Fontsource's own stylesheets are imported (not copied): their url()s are
  * relative to the package, so they resolve wherever the package manager put
@@ -13,3 +14,7 @@
 @import "@fontsource-variable/inter/wght.css";
 @import "@fontsource-variable/ibm-plex-sans/wght.css";
 @import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "@fontsource-variable/fira-code/wght.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";

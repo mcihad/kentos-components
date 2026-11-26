@@ -135,7 +135,11 @@
   --font-stack-inter: "Inter Variable", "Inter";
   --font-stack-plex: "IBM Plex Sans Variable", "IBM Plex Sans";
   --font-family-sans: var(--font-stack-jakarta);
-  --font-family-mono: "JetBrains Mono Variable", "JetBrains Mono";
+  --font-stack-mono-jetbrains: "JetBrains Mono Variable", "JetBrains Mono";
+  --font-stack-mono-fira: "Fira Code Variable", "Fira Code";
+  --font-stack-mono-plex: "IBM Plex Mono";
+  --font-stack-mono-system: ui-monospace, "SF Mono", "SFMono-Regular", "Cascadia Mono", Consolas, Menlo;
+  --font-family-mono: var(--font-stack-mono-jetbrains);
 
   --tracking-tight: -0.015em;
   --tracking-caps: 0.08em;
@@ -373,7 +377,7 @@
 }
 
 /* 3. Theme scopes. Each is one class on <html>; they compose.
-   FONT: the interface family; code always uses JetBrains Mono. */
+   FONT: the interface family. */
 .font-jakarta {
   --font-family-sans: var(--font-stack-jakarta);
 }
@@ -382,6 +386,16 @@
 }
 .font-plex {
   --font-family-sans: var(--font-stack-plex);
+}
+/* MONO: the code and identifier family; JetBrains Mono needs no class. */
+.mono-fira {
+  --font-family-mono: var(--font-stack-mono-fira);
+}
+.mono-plex {
+  --font-family-mono: var(--font-stack-mono-plex);
+}
+.mono-system {
+  --font-family-mono: var(--font-stack-mono-system);
 }
 
 /* DENSITY: control heights, row height, gutters. Standard needs no class. */

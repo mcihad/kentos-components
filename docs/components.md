@@ -142,9 +142,26 @@ destructive alerts use `role="alert"`, the others `role="status"`.
 Use an alert for a state the user should see while working on the page;
 use a toast for the result of an action, a dialog when an answer is needed.
 
-### `ui/badge` — `Badge`, `badgeVariants`
+### `ui/badge` — `Badge`, `BadgeAnchor`, `badgeVariants`, `formatCount`
 
-`variant`: `default | secondary | destructive | outline | ghost | link`.
+Statuses, counts and tags. `variant`: solid `default` (brand) and
+`destructive`; soft tones `secondary`, `neutral`, `brand`, `info`, `success`,
+`warning`, `danger` (status tokens, readable in every theme); quiet
+`outline`, `ghost`, `link`. `size`: `sm | md | lg`; `shape`: `pill | square`
+(versions, identifiers). `dot` leads with a dot (`pulse` for live states),
+`icon` with an icon, `onRemove` adds a remove button (filter chips, tags).
+
+```tsx
+<Badge variant="success" dot>Çözüldü</Badge>
+<Badge variant="danger" dot pulse>Canlı</Badge>
+<Badge variant="secondary" onRemove={() => remove(tag)}>{tag}</Badge>
+<BadgeAnchor count={unread} label={`${unread} okunmamış bildirim`}>
+  <Button variant="ghost" size="icon" aria-label="Bildirimler"><BellIcon /></Button>
+</BadgeAnchor>
+```
+
+`BadgeAnchor` puts a count (`max` 99 → "99+", hidden at zero unless
+`showZero`) or a `dot` on its child's corner; give it a `label`.
 
 ### `ui/skeleton` — `Skeleton`
 
@@ -564,15 +581,28 @@ the axis and the hover label). Colours are CSS colours, preferably tokens.
 `points: Point[]`, optional `label` (accessible text; default "Toplam N"),
 `height`. Inherits `currentColor` (`className="text-primary"`).
 
-### `ui/avatar` — `Avatar`, `AvatarImage`, `AvatarFallback`, `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount`
+### `ui/avatar` — `Avatar`, `AvatarImage`, `AvatarFallback`, `AvatarStatusDot`, `AvatarBadge`, `AvatarGroup`, `AvatarGroupCount`
 
-### `common/user-avatar` — `UserAvatar`
+`Avatar` `size`: `xs | sm | default | lg | xl | 2xl` (20–64px); `shape`:
+`circle` (people) or `square` (organizations, projects). `AvatarStatusDot`
+`status`: `online | away | busy | offline`. `AvatarGroup` overlaps its
+children with a ring in the surface colour; `AvatarGroupCount` closes it
+with "+N".
+
+### `common/user-avatar` — `UserAvatar`, `UserAvatarGroup`, `avatarTone`, type `AvatarPerson`
 
 ```tsx
-<UserAvatar name="Ayşe Yılmaz" src={user.avatarUrl} className="size-8" />;
+<UserAvatar name="Ayşe Yılmaz" src={user.avatarUrl} size="lg" status="online" tooltip />
+<UserAvatar name="Nilüfer Belediyesi" shape="square" />
+<UserAvatarGroup label="Atananlar" people={assignees} max={4} />
 ```
 
-Initials from the name when there is no picture.
+Without a picture the initials (one letter at `xs`) appear on a soft fill
+in one of the eight categorical colours, chosen from the name
+(`avatarTone`), so a person keeps their colour everywhere. `tooltip` shows
+the name and status on hover. `UserAvatarGroup` shows `max` avatars, folds
+the rest into "+N" with their names in its tooltip, and leaves status dots
+out (they would be covered).
 
 ### `common/copy-button` — `CopyButton`, `SecretValue`, `copyText`
 

@@ -26,6 +26,7 @@
     mode === "dark" || (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   const scopes = [
     ["font", pick(a.font, ["jakarta", "inter", "plex"], "jakarta"), "jakarta"],
+    ["mono", pick(a.mono, ["jetbrains", "fira", "plex", "system"], "jetbrains"), "jetbrains"],
     ["density", pick(a.density, ["compact", "standard", "roomy"], "standard"), "standard"],
     ["radius", pick(a.radius, ["square", "tight", "moderate", "soft"], "moderate"), "moderate"],
     ["accent", pick(a.accent, ["navy", "teal", "violet", "green", "amber", "neutral"], "navy"), "navy"],

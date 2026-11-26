@@ -1,6 +1,6 @@
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { type Accent, type FontChoice, useAppearance } from "../lib/theme";
+import { type Accent, type FontChoice, type MonoChoice, useAppearance } from "../lib/theme";
 import { cn } from "../lib/utils";
 import { Segmented } from "./segmented";
 
@@ -8,6 +8,13 @@ const fonts: { value: FontChoice; label: string; hint: string; family: string }[
   { value: "jakarta", label: "Plus Jakarta Sans", hint: "Varsayılan", family: "var(--font-stack-jakarta)" },
   { value: "inter", label: "Inter", hint: "Yoğun tablolar için", family: "var(--font-stack-inter)" },
   { value: "plex", label: "IBM Plex Sans", hint: "Resmî, belge gibi", family: "var(--font-stack-plex)" },
+];
+
+const monos: { value: MonoChoice; label: string; family: string }[] = [
+  { value: "jetbrains", label: "JetBrains Mono", family: "var(--font-stack-mono-jetbrains)" },
+  { value: "fira", label: "Fira Code", family: "var(--font-stack-mono-fira)" },
+  { value: "plex", label: "IBM Plex Mono", family: "var(--font-stack-mono-plex)" },
+  { value: "system", label: "Sistem", family: "var(--font-stack-mono-system)" },
 ];
 
 const accents: { value: Accent; label: string; color: string }[] = [
@@ -36,7 +43,8 @@ function Group({ title, children }: { title: string; children: ReactNode }) {
 
 /**
  * The theme editor's controls: every choice switches one scope class of the
- * KentOS design system on <html> (mode, typeface, density, corners, accent,
+ * KentOS design system on <html> (mode, typeface, code typeface, density,
+ * corners, accent,
  * cards) and is kept in this browser. Put it in a sheet, a dialog or a page.
  */
 export function AppearancePanel({ className }: { className?: string }) {
@@ -93,6 +101,41 @@ export function AppearancePanel({ className }: { className?: string }) {
                 >
                   Ağ
                 </span>
+              </label>
+            );
+          })}
+        </fieldset>
+      </Group>
+      <Group title="Kod yazı tipi">
+        <fieldset className="grid min-w-0 grid-cols-2 gap-1.5">
+          <legend className="sr-only">Kod yazı tipi</legend>
+          {monos.map((m) => {
+            const on = a.mono === m.value;
+            return (
+              <label
+                key={m.value}
+                className={cn(
+                  choiceClass,
+                  "grid gap-1 px-3 py-2.5",
+                  on ? "border-(--border-brand) bg-selected" : "hover:bg-(--surface-hover)",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="appearance-mono"
+                  value={m.value}
+                  checked={on}
+                  onChange={() => setAppearance({ mono: m.value })}
+                  className="sr-only"
+                />
+                <span
+                  aria-hidden="true"
+                  className="truncate text-strong text-sm"
+                  style={{ fontFamily: `${m.family}, monospace` }}
+                >
+                  0O 1lI {"{}"}
+                </span>
+                <span className="truncate text-muted-foreground text-xs">{m.label}</span>
               </label>
             );
           })}

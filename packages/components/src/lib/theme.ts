@@ -9,6 +9,8 @@ import { useSyncExternalStore } from "react";
 
 export type ThemeMode = "light" | "dark" | "system";
 export type FontChoice = "jakarta" | "inter" | "plex";
+/** The monospaced family for code, identifiers and figures. */
+export type MonoChoice = "jetbrains" | "fira" | "plex" | "system";
 export type Density = "compact" | "standard" | "roomy";
 export type Radius = "square" | "tight" | "moderate" | "soft";
 export type Accent = "navy" | "teal" | "violet" | "green" | "amber" | "neutral";
@@ -17,6 +19,7 @@ export type Elevation = "flat" | "bordered" | "raised";
 export type Appearance = {
   mode: ThemeMode;
   font: FontChoice;
+  mono: MonoChoice;
   density: Density;
   radius: Radius;
   accent: Accent;
@@ -26,6 +29,7 @@ export type Appearance = {
 export const defaultAppearance: Appearance = {
   mode: "system",
   font: "jakarta",
+  mono: "jetbrains",
   density: "standard",
   radius: "moderate",
   accent: "navy",
@@ -35,13 +39,14 @@ export const defaultAppearance: Appearance = {
 let storageKey = "kentos-appearance";
 // An older key holding only "light" or "dark", read when the main key is unset.
 let legacyKey: string | null = null;
-const scopePattern = /^(font|density|radius|accent|elevation)-/;
+const scopePattern = /^(font|mono|density|radius|accent|elevation)-/;
 const media = typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 const listeners = new Set<() => void>();
 
 const allowed: { [K in keyof Appearance]: readonly Appearance[K][] } = {
   mode: ["light", "dark", "system"],
   font: ["jakarta", "inter", "plex"],
+  mono: ["jetbrains", "fira", "plex", "system"],
   density: ["compact", "standard", "roomy"],
   radius: ["square", "tight", "moderate", "soft"],
   accent: ["navy", "teal", "violet", "green", "amber", "neutral"],
@@ -93,6 +98,7 @@ function resolveMode(mode: ThemeMode): "dark" | "light" {
 export function classesOf(a: Appearance): string[] {
   const out: string[] = [];
   if (a.font !== "jakarta") out.push(`font-${a.font}`);
+  if (a.mono !== "jetbrains") out.push(`mono-${a.mono}`);
   if (a.density !== "standard") out.push(`density-${a.density}`);
   if (a.radius !== "moderate") out.push(`radius-${a.radius}`);
   if (a.accent !== "navy") out.push(`accent-${a.accent}`);

@@ -1,12 +1,15 @@
 import { Segmented } from "@kentos/components/common/segmented";
 import { EmptyState, ErrorState } from "@kentos/components/common/states";
 import { Alert, AlertActions, AlertDescription, AlertDismiss, AlertTitle } from "@kentos/components/ui/alert";
-import { Badge } from "@kentos/components/ui/badge";
+import { Badge, BadgeAnchor } from "@kentos/components/ui/badge";
 import { Button } from "@kentos/components/ui/button";
 import { Skeleton } from "@kentos/components/ui/skeleton";
 import {
+  BellIcon,
+  BugIcon,
   CircleCheckIcon,
   InfoIcon,
+  MessageSquareIcon,
   OctagonXIcon,
   SearchXIcon,
   SparklesIcon,
@@ -16,9 +19,12 @@ import { useContext, useState } from "react";
 import { toast } from "sonner";
 import { Demo, Page, ToastToneContext } from "../demo";
 
+const defaultChips = ["production", "seviye: hata", "son 24 saat", "Nilüfer Belediyesi"];
+
 /** Alerts, badges, skeletons, toasts, empty and error states. */
 export function FeedbackPage() {
   const [quota, setQuota] = useState(true);
+  const [chips, setChips] = useState(defaultChips);
   const { tone, setTone } = useContext(ToastToneContext);
   return (
     <Page
@@ -94,15 +100,95 @@ export function FeedbackPage() {
       </Demo>
       <Demo
         title="Rozetler"
-        code={`<Badge>Yeni</Badge>
-<Badge variant="secondary">production</Badge>
-<Badge variant="outline">v2.4.0</Badge>
-<Badge variant="destructive">Kritik</Badge>`}
+        description="Durum, sayı ve etiketler. Yumuşak tonlar durum tokenlarını kullanır (her temada okunur); dolu varyantlar dikkat çekmesi gereken sayılar içindir. Nokta canlı durumlarda yanıp söner; onRemove süzgeç ve etiketleri kaldırılabilir yapar; BadgeAnchor bir simgenin köşesine sayı koyar."
+        className="grid w-full gap-5"
+        code={`<Badge variant="success" dot>Çözüldü</Badge>
+<Badge variant="danger" dot pulse>Canlı</Badge>
+<Badge variant="warning" icon={TriangleAlertIcon}>Gerileme</Badge>
+<Badge variant="brand" size="sm">Yeni</Badge>
+<Badge variant="outline" shape="square">v2.4.0</Badge>
+<Badge variant="secondary" onRemove={() => remove("production")}>production</Badge>
+
+<BadgeAnchor count={12} label="12 okunmamış bildirim">
+  <Button variant="ghost" size="icon" aria-label="Bildirimler"><BellIcon /></Button>
+</BadgeAnchor>`}
       >
-        <Badge>Yeni</Badge>
-        <Badge variant="secondary">production</Badge>
-        <Badge variant="outline">v2.4.0</Badge>
-        <Badge variant="destructive">Kritik</Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge>Varsayılan</Badge>
+          <Badge variant="destructive">Kritik</Badge>
+          <Badge variant="secondary">İkincil</Badge>
+          <Badge variant="outline">Çerçeveli</Badge>
+          <Badge variant="ghost">Sessiz</Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="neutral" dot>
+            Yoksayıldı
+          </Badge>
+          <Badge variant="brand" dot>
+            Atandı
+          </Badge>
+          <Badge variant="info" icon={InfoIcon}>
+            Bilgi
+          </Badge>
+          <Badge variant="success" dot>
+            Çözüldü
+          </Badge>
+          <Badge variant="warning" icon={TriangleAlertIcon}>
+            Gerileme
+          </Badge>
+          <Badge variant="danger" dot pulse>
+            Canlı
+          </Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="brand" size="sm">
+            Küçük
+          </Badge>
+          <Badge variant="brand">Orta</Badge>
+          <Badge variant="brand" size="lg">
+            Büyük
+          </Badge>
+          <Badge variant="outline" shape="square" className="font-mono">
+            v2.4.0
+          </Badge>
+          <Badge variant="outline" shape="square" className="font-mono">
+            android@5.12.0
+          </Badge>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {chips.map((c) => (
+            <Badge
+              key={c}
+              variant="secondary"
+              size="lg"
+              onRemove={() => setChips(chips.filter((x) => x !== c))}
+            >
+              {c}
+            </Badge>
+          ))}
+          {chips.length === 0 ? (
+            <Button variant="link" size="sm" onClick={() => setChips(defaultChips)}>
+              Süzgeçleri geri getir
+            </Button>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <BadgeAnchor count={3} label="3 okunmamış bildirim">
+            <Button variant="outline" size="icon" aria-label="Bildirimler">
+              <BellIcon />
+            </Button>
+          </BadgeAnchor>
+          <BadgeAnchor count={128} label="128 açık hata" variant="warning">
+            <Button variant="outline" size="icon" aria-label="Hatalar">
+              <BugIcon />
+            </Button>
+          </BadgeAnchor>
+          <BadgeAnchor dot variant="brand" label="Yeni mesaj">
+            <Button variant="outline" size="icon" aria-label="Mesajlar">
+              <MessageSquareIcon />
+            </Button>
+          </BadgeAnchor>
+        </div>
       </Demo>
       <Demo
         title="Bildirimler (toast)"

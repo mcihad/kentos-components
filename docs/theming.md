@@ -1,6 +1,6 @@
 # Appearance and theming
 
-Users personalise the interface per browser with six choices. Each choice is
+Users personalise the interface per browser with seven choices. Each choice is
 a scope class on `<html>` that redefines tokens; components need no props.
 The accent recolours the whole interface (brand, headings, shadows,
 overlays, tooltips, sidebar and the dark-mode surfaces); see "Accent tint"
@@ -10,6 +10,7 @@ in [tokens.md](tokens.md).
 | ----------- | ----------------------------------------------------- |
 | `mode`      | `system`, `light`, `dark`                             |
 | `font`      | `jakarta`, `inter`, `plex`                            |
+| `mono`      | `jetbrains`, `fira`, `plex`, `system`                 |
 | `density`   | `standard`, `compact`, `roomy`                        |
 | `radius`    | `moderate`, `square`, `tight`, `soft`                 |
 | `accent`    | `navy`, `teal`, `violet`, `green`, `amber`, `neutral` |
@@ -18,7 +19,7 @@ in [tokens.md](tokens.md).
 ## API (`@kentos/components/lib/theme`)
 
 ```ts
-type Appearance = { mode; font; density; radius; accent; elevation };
+type Appearance = { mode; font; mono; density; radius; accent; elevation };
 
 configureAppearance({ storageKey, legacyKey? }) // once, before rendering
 useAppearance()   // { appearance, resolved: "light" | "dark", setAppearance, resetAppearance }
