@@ -60,20 +60,21 @@ Rules:
 
 ## Sizes and motion
 
-| Token                                                                                     | Meaning                                                          |
-| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `--control-h-sm`, `--control-h-md`, `--control-h-lg`                                      | control heights (density-dependent)                              |
-| `--control-px-sm`, `--control-px-md`, `--control-px-lg`                                   | control horizontal padding                                       |
-| `--row-h`                                                                                 | table row height                                                 |
-| `--topbar-h`, `--sidebar-w`, `--sidebar-w-collapsed`                                      | application shell                                                |
-| `--footer-h`                                                                              | footer height shared by the sidebar footer and page footers      |
-| `--gutter`, `--card-p`, `--content-max-wide`                                              | page gutters, card padding, max content width                    |
-| `--card-bg`, `--card-border-color`, `--card-radius`, `--card-shadow`                      | the `card` utility (elevation-dependent)                         |
-| `--border-w`, `--border-w-focus`, `--ring-w`, `--ring-offset`                             | strokes                                                          |
-| `--duration-sheet`, `--ease-sheet`                                                        | bottom sheet and FAB motion (1ms under `prefers-reduced-motion`) |
-| `--duration-fast`, `--duration-base`, `--duration-panel`, `--ease-out`, `--ease-entrance` | motion (zero under `prefers-reduced-motion`)                     |
-| `--tracking-tight`, `--tracking-caps`                                                     | letter spacing for headings and caps labels                      |
-| `--sidebar-*`, `--topbar-*`, `--table-*`, `--tabs-*`, `--tooltip-*`, `--input-*`          | component-specific tokens                                        |
+| Token                                                                                     | Meaning                                                                                              |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `--control-h-sm`, `--control-h-md`, `--control-h-lg`                                      | control heights (density-dependent)                                                                  |
+| `--control-px-sm`, `--control-px-md`, `--control-px-lg`                                   | control horizontal padding                                                                           |
+| `--row-h`                                                                                 | table row height                                                                                     |
+| `--topbar-h`, `--sidebar-w`, `--sidebar-w-collapsed`                                      | application shell                                                                                    |
+| `--footer-h`                                                                              | footer height shared by the sidebar footer and page footers                                          |
+| `--gutter`, `--card-p`, `--content-max-wide`                                              | page gutters, card padding, max content width                                                        |
+| `--card-bg`, `--card-border-color`, `--card-radius`, `--card-shadow`                      | the `card` utility (elevation-dependent)                                                             |
+| `--border-w`, `--border-w-focus`, `--ring-w`, `--ring-offset`                             | strokes                                                                                              |
+| `--duration-sheet`, `--ease-sheet`                                                        | bottom sheet and FAB motion (1ms under `prefers-reduced-motion`)                                     |
+| `--duration-fast`, `--duration-base`, `--duration-panel`, `--ease-out`, `--ease-entrance` | motion (zero under `prefers-reduced-motion`)                                                         |
+| `--tracking-tight`, `--tracking-caps`                                                     | letter spacing for headings and caps labels                                                          |
+| `--table-head-fg`, `--table-head-rule`                                                    | table header labels and the rule under them: muted text and the default border mixed with the accent |
+| `--sidebar-*`, `--topbar-*`, `--table-*`, `--tabs-*`, `--tooltip-*`, `--input-*`          | component-specific tokens                                                                            |
 
 Use them through Tailwind's arbitrary-value syntax: `h-(--control-h-md)`,
 `px-(--gutter)`, `duration-(--duration-fast)`.

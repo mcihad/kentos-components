@@ -245,6 +245,43 @@ via `className="sm:max-w-md"`.
 `DropdownMenuItem` takes `variant="default" | "destructive"` and `inset`; use
 `onSelect` (not `onClick`) for actions.
 
+### `ui/context-menu` — `ContextMenu`, `ContextMenuTrigger`, `ContextMenuContent`, `ContextMenuItem`, `ContextMenuCheckboxItem`, `ContextMenuRadioGroup`, `ContextMenuRadioItem`, `ContextMenuLabel`, `ContextMenuSeparator`, `ContextMenuShortcut`, `ContextMenuGroup`, `ContextMenuSub`, `ContextMenuSubTrigger`, `ContextMenuSubContent`, `ContextMenuPortal`
+
+Radix context menu (right-click, the menu key, long-press on touch) with
+the same look and API as the dropdown menu. Both menus have 40px rows below
+md (32px from md up), the hover surface for focus and a large shadow.
+
+### `common/action-menu` — `ActionMenu`, `ActionContextMenu`, type `MenuEntry`
+
+Menus described once as data and shown the right way for the device:
+`ActionMenu` wraps a trigger (a dropdown on desktop, a bottom sheet on
+phones); `ActionContextMenu` wraps an area (right-click on desktop; on
+phones a long press opens the sheet, vibrates briefly and swallows the tap
+that ends the press).
+
+```tsx
+const entries: MenuEntry[] = [
+  { label: "Yeniden adlandır", icon: PencilIcon, shortcut: "E", onSelect: rename },
+  { type: "submenu", label: "Taşı", icon: FolderInputIcon, items: [{ label: "Kent kart", onSelect: move }] },
+  { type: "checkbox", label: "Sabitle", icon: PinIcon, checked: pinned, onCheckedChange: setPinned },
+  { type: "radio", label: "Öncelik", value: priority, onValueChange: setPriority,
+    options: [{ value: "high", label: "Yüksek" }, { value: "low", label: "Düşük" }] },
+  { type: "separator" },
+  { label: "Sil", icon: Trash2Icon, variant: "destructive", description: "Geri alınamaz", onSelect: remove },
+];
+<ActionMenu entries={entries} title="e-Belediye"><Button variant="ghost" size="icon" aria-label="İşlemler"><EllipsisIcon /></Button></ActionMenu>
+<ActionContextMenu entries={entries} title="KALEM-1B"><IssueRow … /></ActionContextMenu>
+```
+
+Entries: items (`label`, `icon`, `description` for the sheet, `shortcut` for
+desktop, `variant: "destructive"`, `disabled`, `onSelect`), `separator`,
+`label`, `checkbox`, `radio` (with `options`) and `submenu` (`items`). On
+phones shortcuts are left out, submenus become titled groups, checkboxes
+and radio options show a check and keep the sheet open, and a heading equal
+to the sheet title is dropped. Props: `title` (sheet heading),
+`description`, `align` (dropdown), `mobile` (force), `disabled`
+(`ActionContextMenu`). `ActionSheetItem` gained `checked` for this.
+
 ### `ui/tooltip` — `Tooltip`, `TooltipTrigger`, `TooltipContent`, `TooltipProvider`
 
 Needs one `TooltipProvider` at the root. Tooltips are for short hints, never
@@ -654,7 +691,7 @@ column chooser, pagination, loading/refreshing/empty/error states, row
 clicks, and a card list on phones. No table library: columns are plain
 objects. The header reads as labels rather than another row: no fill, small
 spaced capitals in `text-subtle`, shorter than the rows, a `--border-strong`
-rule underneath; the sorted column turns `text-strong`. Capitals follow
+rule underneath; the sorted column turns `text-strong`. Labels use `--table-head-fg` and the rule `--table-head-rule`, both mixed with the accent so tables follow the theme. Capitals follow
 Turkish rules only with `<html lang="tr">` (i → İ).
 
 ```tsx

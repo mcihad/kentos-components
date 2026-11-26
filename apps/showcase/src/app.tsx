@@ -40,6 +40,7 @@ import {
   PanelRightIcon,
   PanelsTopLeftIcon,
   Rows3Icon,
+  SquareMenuIcon,
   SunIcon,
   SwatchBookIcon,
   TableIcon,
@@ -53,6 +54,7 @@ import { DialogsPage } from "./pages/dialogs";
 import { DrawerPage } from "./pages/drawer";
 import { FeedbackPage } from "./pages/feedback";
 import { FormsPage } from "./pages/forms";
+import { MenusPage } from "./pages/menus";
 import { NavigationPage } from "./pages/navigation";
 import { OverlaysPage } from "./pages/overlays";
 import { OverviewPage } from "./pages/overview";
@@ -148,6 +150,22 @@ const pages: ShowcasePage[] = [
     icon: PanelRightIcon,
     keywords: ["Drawer", "panel", "yan panel", "bottom sheet", "resizable", "boyut", "inspector"],
     component: DrawerPage,
+  },
+  {
+    id: "menus",
+    label: "Menüler",
+    group: "Bileşenler",
+    icon: SquareMenuIcon,
+    keywords: [
+      "DropdownMenu",
+      "ContextMenu",
+      "ActionMenu",
+      "sağ tık",
+      "bağlam menüsü",
+      "açılır menü",
+      "uzun bas",
+    ],
+    component: MenusPage,
   },
   {
     id: "dialogs",

@@ -287,6 +287,10 @@
   --input-placeholder: var(--text-subtle);
 
   --table-header-bg: var(--neutral-50);
+  /* Header labels and their rule take a little of the accent, so tables
+     follow the theme; both stay readable in light and dark mode. */
+  --table-head-fg: color-mix(in oklab, var(--text-brand) 55%, var(--text-muted));
+  --table-head-rule: color-mix(in oklab, var(--border-brand) 35%, var(--border-default));
   --table-row-hover: var(--neutral-50);
 
   --sidebar-bg: var(--navy-900);

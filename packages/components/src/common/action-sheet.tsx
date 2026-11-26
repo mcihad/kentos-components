@@ -1,3 +1,4 @@
+import { CheckIcon } from "lucide-react";
 import { Dialog as DialogPrimitive, Slot } from "radix-ui";
 import {
   type ComponentProps,
@@ -221,6 +222,7 @@ export function ActionSheetItem({
   variant = "default",
   keepOpen = false,
   asChild = false,
+  checked,
   className,
   children,
   ...props
@@ -228,6 +230,8 @@ export function ActionSheetItem({
   icon?: Icon;
   label: string;
   description?: ReactNode;
+  /** A choice: shows a check at the end when true (checkboxes, radio options). */
+  checked?: boolean;
   /** primary tints the icon tile with the brand colour; destructive is for irreversible actions. */
   variant?: "default" | "primary" | "destructive";
   keepOpen?: boolean;
@@ -239,6 +243,7 @@ export function ActionSheetItem({
       data-slot="action-sheet-item"
       data-variant={variant}
       type={asChild ? undefined : "button"}
+      aria-pressed={checked}
       className={cn(itemClass, className)}
       {...props}
     >
@@ -269,6 +274,15 @@ export function ActionSheetItem({
           <span className="text-muted-foreground text-sm leading-snug">{description}</span>
         ) : null}
       </span>
+      {checked !== undefined ? (
+        <CheckIcon
+          aria-hidden
+          className={cn(
+            "size-5 shrink-0 text-brand-ink transition-opacity",
+            checked ? "opacity-100" : "opacity-0",
+          )}
+        />
+      ) : null}
     </Comp>
   );
   return keepOpen ? element : <DialogPrimitive.Close asChild>{element}</DialogPrimitive.Close>;
