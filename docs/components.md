@@ -652,7 +652,10 @@ A responsive grid of cards (2 → 3 → 4/5/6 columns by count).
 A plain table for showing records (not a spreadsheet): sortable columns, a
 column chooser, pagination, loading/refreshing/empty/error states, row
 clicks, and a card list on phones. No table library: columns are plain
-objects.
+objects. The header reads as labels rather than another row: no fill, small
+spaced capitals in `text-subtle`, shorter than the rows, a `--border-strong`
+rule underneath; the sorted column turns `text-strong`. Capitals follow
+Turkish rules only with `<html lang="tr">` (i → İ).
 
 ```tsx
 const columns: DataColumn<Project>[] = [

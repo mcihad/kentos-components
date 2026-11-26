@@ -22,7 +22,7 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { Pagination, type PaginationProps } from "./pagination";
 import { EmptyState } from "./states";
-import { tdClass, thClass, theadClass, trClass } from "./table";
+import { tdClass, trClass } from "./table";
 
 /*
  * A plain table for showing records, not a spreadsheet: sortable columns,
@@ -102,6 +102,13 @@ function readHidden(key: string | undefined): string[] | null {
     return null;
   }
 }
+
+// The header reads as labels, not as another row: no fill, small spaced
+// capitals in a muted colour, shorter than the rows, and a firmer rule
+// under it than the lines between rows.
+const headClass = "border-(--border-strong) border-b text-left";
+const headCellClass =
+  "h-9 whitespace-nowrap px-3.5 font-semibold text-2xs text-subtle uppercase tracking-(--tracking-caps) align-middle";
 
 const alignClass = { start: "text-left", center: "text-center", end: "text-right" } as const;
 
@@ -309,7 +316,7 @@ export function DataTable<T>({
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm" aria-busy={loading || refreshing || undefined}>
           {caption ? <caption className="sr-only">{caption}</caption> : null}
-          <thead className={theadClass}>
+          <thead className={headClass}>
             <tr>
               {visible.map((c) => {
                 const active = sort?.id === c.id;
@@ -327,7 +334,7 @@ export function DataTable<T>({
                     scope="col"
                     aria-sort={ariaSort}
                     style={c.width ? { width: c.width } : undefined}
-                    className={cn(thClass, alignClass[c.align ?? "start"], c.sortable && "p-0")}
+                    className={cn(headCellClass, alignClass[c.align ?? "start"], c.sortable && "p-0")}
                   >
                     {c.sortable ? (
                       <button
@@ -335,10 +342,10 @@ export function DataTable<T>({
                         onClick={() => cycle(c.id)}
                         disabled={refreshing}
                         className={cn(
-                          "group/sort inline-flex h-full w-full items-center gap-1 px-3.5 outline-none hover:text-foreground focus-visible:shadow-(--focus-shadow)",
+                          "group/sort inline-flex h-9 w-full items-center gap-1 px-3.5 uppercase tracking-(--tracking-caps) outline-none transition-colors duration-(--duration-fast) hover:text-foreground focus-visible:shadow-(--focus-shadow)",
                           c.align === "end" && "flex-row-reverse",
                           c.align === "center" && "justify-center",
-                          active && "text-foreground",
+                          active && "text-strong",
                         )}
                       >
                         {c.header}
