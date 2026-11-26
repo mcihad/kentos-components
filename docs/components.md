@@ -185,6 +185,87 @@ Preview of a link's target on hover.
 cmdk based. `CommandDialog` takes `open`, `onOpenChange`, `title`
 (default "Komut paleti"), `description`, `showCloseButton`.
 
+## Application sidebar
+
+### `layout/sidebar`
+
+`SidebarProvider`, `Sidebar`, `SidebarInset`, `SidebarHeader`, `SidebarBrand`,
+`SidebarSearch`, `SidebarContent`, `SidebarGroup`, `SidebarItem`,
+`SidebarCollapsible`, `SidebarSeparator`, `SidebarFooter`, `SidebarUser`,
+`SidebarTrigger`, `useSidebar`, type `SidebarIcon`.
+
+The application's left navigation: a dark rail (colours from `--sidebar-*`,
+widths `--sidebar-w` / `--sidebar-w-collapsed`). On desktop it collapses to
+an icon rail (labels in tooltips, badges as dots, collapsibles as flyout
+menus); below `md` it is a drawer that closes when an item is chosen. The
+search filters items Turkish-aware and without diacritics ("musteri" finds
+"Müşteriler", keywords included), highlights the match, hides empty groups
+and shows an empty state.
+
+```tsx
+<SidebarProvider storageKey="app-sidebar">
+  <Sidebar label="Menü">
+    <SidebarHeader>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarBrand logo={<Logo />} title="Bursa Belediyesi" subtitle="Yönetici" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">…</DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarHeader>
+    <SidebarSearch />
+    <SidebarContent>
+      <SidebarGroup label="İzleme">
+        <SidebarItem icon={BugIcon} label="Hatalar" badge={12} keywords={["issue"]} asChild>
+          <Link to="/issues" />
+        </SidebarItem>
+      </SidebarGroup>
+      <SidebarCollapsible icon={SettingsIcon} label="Ayarlar">
+        <SidebarItem label="Üyeler" asChild>
+          <Link to="/settings/members" />
+        </SidebarItem>
+      </SidebarCollapsible>
+    </SidebarContent>
+    <SidebarFooter>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarUser name="Ayşe Yılmaz" description="ayse@kentos.dev" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="top" align="start">
+          …
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarFooter>
+  </Sidebar>
+  <SidebarInset>
+    <header>
+      <SidebarTrigger />…
+    </header>
+    <main>…</main>
+  </SidebarInset>
+</SidebarProvider>;
+```
+
+| Part                           | Props and behaviour                                                                                                                                                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SidebarProvider`              | `storageKey` (remembers the collapsed rail), `defaultCollapsed`, `collapsed` + `onCollapsedChange` (controlled), `toggleShortcut` (letter with ⌘/Ctrl, default `"b"`, `null` disables), `mobile` (forces drawer or rail). Renders the flex frame and a `TooltipProvider`. |
+| `Sidebar`                      | `label` (accessible name, drawer title). Sticky `h-svh` rail; pass `className="h-full"` inside a fixed-height container.                                                                                                                                                  |
+| `SidebarHeader`                | Top section; adds the drawer's close button on phones.                                                                                                                                                                                                                    |
+| `SidebarBrand`                 | `logo`, `title` (string), `subtitle`, `chevron`. A button; use as `DropdownMenuTrigger asChild` child for switches. Icon only on the rail.                                                                                                                                |
+| `SidebarSearch`                | `placeholder` (default "Menüde ara"). Enter opens the first match, ↓ moves into the list, Esc clears. On the rail: a button that expands and focuses.                                                                                                                     |
+| `SidebarContent`               | `label` (nav name, default "Ana menü"), `emptyText`. Scrolls; ↑ ↓ Home End move between items.                                                                                                                                                                            |
+| `SidebarGroup`                 | `label`, `action` (control beside the label), `collapsible`, `defaultOpen`. Divider on the rail; hidden when a search finds nothing in it.                                                                                                                                |
+| `SidebarItem`                  | `icon`, `label` (searched), `keywords`, `badge`, `active`, `asChild`. Active when `active` or the element has `aria-current="page"` (TanStack/React Router links set it). Choosing it clears the search and closes the drawer.                                            |
+| `SidebarCollapsible`           | `icon`, `label`, `keywords`, `badge`, `defaultOpen`; children are `SidebarItem`s. Opens itself when a child becomes the current page or matches a search.                                                                                                                 |
+| `SidebarFooter`, `SidebarUser` | Footer section; user button with `name`, `description`, `src`.                                                                                                                                                                                                            |
+| `SidebarTrigger`               | Button for the top bar: collapses on desktop (tooltip with ⌘B), opens the drawer on phones.                                                                                                                                                                               |
+| `useSidebar()`                 | `collapsed`, `setCollapsed`, `toggle`, `isMobile`, `openMobile`, `setOpenMobile`, `query`, `setQuery`, `iconOnly`.                                                                                                                                                        |
+
+Rules: every item has an icon at the top level (the rail shows only icons);
+labels are short nouns ("Hatalar", not "Hataları görüntüle"); add
+`keywords` for synonyms and English terms users may type; at most one level
+of nesting.
+
 ## Navigation and layout
 
 ### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `tabsListVariants`
@@ -283,6 +364,12 @@ settings page. See [theming.md](theming.md).
 | `initials(name)`                                             | `AY`                                                |
 
 Numbers accept `number | bigint` (`Numeric`); dates are `Date`.
+
+### `lib/search`
+
+`foldText(text)` (Turkish lowercase without diacritics, index-preserving),
+`matchesQuery(query, label, keywords?)`, `matchRange(text, query)` — for
+client-side filters such as the sidebar search.
 
 ### `lib/theme`
 

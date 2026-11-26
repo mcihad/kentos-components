@@ -16,6 +16,7 @@
     "./common/*": "./src/common/*.tsx",
     "./common/table": "./src/common/table.ts",
     "./charts/*": "./src/charts/*.tsx",
+    "./layout/*": "./src/layout/*.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./styles/*": "./src/styles/*",
     "./theme-init.js": "./src/theme-init.js",

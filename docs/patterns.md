@@ -5,8 +5,10 @@ How KentOS interfaces put the components together. The showcase's
 
 ## Layout
 
-- **Shell:** a dark navy sidebar (`bg-(--sidebar-bg)`, add `on-dark`), a top
-  bar of height `--topbar-h`, content on the grey page (`bg-background`) in
+- **Shell:** `SidebarProvider` with the kit's `Sidebar` (switcher in the
+  header, search, grouped items, account in the footer) and `SidebarInset`
+  holding a sticky top bar of height `--topbar-h` that starts with
+  `SidebarTrigger`; content on the grey page (`bg-background`) in
   white cards (`card`). Content width up to `--content-max-wide`, gutters
   `--gutter`.
 - **Page header:** title (`text-xl font-semibold`), one-line description in

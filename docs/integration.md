@@ -111,8 +111,9 @@ Every file is an entry point; there is no barrel file (keeps bundles small):
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `@kentos/components/ui/<name>`     | Primitives: `button`, `dialog`, `select`, …                                                                    |
 | `@kentos/components/common/<name>` | `field`, `stat-strip`, `states`, `segmented`, `kbd`, `copy-button`, `user-avatar`, `appearance-panel`, `table` |
+| `@kentos/components/layout/<name>` | `sidebar` (application sidebar)                                                                                |
 | `@kentos/components/charts/<name>` | `stacked-bars`, `sparkline`                                                                                    |
-| `@kentos/components/lib/<name>`    | `utils` (`cn`), `theme`, `format`                                                                              |
+| `@kentos/components/lib/<name>`    | `utils` (`cn`), `theme`, `format`, `search`                                                                    |
 | `@kentos/components/styles/<file>` | `index.css`, `tokens.css`, `fonts.css`                                                                         |
 
 ## 6. Adapting application types

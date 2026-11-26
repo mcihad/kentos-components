@@ -8,6 +8,7 @@
 - `src/common/` — a composite of primitives that more than one KentOS
   application needs (form field, stat cards, states).
 - `src/charts/` — SVG charts without a charting library.
+- `src/layout/` — parts of the application frame (sidebar).
 - `src/lib/` — framework-free helpers.
 
 Application-specific components (anything that knows an API, a router or a
