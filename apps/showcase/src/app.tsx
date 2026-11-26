@@ -1,4 +1,5 @@
 import { AppearancePanel } from "@kentos/components/common/appearance-panel";
+import { DialogHost } from "@kentos/components/common/dialog-host";
 import {
   Sidebar,
   SidebarBrand,
@@ -25,6 +26,7 @@ import {
   LayersIcon,
   LayoutTemplateIcon,
   type LucideIcon,
+  MessageSquareWarningIcon,
   MoonIcon,
   MousePointerClickIcon,
   PaletteIcon,
@@ -38,6 +40,7 @@ import { type ComponentType, useEffect, useState } from "react";
 import { type PageMeta, PageMetaContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
 import { DataPage } from "./pages/data";
+import { DialogsPage } from "./pages/dialogs";
 import { FeedbackPage } from "./pages/feedback";
 import { FormsPage } from "./pages/forms";
 import { NavigationPage } from "./pages/navigation";
@@ -105,7 +108,17 @@ const pages: ShowcasePage[] = [
     label: "Geri bildirim",
     group: "Bileşenler",
     icon: BellIcon,
-    keywords: ["Alert", "Badge", "Skeleton", "toast", "EmptyState", "ErrorState"],
+    keywords: [
+      "Alert",
+      "Badge",
+      "Skeleton",
+      "toast",
+      "Toaster",
+      "sonner",
+      "bildirim",
+      "EmptyState",
+      "ErrorState",
+    ],
     component: FeedbackPage,
   },
   {
@@ -115,6 +128,27 @@ const pages: ShowcasePage[] = [
     icon: LayersIcon,
     keywords: ["Dialog", "Sheet", "Popover", "DropdownMenu", "Tooltip", "HoverCard", "Command"],
     component: OverlaysPage,
+  },
+  {
+    id: "dialogs",
+    label: "Diyaloglar",
+    group: "Bileşenler",
+    icon: MessageSquareWarningIcon,
+    keywords: [
+      "AlertDialog",
+      "ConfirmDialog",
+      "MessageDialog",
+      "InputDialog",
+      "BusyDialog",
+      "ProgressDialog",
+      "LoadingDialog",
+      "CountdownDialog",
+      "onay",
+      "prompt",
+      "Progress",
+      "Spinner",
+    ],
+    component: DialogsPage,
   },
   {
     id: "sidebar",
@@ -273,6 +307,7 @@ export function App() {
         </SheetContent>
       </Sheet>
       <Toaster position="bottom-right" />
+      <DialogHost />
     </TooltipProvider>
   );
 }

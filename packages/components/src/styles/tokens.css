@@ -959,3 +959,32 @@
     pointer-events: none;
   }
 }
+
+/* Indeterminate progress: a bar sweeping across its track. */
+@keyframes kentos-indeterminate {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(250%, 0, 0);
+  }
+}
+/* Countdown ring: the stroke empties over --countdown seconds. */
+@keyframes kentos-countdown {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: var(--ring-length);
+  }
+}
+@layer components {
+  .kentos-indeterminate {
+    animation: kentos-indeterminate 1.4s var(--ease-out) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kentos-indeterminate {
+      animation-duration: 4s;
+    }
+  }
+}

@@ -116,10 +116,31 @@ takes `type="single" | "multiple"` and passes `variant`/`size` to items.
 
 ## Feedback
 
-### `ui/alert` — `Alert`, `AlertTitle`, `AlertDescription`
+### `ui/alert` — `Alert`, `AlertTitle`, `AlertDescription`, `AlertActions`, `AlertDismiss`, `alertVariants`
 
-`variant`: `default | destructive`. An icon as the first child gets its own
-column.
+Inline messages that stay on the page. `variant`: `default | info | success |
+warning | destructive`; status variants tint the box with the
+`--status-*` tokens. An icon as the first child gets its own column.
+`AlertActions` holds buttons under the description; `AlertDismiss`
+(`onClick`, `label` "Kapat") puts a close button in the corner. Warning and
+destructive alerts use `role="alert"`, the others `role="status"`.
+
+```tsx
+<Alert variant="warning">
+  <TriangleAlertIcon />
+  <AlertTitle>Aylık kotanın %80'i doldu</AlertTitle>
+  <AlertDescription>Kota dolunca yeni olaylar reddedilir.</AlertDescription>
+  <AlertActions>
+    <Button size="sm" variant="outline">
+      Kotayı artır
+    </Button>
+  </AlertActions>
+  <AlertDismiss onClick={hide} />
+</Alert>;
+```
+
+Use an alert for a state the user should see while working on the page;
+use a toast for the result of an action, a dialog when an answer is needed.
 
 ### `ui/badge` — `Badge`, `badgeVariants`
 
@@ -132,9 +153,34 @@ skeletons to spinners for loading lists and pages.
 
 ### `ui/sonner` — `Toaster`
 
-Mount once (see integration). Then `toast.success("Kaydedildi")`,
-`toast.error(message)`, `toast(title, { description, action: { label, onClick } })`
-from `sonner`. Repeat the action's verb: "Kaydet" → "Kaydedildi".
+Sonner with the kit's styling: card surface, coloured icon per type, a
+close button, kit buttons for `action` and `cancel`. Mount once (see
+integration), then call from anywhere:
+
+```ts
+import { toast } from "sonner";
+toast.success("Proje ayarları kaydedildi");
+toast.error("Bağlantı kurulamadı", { description: "Ağ bağlantınızı denetleyip yeniden deneyin." });
+toast.warning("Kotanın %80'i doldu");
+toast.info("Yeni sürüm yayımlandı");
+toast("KALEM-1B ayrıldı", { action: { label: "Geri al", onClick: undo } });
+const id = toast.loading("Rapor hazırlanıyor…");
+toast.success("Rapor hazır", { id });
+toast.promise(save(), { loading: "Kaydediliyor…", success: "Kaydedildi", error: (e) => message(e) });
+```
+
+Repeat the action's verb: "Kaydet" → "Kaydedildi".
+
+### `common/spinner` — `Spinner`
+
+Rotating indicator (`label` for screen readers, default "Yükleniyor"); size
+with `className="size-5"`. Inside buttons while their action runs.
+
+### `ui/progress` — `Progress`
+
+Radix progress bar: `value` and `max`; `value={null}` sweeps
+indeterminately. The indicator moves with `transform`; colour with
+`indicatorClassName`.
 
 ### `common/states` — `EmptyState`, `ErrorState`
 
@@ -184,6 +230,66 @@ Preview of a link's target on hover.
 
 cmdk based. `CommandDialog` takes `open`, `onOpenChange`, `title`
 (default "Komut paleti"), `description`, `showCloseButton`.
+
+## Dialogs
+
+### `ui/alert-dialog` — `AlertDialog`, `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogHeader`, `AlertDialogFooter`, `AlertDialogTitle`, `AlertDialogDescription`, `AlertDialogAction`, `AlertDialogCancel`
+
+Radix alert dialog: focus trapped, closes only through its buttons or
+Escape (never a click outside). `AlertDialogAction` takes
+`variant="default" | "destructive"`. The ready-made dialogs below build on it.
+
+### `common/dialogs`
+
+Controlled (`open`, `onOpenChange`) dialogs for the common moments. `tone`
+(`neutral | info | success | warning | danger`) sets the round icon tile
+(`DialogToneIcon`) and, for `danger`, a destructive main button. Buttons
+stack full width on phones.
+
+| Component         | Use                                                                                                                                                       | Main props                                                                                                                                                                                               |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MessageDialog`   | A message acknowledged with one button (the standard alert dialog).                                                                                       | `tone`, `icon` (or `false`), `title`, `description`, `children`, `okLabel` ("Tamam"), `onOk`                                                                                                             |
+| `ConfirmDialog`   | Ask before acting. A promise from `onConfirm` keeps the dialog open with a spinner and shows its error. `confirmText` makes the user type it first.       | `tone`, `title`, `description`, `confirmLabel` ("Onayla"), `pendingLabel`, `cancelLabel` ("Vazgeç"), `confirmText`, `confirmTextLabel`, `onConfirm`, `onCancel`, `errorFallback`                         |
+| `InputDialog`     | Ask for one value. Required by default; `validate` returns an error sentence.                                                                             | `title`, `description`, `label`, `placeholder`, `defaultValue`, `hint`, `multiline`, `type`, `required`, `maxLength` (shows a counter), `submitLabel` ("Kaydet"), `pendingLabel`, `validate`, `onSubmit` |
+| `BusyDialog`      | Block the screen during work of unknown length. Not dismissible unless `onCancel`.                                                                        | `open`, `title` ("İşleniyor…"), `description`, `onCancel`, `cancelLabel`                                                                                                                                 |
+| `ProgressDialog`  | Measurable work: bar, percentage, status line, optional step list; `done` turns it green with a close button.                                             | `value` (`null` = indeterminate), `max`, `status`, `steps` (`{ label, state: pending \| active \| done \| error }`), `done`, `doneTitle`, `doneLabel`, `onCancel`                                        |
+| `LoadingDialog`   | A dialog whose content is still loading: skeleton lines, then children.                                                                                   | `loading`, `lines`, `title`, `description`, `footer`                                                                                                                                                     |
+| `CountdownDialog` | Something happens when time runs out (sign-out, redirect). The ring empties in one CSS animation; the number ticks each second; Escape counts as confirm. | `seconds`, `tone` ("warning"), `title`, `description` (node or `(remaining) => node`), `confirmLabel`, `cancelLabel`, `onConfirm`, `onCancel`, `onElapsed`                                               |
+
+Errors thrown by `onConfirm`/`onSubmit` are shown with their `message`;
+throw an `Error` with a Turkish sentence (map API errors first).
+
+### `common/dialog-host` — `DialogHost`, `dialogs`
+
+The same dialogs as function calls, for handlers that only need an answer.
+Mount `<DialogHost />` once next to the `Toaster`.
+
+```ts
+import { dialogs } from "@kentos/components/common/dialog-host";
+
+if (
+  await dialogs.confirm({
+    tone: "danger",
+    title: "Pano silinsin mi?",
+    confirmLabel: "Sil",
+    onConfirm: () => remove.mutateAsync({ id }),
+  })
+)
+  navigate("/dashboards");
+const tag = await dialogs.prompt({ title: "Yeni etiket", label: "Etiket" }); // string | null
+await dialogs.alert({ tone: "success", title: "Dışa aktarma tamamlandı" });
+const job = dialogs.busy("Önbellek temizleniyor…");
+job.update({ title: "…" });
+job.close();
+const p = dialogs.progress({ title: "Yükleniyor", value: 0 });
+p.update({ value: 50 });
+p.done();
+const how = await dialogs.countdown({ seconds: 10, title: "Yönlendiriliyorsunuz" }); // confirm | cancel | elapsed
+```
+
+`confirm` resolves `true` only after `onConfirm` succeeded; `prompt`
+resolves the value after `onSubmit` succeeded. Never use `window.confirm`,
+`window.prompt` or `window.alert`.
 
 ## Application sidebar
 

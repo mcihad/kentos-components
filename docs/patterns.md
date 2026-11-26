@@ -32,6 +32,13 @@ How KentOS interfaces put the components together. The showcase's
   horizontal strips scroll (`scrollbar-none`, `fade-end`), sheets replace
   side panels.
 
+- **Telling and asking:** a toast for the result of an action ("Kaydedildi");
+  an `Alert` for a state that stays on the page; a `ConfirmDialog` (or
+  `dialogs.confirm`) before destructive or far-reaching actions, with
+  `tone="danger"` and `confirmText` for irreversible deletions; `BusyDialog`
+  / `ProgressDialog` only for work that must block the screen. Never the
+  browser's `confirm`, `prompt` or `alert`.
+
 ## Copy (Turkish)
 
 - Sentence case, plain verbs, no filler: "Proje oluştur", "Hatayı çöz",
