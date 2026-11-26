@@ -37,6 +37,7 @@ import {
   MousePointerClickIcon,
   PaletteIcon,
   PanelLeftIcon,
+  PanelRightIcon,
   PanelsTopLeftIcon,
   SunIcon,
   SwatchBookIcon,
@@ -47,6 +48,7 @@ import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
 import { ButtonsPage } from "./pages/buttons";
 import { DataPage } from "./pages/data";
 import { DialogsPage } from "./pages/dialogs";
+import { DrawerPage } from "./pages/drawer";
 import { FeedbackPage } from "./pages/feedback";
 import { FormsPage } from "./pages/forms";
 import { NavigationPage } from "./pages/navigation";
@@ -136,6 +138,14 @@ const pages: ShowcasePage[] = [
     icon: LayersIcon,
     keywords: ["Dialog", "Sheet", "Popover", "DropdownMenu", "Tooltip", "HoverCard", "Command"],
     component: OverlaysPage,
+  },
+  {
+    id: "drawer",
+    label: "Çekmece",
+    group: "Bileşenler",
+    icon: PanelRightIcon,
+    keywords: ["Drawer", "panel", "yan panel", "bottom sheet", "resizable", "boyut", "inspector"],
+    component: DrawerPage,
   },
   {
     id: "dialogs",

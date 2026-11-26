@@ -287,6 +287,41 @@ stack full width on phones.
 Errors thrown by `onConfirm`/`onSubmit` are shown with their `message`;
 throw an `Error` with a Turkish sentence (map API errors first).
 
+### `common/drawer` — `Drawer`, `DrawerTrigger`, `DrawerContent`, `DrawerHeader`, `DrawerTitle`, `DrawerDescription`, `DrawerBody`, `DrawerFooter`, `DrawerClose`
+
+A panel sliding in from an edge (details beside a list, filters, forms,
+logs), on Radix Dialog. Not Vaul: it is unmaintained since 2024, brings its
+own Radix copy and has no resizable side drawers.
+
+```tsx
+<Drawer>
+  <DrawerTrigger asChild>
+    <Button variant="outline">Hata ayrıntısı</Button>
+  </DrawerTrigger>
+  <DrawerContent side="right" size="md" resizable sizeStorageKey="issue-drawer">
+    <DrawerHeader>
+      <DrawerTitle>KALEM-1B</DrawerTitle>
+      <DrawerDescription>NullPointerException · Kent kart</DrawerDescription>
+    </DrawerHeader>
+    <DrawerBody>…</DrawerBody>
+    <DrawerFooter>
+      <Button>Çözüldü işaretle</Button>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>;
+```
+
+| Part                                         | Props and behaviour                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Drawer`                                     | Radix root; `modal` (default true). `modal={false}` leaves the page usable (an inspector); add `onInteractOutside={(e) => e.preventDefault()}` on the content so outside clicks do not close it.                                                                                                                                                                                                                                       |
+| `DrawerContent`                              | `side`: `right` (default), `left`, `top`, `bottom`. `size`: `sm \| md \| lg \| xl \| full \| auto` or a CSS length (width for left/right: 360–800px; height for top/bottom: 30–88svh). `mobileSide` (default `bottom`, or `same`) and `mobileSize` (default `auto`): what a side drawer becomes on phones. `resizable`, `minSize`, `maxSize` (px), `sizeStorageKey` (remembers the size), `showClose`, `closeLabel`, `mobile` (force). |
+| Resizing                                     | Left/right/top: a grip on the inner edge; drag it, or focus it and use the arrow keys (Shift ×4), Home and End; double-click restores the default. It is a `separator` with `aria-valuenow`. Bottom: pull the grab handle up to grow (up to 92% of the screen); pulling down shrinks back to the opening height, then closes.                                                                                                          |
+| Bottom sheets                                | Drag the grab handle down to close (over 28% of the height or a flick); a short drag springs back. Same motion as `ActionSheet`.                                                                                                                                                                                                                                                                                                       |
+| `DrawerHeader`, `DrawerBody`, `DrawerFooter` | Header with room for the close button; scrolling body; footer that stays visible (buttons stack on phones).                                                                                                                                                                                                                                                                                                                            |
+
+Use a drawer for work that keeps the page in context; a `Dialog` for a
+short decision; a page for long flows.
+
 ### `common/dialog-host` — `DialogHost`, `dialogs`
 
 The same dialogs as function calls, for handlers that only need an answer.
