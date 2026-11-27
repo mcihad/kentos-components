@@ -42,6 +42,7 @@ import {
   PaletteIcon,
   PanelLeftIcon,
   PanelRightIcon,
+  PanelsLeftRightIcon,
   PanelsTopLeftIcon,
   Rows3Icon,
   ShapesIcon,
@@ -71,6 +72,7 @@ import { NavigationPage } from "./pages/navigation";
 import { OverlaysPage } from "./pages/overlays";
 import { OverviewPage } from "./pages/overview";
 import { PageLayoutPage } from "./pages/page-layout";
+import { PanelsPage } from "./pages/panels";
 import { PatternsPage } from "./pages/patterns";
 import { ShellPage } from "./pages/shell";
 import { SidebarPage } from "./pages/sidebar";
@@ -233,6 +235,25 @@ const pages: ShowcasePage[] = [
       "useVirtualizer",
     ],
     component: CodePage,
+  },
+  {
+    id: "panels",
+    label: "Paneller ve listeler",
+    group: "Bileşenler",
+    icon: PanelsLeftRightIcon,
+    keywords: [
+      "ResizablePanelGroup",
+      "ResizablePanel",
+      "ResizableHandle",
+      "bölünmüş",
+      "split",
+      "boyutlandır",
+      "VirtualList",
+      "sanal liste",
+      "sonsuz kaydırma",
+      "infinite",
+    ],
+    component: PanelsPage,
   },
   {
     id: "feedback",

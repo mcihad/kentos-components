@@ -1135,6 +1135,37 @@ heights current, so rows may wrap or grow), `scrollToIndex(index, align)`
 and `reset()` (forget measurements after the row content changes, e.g. a
 filter or wrapping).
 
+## Panels and long lists
+
+Showcase page: "Paneller ve listeler".
+
+### `common/resizable` — `ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`
+
+Split views without a dependency. `ResizablePanelGroup` takes `direction`
+(`horizontal | vertical`), `storageKey` (sizes remembered in localStorage),
+`stackOnMobile` (default true: below md the panels stack and handles
+disappear) and `onSizesChange`. `ResizablePanel`: `defaultSize` (percent;
+panels without one share the rest), `minSize`, `maxSize`, `collapsible`
+(a drag past half the minimum, or Enter on a neighbouring handle, collapses
+it to `collapsedSize`, default 0; Enter again restores it). Panels grow from
+a zero basis in proportion to their size, so handles keep their width.
+`ResizableHandle` (`withGrip`, `label`): a 1px line with a wider hit area,
+`role="separator"` with `aria-valuenow`; drag it, or focus it and use the
+arrow keys (2%, Shift 10%), Home/End (limits) and Enter (collapse); a double
+click restores the defaults. Panels and handles must be direct children of
+the group, alternating.
+
+### `common/virtual-list` — `VirtualList`, type `VirtualListHandle`
+
+A windowed list on `useVirtualizer` (rows of any height, measured once
+rendered). Props: `items`, `renderItem(item, index)`, `getKey`,
+`estimateSize` (default 48), `overscan`, `height`, `divided`, `label`,
+`empty` (shown when there are no items and nothing loads),
+`onEndReached` + `endThreshold` (called once per item count when the last
+rows render: load the next page), `loading` + `loadingText` (a spinner row
+after the last item), `listRef` (`scrollToIndex(index, align)`). Renders a
+`<ul>` with `aria-setsize` / `aria-posinset` on each row.
+
 ## Navigation and layout
 
 ### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `TabsBadge`, `TabsNav`, `TabsNavItem`, `tabsListVariants`
