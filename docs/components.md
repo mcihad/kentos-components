@@ -485,6 +485,13 @@ indeterminately. The indicator moves with `transform`; colour with
 
 All overlays trap focus, close on Escape and portal to `<body>`.
 
+Exit animations hold their last frame until the element unmounts (a base
+rule in `tokens.css` sets `--tw-animation-fill-mode: forwards` on closed
+`animate-out` elements), so nothing flashes back on screen as it closes. A
+dialog's overlay animates as long as its content: Radix releases the scroll
+lock when the overlay unmounts, and releasing it earlier would shift the
+centred content by the scrollbar width.
+
 ### `ui/dialog` — `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose`, `DialogOverlay`, `DialogPortal`
 
 `DialogContent` takes `showCloseButton` (default `true`). `DialogTitle` is

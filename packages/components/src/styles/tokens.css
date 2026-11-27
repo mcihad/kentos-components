@@ -833,6 +833,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Exit animations (tw-animate animate-out on Radix overlays, dialogs,
+     menus, popovers, tooltips) hold their last frame until the element
+     unmounts. Radix only keeps the fill for one timer tick after
+     animationend, and React can remove the node a frame later: without
+     this the element flashes back fully visible just before it goes. */
+  [data-state="closed"][class*="animate-out"] {
+    --tw-animation-fill-mode: forwards;
+  }
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
