@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon, ChevronsDownUpIcon, ChevronsUpDownIcon } from "lucide-react";
 import { type ComponentProps, type ReactNode, useMemo, useState } from "react";
 import { formatNumber } from "../lib/format";
 import { cn } from "../lib/utils";
@@ -85,9 +85,10 @@ function Node({
 }) {
   const key: ReactNode =
     name === null ? null : (
-      <span className={cn("shrink-0", isIndex ? "text-(--code-gutter)" : "text-(--code-type)")}>
+      // The gap after the colon is a margin: flex items drop trailing spaces.
+      <span className={cn("mr-1.5 shrink-0", isIndex ? "text-(--code-gutter)" : "text-(--code-type)")}>
         {isIndex ? name : `"${name}"`}
-        <span className="text-muted-foreground">: </span>
+        <span className="text-muted-foreground">:</span>
       </span>
     );
 
@@ -197,7 +198,7 @@ export function JsonViewer({
     });
 
   const toolbarButton =
-    "rounded-sm px-1.5 py-0.5 text-muted-foreground text-xs outline-none hover:bg-(--surface-hover) hover:text-foreground focus-visible:shadow-(--focus-shadow)";
+    "inline-flex h-7 items-center gap-1 rounded-sm px-1.5 text-muted-foreground text-xs outline-none hover:bg-(--surface-hover) hover:text-foreground focus-visible:shadow-(--focus-shadow)";
 
   return (
     <div
@@ -215,10 +216,12 @@ export function JsonViewer({
                 className={toolbarButton}
                 onClick={() => setExpanded(new Set(pathsTo(value, Number.POSITIVE_INFINITY)))}
               >
-                Tümünü aç
+                <ChevronsUpDownIcon aria-hidden className="size-3.5" />
+                <span className="max-sm:sr-only">Tümünü aç</span>
               </button>
               <button type="button" className={toolbarButton} onClick={() => setExpanded(new Set())}>
-                Tümünü kapat
+                <ChevronsDownUpIcon aria-hidden className="size-3.5" />
+                <span className="max-sm:sr-only">Tümünü kapat</span>
               </button>
             </>
           ) : null}

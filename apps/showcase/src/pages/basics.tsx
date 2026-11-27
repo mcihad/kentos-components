@@ -216,7 +216,7 @@ export function BasicsPage() {
       <Demo
         title="Ağaç görünümü"
         description="Açılır dallar: kaynak dosyalar, ekipler, iç içe kategoriler. Tek sekme durağıdır: yukarı–aşağı oklar görünen öğelerde gezer, sağ ok dalı açar ya da içine girer, sol ok kapatır ya da üst öğeye çıkar, Home/End uçlara gider, * kardeş dalların hepsini açar, bir harf yazmak o harfle başlayan öğeye atlar, Enter seçer."
-        className="grid w-full gap-3 sm:grid-cols-[minmax(0,18rem)_1fr]"
+        className="grid w-full items-start gap-3 sm:grid-cols-[minmax(0,18rem)_1fr]"
         code={`<TreeView
   label="Kaynak dosyalar"
   nodes={[{ id: "src", label: "src", icon: FolderIcon, children: [

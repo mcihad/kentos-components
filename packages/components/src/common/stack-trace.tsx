@@ -1,5 +1,5 @@
 import { ChevronRightIcon, Rows3Icon } from "lucide-react";
-import { type ComponentProps, Fragment, useMemo, useState } from "react";
+import { type ComponentProps, Fragment, type ReactNode, useMemo, useState } from "react";
 import { languageOf } from "../lib/highlight";
 import { cn } from "../lib/utils";
 import { Badge } from "../ui/badge";
@@ -53,6 +53,18 @@ function frameLocation(f: StackFrame): string {
 
 function frameName(f: StackFrame): string {
   return f.function || "<anonim>";
+}
+
+/** Lets long dotted or slashed names wrap after a separator instead of mid-word. */
+function breakable(name: string): ReactNode {
+  const parts = name.split(/(?<=[./\\:])/);
+  return parts.map((part, i) => (
+    // biome-ignore lint/suspicious/noArrayIndexKey: parts of a fixed string.
+    <Fragment key={i}>
+      {i > 0 ? <wbr /> : null}
+      {part}
+    </Fragment>
+  ));
 }
 
 /** The trace as text, newest call last (the order most runtimes print). */
@@ -125,14 +137,14 @@ function FrameRow({ frame, open, onToggle }: { frame: StackFrame; open: boolean;
         <span className="grid min-w-0 flex-1 gap-0.5">
           <span
             className={cn(
-              "break-all font-mono text-[0.8125rem]",
+              "break-words font-mono text-[0.8125rem]",
               frame.inApp ? "font-semibold text-strong" : "text-muted-foreground",
             )}
           >
-            {frameName(frame)}
+            {breakable(frameName(frame))}
           </span>
-          <span className="break-all font-mono text-muted-foreground text-xs">
-            {frame.filename ?? frame.absPath ?? frame.module ?? "?"}
+          <span className="break-words font-mono text-muted-foreground text-xs">
+            {breakable(frame.filename ?? frame.absPath ?? frame.module ?? "?")}
             {frame.lineNo ? (
               <span className="text-subtle">
                 :{frame.lineNo}
@@ -272,18 +284,24 @@ export function StackTrace({
   const text = stackTraceText(shown);
 
   return (
-    <div data-slot="stack-trace" className={cn("grid min-w-0 gap-3", className)} {...props}>
-      <div className="flex flex-wrap items-center gap-2">
-        <FilterChip selected={newestFirst} onClick={() => setNewestFirst((v) => !v)} disabled={raw}>
-          En yeni üstte
-        </FilterChip>
-        <FilterChip selected={all} onClick={() => setAll((v) => !v)} disabled={raw}>
-          Tüm kareler
-        </FilterChip>
-        <FilterChip selected={raw} onClick={() => setRaw((v) => !v)}>
-          Ham
-        </FilterChip>
-        <span className="flex-1" />
+    <div
+      data-slot="stack-trace"
+      className={cn("grid min-w-0 grid-cols-[minmax(0,1fr)] gap-3", className)}
+      {...props}
+    >
+      <div className="flex items-center gap-2">
+        {/* The chips scroll sideways on narrow screens; copy stays at the end. */}
+        <div className="-ml-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-0.5 pl-1 [scrollbar-width:none] max-sm:pr-6 max-sm:[mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)]">
+          <FilterChip selected={newestFirst} onClick={() => setNewestFirst((v) => !v)} disabled={raw}>
+            En yeni üstte
+          </FilterChip>
+          <FilterChip selected={all} onClick={() => setAll((v) => !v)} disabled={raw}>
+            Tüm kareler
+          </FilterChip>
+          <FilterChip selected={raw} onClick={() => setRaw((v) => !v)}>
+            Ham
+          </FilterChip>
+        </div>
         <CopyButton value={text} label="Yığın izini kopyala" />
       </div>
       {raw ? (

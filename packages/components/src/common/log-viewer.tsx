@@ -238,48 +238,64 @@ export function LogViewer({
       {...props}
     >
       {toolbar ? (
-        <div className="flex flex-wrap items-center gap-2 border-b p-2">
-          <SearchInput
-            value={query}
-            onValueChange={setQuery}
-            placeholder="Günlükte ara"
-            aria-label="Günlükte ara"
-            className="w-full sm:w-56"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                goTo(hit + (e.shiftKey ? -1 : 1));
-              }
-            }}
-          />
-          {folded ? (
-            <div className="flex items-center gap-0.5 text-muted-foreground text-xs">
-              <span aria-live="polite" className="tabular mr-1">
-                {hits.length ? `${hit + 1}/${formatNumber(hits.length)}` : "Eşleşme yok"}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-7"
-                aria-label="Önceki eşleşme"
-                disabled={!hits.length}
-                onClick={() => goTo(hit - 1)}
-              >
-                <ChevronUpIcon />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-7"
-                aria-label="Sonraki eşleşme"
-                disabled={!hits.length}
-                onClick={() => goTo(hit + 1)}
-              >
-                <ChevronDownIcon />
-              </Button>
-            </div>
-          ) : null}
-          <div className="flex flex-wrap items-center gap-1.5">
+        <div className="grid gap-2 border-b p-2">
+          {/* Search on the left, view buttons pinned right; level chips below. */}
+          <div className="flex items-center gap-2">
+            <SearchInput
+              value={query}
+              onValueChange={setQuery}
+              placeholder="Günlükte ara"
+              aria-label="Günlükte ara"
+              className="min-w-0 flex-1 sm:max-w-64"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  goTo(hit + (e.shiftKey ? -1 : 1));
+                }
+              }}
+            />
+            {folded ? (
+              <div className="flex items-center gap-0.5 text-muted-foreground text-xs">
+                <span aria-live="polite" className="tabular mr-1">
+                  {hits.length ? `${hit + 1}/${formatNumber(hits.length)}` : "Eşleşme yok"}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  aria-label="Önceki eşleşme"
+                  disabled={!hits.length}
+                  onClick={() => goTo(hit - 1)}
+                >
+                  <ChevronUpIcon />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  aria-label="Sonraki eşleşme"
+                  disabled={!hits.length}
+                  onClick={() => goTo(hit + 1)}
+                >
+                  <ChevronDownIcon />
+                </Button>
+              </div>
+            ) : null}
+            <span className="hidden flex-1 sm:block" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7 text-muted-foreground aria-pressed:bg-(--surface-active) aria-pressed:text-foreground"
+              aria-label="Satırları kaydır"
+              aria-pressed={wrap}
+              title="Satırları kaydır"
+              onClick={() => setWrap((w) => !w)}
+            >
+              <WrapTextIcon />
+            </Button>
+            <CopyButton value={text} label="Görünen satırları kopyala" />
+          </div>
+          <div className="-mx-2 flex items-center gap-1.5 overflow-x-auto px-2 [scrollbar-width:none] max-sm:pr-6 max-sm:[mask-image:linear-gradient(to_right,black_calc(100%-1.5rem),transparent)] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
             {levels
               .filter(({ level }) => counts[level] > 0)
               .map(({ level, label }) => (
@@ -301,19 +317,6 @@ export function LogViewer({
                 </FilterChip>
               ))}
           </div>
-          <span className="flex-1" />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-7 text-muted-foreground aria-pressed:bg-(--surface-active) aria-pressed:text-foreground"
-            aria-label="Satırları kaydır"
-            aria-pressed={wrap}
-            title="Satırları kaydır"
-            onClick={() => setWrap((w) => !w)}
-          >
-            <WrapTextIcon />
-          </Button>
-          <CopyButton value={text} label="Görünen satırları kopyala" />
         </div>
       ) : null}
       <div
@@ -350,7 +353,7 @@ export function LogViewer({
                 >
                   <span
                     aria-hidden
-                    className="w-[5ch] shrink-0 select-none text-right text-(--code-gutter) tabular"
+                    className="w-[5ch] shrink-0 select-none text-right text-(--code-gutter) tabular max-sm:hidden"
                   >
                     {item.index + 1}
                   </span>
