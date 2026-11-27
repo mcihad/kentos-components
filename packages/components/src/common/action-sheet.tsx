@@ -8,6 +8,7 @@ import {
   useCallback,
   useRef,
 } from "react";
+import { focusSheetOnTouch, followVisualViewport } from "../lib/sheet-viewport";
 import { cn } from "../lib/utils";
 
 /*
@@ -70,6 +71,7 @@ export function ActionSheetContent({
   showCancel = true,
   className,
   bodyClassName,
+  onOpenAutoFocus,
   children,
   ...props
 }: Omit<ComponentProps<typeof DialogPrimitive.Content>, "title"> & {
@@ -87,13 +89,19 @@ export function ActionSheetContent({
   const backdrop = useRef<HTMLDivElement | null>(null);
   const closer = useRef<HTMLButtonElement | null>(null);
   const drag = useRef<Drag | null>(null);
+  const stopFollowing = useRef<(() => void) | null>(null);
 
-  // Number the items once the panel mounts so they rise in one after another.
+  // Number the items once the panel mounts so they rise in one after another,
+  // and keep the sheet above the on-screen keyboard while it is open.
   const setPanel = useCallback((el: HTMLDivElement | null) => {
+    stopFollowing.current?.();
+    stopFollowing.current = null;
     panel.current = el;
-    el?.querySelectorAll<HTMLElement>(".kentos-sheet-item").forEach((item, i) => {
+    if (!el) return;
+    el.querySelectorAll<HTMLElement>(".kentos-sheet-item").forEach((item, i) => {
       item.style.setProperty("--i", String(Math.min(i, 12)));
     });
+    stopFollowing.current = followVisualViewport(el);
   }, []);
 
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -160,8 +168,15 @@ export function ActionSheetContent({
         ref={setPanel}
         data-slot="action-sheet"
         {...(description ? {} : { "aria-describedby": undefined })}
+        onOpenAutoFocus={(e) => {
+          onOpenAutoFocus?.(e);
+          focusSheetOnTouch(e, panel.current);
+        }}
         className={cn(
-          "kentos-sheet fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[min(88svh,44rem)] w-full flex-col rounded-t-2xl border border-b-0 bg-(--surface-card) text-foreground shadow-(--shadow-xl) outline-none sm:bottom-4 sm:max-w-md sm:rounded-2xl sm:border-b",
+          "kentos-sheet group/sheet fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[min(88svh,44rem)] w-full flex-col rounded-t-2xl border border-b-0 bg-(--surface-card) text-foreground shadow-(--shadow-xl) outline-none sm:bottom-4 sm:max-w-md sm:rounded-2xl sm:border-b",
+          // Above the on-screen keyboard and no taller than what stays visible
+          // (see lib/sheet-viewport).
+          "data-[keyboard]:bottom-(--kb-inset) data-[keyboard]:max-h-[calc(var(--vv-h)_-_0.75rem)] sm:data-[keyboard]:bottom-[calc(var(--kb-inset)_+_1rem)]",
           className,
         )}
         {...props}
@@ -196,7 +211,7 @@ export function ActionSheetContent({
           {children}
         </div>
         {showCancel ? (
-          <div className="shrink-0 border-t p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] sm:pb-2">
+          <div className="shrink-0 border-t p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] group-data-[keyboard]/sheet:pb-2 sm:pb-2">
             <DialogPrimitive.Close asChild>
               <button
                 type="button"
@@ -207,7 +222,7 @@ export function ActionSheetContent({
             </DialogPrimitive.Close>
           </div>
         ) : (
-          <div className="h-[env(safe-area-inset-bottom)] shrink-0 sm:hidden" />
+          <div className="h-[env(safe-area-inset-bottom)] shrink-0 group-data-[keyboard]/sheet:hidden sm:hidden" />
         )}
         <DialogPrimitive.Close ref={closer} tabIndex={-1} aria-hidden className="hidden" />
       </DialogPrimitive.Content>

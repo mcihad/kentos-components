@@ -1005,6 +1005,10 @@
     will-change: transform;
     backface-visibility: hidden;
     contain: layout paint style;
+    /* Follows the on-screen keyboard (lib/sheet-viewport) without jumping. */
+    transition:
+      bottom var(--duration-panel) var(--ease-out),
+      max-height var(--duration-panel) var(--ease-out);
   }
   .kentos-sheet[data-state="open"] {
     animation: kentos-sheet-in var(--duration-sheet) var(--ease-sheet) both;
@@ -1019,7 +1023,10 @@
   .kentos-sheet[data-settling]:not([data-state="closed"]) {
     animation: none;
     transform: translate3d(0, 0, 0);
-    transition: transform calc(var(--duration-sheet) * 0.8) var(--ease-sheet);
+    transition:
+      transform calc(var(--duration-sheet) * 0.8) var(--ease-sheet),
+      bottom var(--duration-panel) var(--ease-out),
+      max-height var(--duration-panel) var(--ease-out);
   }
   .kentos-backdrop {
     will-change: opacity;

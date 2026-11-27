@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { focusSheetOnTouch, followVisualViewport } from "../lib/sheet-viewport";
 import { useIsMobile } from "../lib/use-mobile";
 import { cn } from "../lib/utils";
 
@@ -130,6 +131,7 @@ export function DrawerContent({
   mobile,
   className,
   style,
+  onOpenAutoFocus,
   children,
   ...props
 }: ComponentProps<typeof DialogPrimitive.Content> & {
@@ -168,6 +170,7 @@ export function DrawerContent({
   // The sheet's height before any resizing: dragging down shrinks back to it
   // before it starts to close.
   const baseHeight = useRef<number | null>(null);
+  const stopFollowing = useRef<(() => void) | null>(null);
   const min = minSize ?? (horizontal ? 280 : 160);
   const max = () => maxSize ?? (horizontal ? window.innerWidth * 0.9 : window.innerHeight * 0.92);
 
@@ -179,14 +182,19 @@ export function DrawerContent({
   // so the remembered size is read here rather than once at first render.
   const setPanel = useCallback(
     (el: HTMLDivElement | null) => {
+      stopFollowing.current?.();
+      stopFollowing.current = null;
       panel.current = el;
-      if (!el || converted) return;
+      if (!el) return;
+      // A bottom sheet stays above the on-screen keyboard (lib/sheet-viewport).
+      if (effective === "bottom") stopFollowing.current = followVisualViewport(el);
+      if (converted) return;
       const remembered = readStored(sizeStorageKey);
       if (remembered === null) return;
       el.style.setProperty("--drawer-size", `${remembered}px`);
       el.setAttribute("data-sized", "");
     },
-    [converted, sizeStorageKey],
+    [converted, effective, sizeStorageKey],
   );
 
   // Bottom sheets: drag the grab handle. Down closes (with velocity); with
@@ -280,6 +288,10 @@ export function DrawerContent({
         data-slot="drawer"
         data-side={effective}
         style={vars}
+        onOpenAutoFocus={(e) => {
+          onOpenAutoFocus?.(e);
+          if (effective === "bottom") focusSheetOnTouch(e, panel.current);
+        }}
         className={cn(
           "fixed z-50 flex flex-col bg-(--surface-card) text-foreground shadow-(--shadow-xl) outline-none",
           // Side drawers slide with tw-animate (transform); bottom sheets use
@@ -296,12 +308,14 @@ export function DrawerContent({
           effective === "top" &&
             "inset-x-0 top-0 max-h-[92svh] rounded-b-2xl border-b pt-[env(safe-area-inset-top)] data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
           effective === "bottom" &&
-            "inset-x-0 bottom-0 max-h-[92svh] rounded-t-2xl border-t pb-[env(safe-area-inset-bottom)]",
+            "inset-x-0 bottom-0 max-h-[92svh] rounded-t-2xl border-t pb-[env(safe-area-inset-bottom)] data-[keyboard]:bottom-(--kb-inset) data-[keyboard]:pb-0",
           !horizontal &&
             (auto
               ? "h-auto data-[sized]:h-[min(var(--drawer-size),92svh)]"
               : "h-[min(var(--drawer-size),92svh)]"),
           !horizontal && resizable && "max-h-none",
+          // While the keyboard is up, no taller than what stays visible.
+          effective === "bottom" && "data-[keyboard]:max-h-[calc(var(--vv-h)_-_0.75rem)]",
           className,
         )}
         {...props}

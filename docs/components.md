@@ -861,6 +861,15 @@ a flick); a short drag springs back. Only `transform` and `opacity` animate
 (keyframes `kentos-sheet-*` in `tokens.css`, timing `--duration-sheet`,
 `--ease-sheet`); items rise in one after another.
 
+On-screen keyboard (`lib/sheet-viewport`, also used by bottom `Drawer`s):
+on touch screens the sheet focuses itself on opening instead of its first
+field, so the keyboard does not pop up mid-slide (Android opens it even for
+programmatic focus); the user taps the field to type. While the keyboard is
+up, `followVisualViewport` sets `data-keyboard`, `--kb-inset` and `--vv-h`
+on the sheet: it sits on top of the keyboard, is capped to the visible
+height and keeps the focused field in view. Mouse and keyboard users keep
+the default focus on the first focusable element.
+
 ### `common/fab` — `Fab`, `useHideOnScroll`
 
 `Fab` props: `icon` (default plus), `label`, `extended`, `hidden`. It has no
