@@ -155,8 +155,16 @@ export function AppShellSidebar({
   ...props
 }: ComponentProps<typeof Sidebar> & { hidden?: boolean }) {
   useRegion("sidebar", !hidden);
+  const { isMobile } = useSidebar();
   if (hidden) return null;
-  return <Sidebar className={cn("[grid-area:sidebar] h-(--shell-h) self-start", className)} {...props} />;
+  // The grid placement and shell height are for the desktop rail only: the
+  // phone drawer is portalled out of the shell and sizes to the viewport.
+  return (
+    <Sidebar
+      className={cn(!isMobile && "[grid-area:sidebar] h-(--shell-h) self-start", className)}
+      {...props}
+    />
+  );
 }
 
 /** A strip above the app bar for announcements (maintenance, trial ends). */

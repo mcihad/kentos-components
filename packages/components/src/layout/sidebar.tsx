@@ -228,8 +228,12 @@ export function Sidebar({
           data-slot="sidebar"
           data-mobile="true"
           className={cn(
-            "on-dark w-[min(20rem,86vw)] gap-0 border-(--sidebar-border) bg-(--sidebar-bg) p-0 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-(--sidebar-fg) sm:max-w-none",
+            "on-dark w-[min(20rem,86vw)] gap-0 overflow-hidden border-(--sidebar-border) bg-(--sidebar-bg) p-0 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-(--sidebar-fg) sm:max-w-none",
             className,
+            // Always exactly the visible viewport (dvh follows the phone's
+            // browser bars), so the content scrolls and the footer stays put
+            // whatever height classes the caller passes.
+            "inset-y-0 h-dvh max-h-dvh",
           )}
         >
           <SheetTitle className="sr-only">{label}</SheetTitle>
