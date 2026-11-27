@@ -33,7 +33,10 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-(--surface-overlay) data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        // Fades on the same curve and duration as the panel, so the dimming
+        // and the slide read as one movement.
+        "fixed inset-0 z-50 bg-(--surface-overlay) will-change-[opacity] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "data-[state=open]:duration-(--duration-sheet) data-[state=open]:ease-(--ease-sheet) data-[state=closed]:duration-[calc(var(--duration-sheet)*0.65)] data-[state=closed]:ease-(--ease-out)",
         className
       )}
       {...props}
@@ -57,7 +60,11 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-card shadow-(--shadow-xl) transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
+          // Opens with the long decelerating glide of native sheets (fast
+          // start, soft landing) and closes quicker. Only transform animates,
+          // on its own compositor layer, so heavy content does not stutter.
+          "fixed z-50 flex flex-col gap-4 bg-card shadow-(--shadow-xl) will-change-transform [backface-visibility:hidden] data-[state=closed]:animate-out data-[state=open]:animate-in",
+          "data-[state=open]:duration-(--duration-sheet) data-[state=open]:ease-(--ease-sheet) data-[state=closed]:duration-[calc(var(--duration-sheet)*0.65)] data-[state=closed]:ease-(--ease-out)",
           side === "right" &&
             "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
           side === "left" &&
