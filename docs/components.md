@@ -500,8 +500,19 @@ via `className="sm:max-w-md"`.
 
 ### `ui/sheet` — `Sheet`, `SheetTrigger`, `SheetContent`, `SheetHeader`, `SheetFooter`, `SheetTitle`, `SheetDescription`, `SheetClose`
 
-`SheetContent` takes `side="right" | "left" | "top" | "bottom"` and
-`showCloseButton`. Mobile navigation: `side="left"`.
+`SheetContent` takes `side="right" | "left" | "top" | "bottom"`,
+`showCloseButton` and `swipeToClose` (default true). Mobile navigation:
+`side="left"`.
+
+Swipe to close (`lib/swipe-dismiss`, also used by left/right `Drawer`s and
+so the phone sidebar): on touch screens a sideways swipe towards the edge
+drags the panel and fades the overlay; past 30% of the width or a flick it
+closes and the exit animation continues from there, otherwise it springs
+back. Vertical movement still scrolls (the panel is `touch-action: pan-y`);
+touches that start on inputs, sliders, sideways-scrolling areas or
+`[data-swipe-ignore]` are left alone, and the tap at the end of a swipe is
+swallowed so the link under the finger is not followed. Mouse drags are
+ignored.
 
 ### `ui/popover` — `Popover`, `PopoverTrigger`, `PopoverContent`, `PopoverAnchor`, `PopoverHeader`, `PopoverTitle`, `PopoverDescription`
 
@@ -626,6 +637,7 @@ own Radix copy and has no resizable side drawers.
 | `DrawerContent`                              | `side`: `right` (default), `left`, `top`, `bottom`. `size`: `sm \| md \| lg \| xl \| full \| auto` or a CSS length (width for left/right: 360–800px; height for top/bottom: 30–88svh). `mobileSide` (default `bottom`, or `same`) and `mobileSize` (default `auto`): what a side drawer becomes on phones. `resizable`, `minSize`, `maxSize` (px), `sizeStorageKey` (remembers the size), `showClose`, `closeLabel`, `mobile` (force). |
 | Resizing                                     | Left/right/top: a grip on the inner edge; drag it, or focus it and use the arrow keys (Shift ×4), Home and End; double-click restores the default. It is a `separator` with `aria-valuenow`. Bottom: pull the grab handle up to grow (up to 92% of the screen); pulling down shrinks back to the opening height, then closes.                                                                                                          |
 | Bottom sheets                                | Drag the grab handle down to close (over 28% of the height or a flick); a short drag springs back. Same motion as `ActionSheet`.                                                                                                                                                                                                                                                                                                       |
+| Swipe to close                               | Left/right drawers close with a sideways swipe on touch screens (see `ui/sheet`); top drawers do not.                                                                                                                                                                                                                                                                                                                                  |
 | `DrawerHeader`, `DrawerBody`, `DrawerFooter` | Header with room for the close button; scrolling body; footer that stays visible (buttons stack on phones).                                                                                                                                                                                                                                                                                                                            |
 
 Use a drawer for work that keeps the page in context; a `Dialog` for a

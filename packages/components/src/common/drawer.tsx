@@ -13,6 +13,7 @@ import {
   useState,
 } from "react";
 import { focusSheetOnTouch, followVisualViewport } from "../lib/sheet-viewport";
+import { attachSwipeDismiss } from "../lib/swipe-dismiss";
 import { useIsMobile } from "../lib/use-mobile";
 import { cn } from "../lib/utils";
 
@@ -170,7 +171,7 @@ export function DrawerContent({
   // The sheet's height before any resizing: dragging down shrinks back to it
   // before it starts to close.
   const baseHeight = useRef<number | null>(null);
-  const stopFollowing = useRef<(() => void) | null>(null);
+  const detachGestures = useRef<(() => void) | null>(null);
   const min = minSize ?? (horizontal ? 280 : 160);
   const max = () => maxSize ?? (horizontal ? window.innerWidth * 0.9 : window.innerHeight * 0.92);
 
@@ -182,12 +183,19 @@ export function DrawerContent({
   // so the remembered size is read here rather than once at first render.
   const setPanel = useCallback(
     (el: HTMLDivElement | null) => {
-      stopFollowing.current?.();
-      stopFollowing.current = null;
+      detachGestures.current?.();
+      detachGestures.current = null;
       panel.current = el;
       if (!el) return;
       // A bottom sheet stays above the on-screen keyboard (lib/sheet-viewport).
-      if (effective === "bottom") stopFollowing.current = followVisualViewport(el);
+      if (effective === "bottom") detachGestures.current = followVisualViewport(el);
+      // Side drawers close with a swipe towards their edge (touch only).
+      else if (effective === "left" || effective === "right")
+        detachGestures.current = attachSwipeDismiss(el, {
+          side: effective,
+          overlay: () => backdrop.current,
+          onDismiss: () => closer.current?.click(),
+        });
       if (converted) return;
       const remembered = readStored(sizeStorageKey);
       if (remembered === null) return;
@@ -302,9 +310,9 @@ export function DrawerContent({
             "transition-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-200 data-[state=open]:duration-(--duration-sheet) data-[state=open]:ease-(--ease-sheet)",
           animated && "kentos-sheet",
           effective === "right" &&
-            "inset-y-0 right-0 w-[min(var(--drawer-size),100vw)] border-l pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+            "inset-y-0 right-0 w-[min(var(--drawer-size),100vw)] touch-pan-y border-l pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
           effective === "left" &&
-            "inset-y-0 left-0 w-[min(var(--drawer-size),100vw)] border-r pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+            "inset-y-0 left-0 w-[min(var(--drawer-size),100vw)] touch-pan-y border-r pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
           effective === "top" &&
             "inset-x-0 top-0 max-h-[92svh] rounded-b-2xl border-b pt-[env(safe-area-inset-top)] data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
           effective === "bottom" &&
@@ -456,6 +464,7 @@ function ResizeHandle({
     // biome-ignore lint/a11y/useSemanticElements: an <hr> cannot be focused or dragged.
     <div
       role="separator"
+      data-swipe-ignore
       tabIndex={0}
       aria-orientation={horizontal ? "vertical" : "horizontal"}
       aria-label="Boyutu değiştir"
