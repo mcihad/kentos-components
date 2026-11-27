@@ -1004,6 +1004,64 @@ line), children (details under the title).
 </Timeline>;
 ```
 
+## Basics
+
+Small parts reused across lists, filter bars and wizards. Showcase page:
+"Temel parçalar".
+
+### `common/relative-time` — `RelativeTime`, `useNow`
+
+`RelativeTime` renders `formatRelative` ("az önce", "5 dk önce", then a
+date) in a `<time dateTime>` and keeps it current: every instance shares
+one ticker (15 s, only while the tab is visible). Props: `date` (Date,
+ISO string or ms), `live` (default true; false freezes it), `tooltip`
+(default true: the exact date and time on hover; false puts it in `title`).
+The first render shows the absolute date so server and client agree.
+`useNow(live)` exposes the shared clock.
+
+### `common/filter-chip` — `FilterChip`, `FilterChipGroup`, `FilterChipItem`
+
+Rounded toggles above a list. `FilterChipGroup` is a Radix ToggleGroup
+(`type="multiple" | "single"`, one tab stop, arrow keys); `FilterChipItem`
+takes `value`, `icon`, `count`. A standalone `FilterChip` is a toggle
+button (`selected`, `aria-pressed`); with `menu` it shows a caret and is a
+dropdown trigger (`selected` tints it). Selected chips use the accent and
+swap the icon for a check.
+
+### `common/tag-input` — `TagInput`
+
+Free-text tags in one field (`value`, `onValueChange`). Enter or a comma
+adds (also when the comma arrives as text from a phone keyboard); a pasted
+list split on commas, semicolons or new lines adds each item; Backspace in
+an empty field selects the last tag, a second one removes it. Duplicates
+(Turkish case-insensitive) are skipped. `validate` returns an error sentence
+to reject a tag (shown under the field, the text stays to be fixed);
+`normalize` cleans tags (default trim); `max` hides the field when reached.
+Tags are `Badge`s with a remove button (`removeLabel`). For a known list of
+options use `MultiSelect`; a single removable label is
+`<Badge onRemove>`.
+
+### `common/stepper` — `Stepper`, `Step`
+
+`Stepper` takes `current` (earlier steps are complete), `orientation`
+(`horizontal | vertical`) and `label`. `Step` takes `title`,
+`description`, `state` (`complete | current | upcoming | error`, overriding
+the derived one), `href` or `onClick` (a link or button, e.g. back to a
+finished step) and, in vertical steppers, children shown under the current
+step. The current step has `aria-current="step"`; each step announces its
+state. On phones a horizontal stepper keeps only the numbered circles and
+writes "Adım 2/4: …" underneath.
+
+### `common/tree-view` — `TreeView`, `TreeNode`
+
+WAI-ARIA tree from `nodes` (`id`, `label`, `text` for type-ahead, `icon`,
+`aside`, `children`, `hasChildren` for branches loaded on demand,
+`disabled`). Expanded and selected are controlled (`expanded` +
+`onExpandedChange`, `selected` + `onSelect`) or not (`defaultExpanded`,
+`defaultSelected`). One tab stop; Up/Down, Right (open, then enter), Left
+(close, then parent), Home/End, `*` (open all siblings), type-ahead,
+Enter/Space to select. Clicking a branch row selects it and toggles it.
+
 ## Navigation and layout
 
 ### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `TabsBadge`, `TabsNav`, `TabsNavItem`, `tabsListVariants`

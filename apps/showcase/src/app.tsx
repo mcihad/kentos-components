@@ -43,6 +43,7 @@ import {
   PanelRightIcon,
   PanelsTopLeftIcon,
   Rows3Icon,
+  ShapesIcon,
   SquareMenuIcon,
   SunIcon,
   SwatchBookIcon,
@@ -51,6 +52,7 @@ import {
 } from "lucide-react";
 import { type ComponentType, useEffect, useState } from "react";
 import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
+import { BasicsPage } from "./pages/basics";
 import { ButtonsPage } from "./pages/buttons";
 import { ChoicesPage } from "./pages/choices";
 import { ContentPage } from "./pages/content";
@@ -188,6 +190,27 @@ const pages: ShowcasePage[] = [
       "dl",
     ],
     component: ContentPage,
+  },
+  {
+    id: "basics",
+    label: "Temel parçalar",
+    group: "Bileşenler",
+    icon: ShapesIcon,
+    keywords: [
+      "RelativeTime",
+      "göreli zaman",
+      "FilterChip",
+      "çip",
+      "süzgeç",
+      "TagInput",
+      "etiket",
+      "Stepper",
+      "adım",
+      "sihirbaz",
+      "TreeView",
+      "ağaç",
+    ],
+    component: BasicsPage,
   },
   {
     id: "feedback",
