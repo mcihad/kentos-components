@@ -238,13 +238,17 @@ export function ConfirmDialog({
   const [typed, setTyped] = useState("");
   const inputId = useId();
 
-  useEffect(() => {
+  // Reset on every opening, during render so the first frame is already
+  // clean (an effect would paint the previous error or spinner once).
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
     if (open) {
       setError(undefined);
       setTyped("");
       setPending(false);
     }
-  }, [open]);
+  }
 
   // Case does not matter: e-mail addresses and slugs are typed as people remember them.
   const blocked =
@@ -261,10 +265,11 @@ export function ConfirmDialog({
     setPending(true);
     try {
       await result;
+      // Stays pending: the dialog fades out exactly as it was, instead of
+      // swapping the spinner for the label mid-animation.
       onOpenChange(false);
     } catch (e) {
       setError(describeError(e, errorFallback));
-    } finally {
       setPending(false);
     }
   };
@@ -370,14 +375,17 @@ export function InputDialog({
   const id = useId();
   const field = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
 
-  useEffect(() => {
+  // Reset on every opening, during render (see ConfirmDialog).
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
     if (open) {
       setValue(defaultValue);
       setError(undefined);
       setSubmitError(undefined);
       setPending(false);
     }
-  }, [open, defaultValue]);
+  }
 
   const submit = async (e?: FormEvent) => {
     e?.preventDefault();
@@ -399,10 +407,10 @@ export function InputDialog({
     setPending(true);
     try {
       await result;
+      // Stays pending while it fades out (see ConfirmDialog).
       onOpenChange(false);
     } catch (err) {
       setSubmitError(describeError(err, errorFallback));
-    } finally {
       setPending(false);
     }
   };
