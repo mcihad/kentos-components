@@ -1062,6 +1062,79 @@ WAI-ARIA tree from `nodes` (`id`, `label`, `text` for type-ahead, `icon`,
 (close, then parent), Home/End, `*` (open all siblings), type-ahead,
 Enter/Space to select. Clicking a branch row selects it and toggles it.
 
+## Code and data
+
+Things looked at while debugging. Showcase page: "Kod ve veri". Colours
+come from the `--code-*` tokens (light and dark): `--code-bg`,
+`--code-gutter`, `--code-line-hl` / `--code-line-hl-border`,
+`--code-comment`, `--code-string`, `--code-number`, `--code-keyword`,
+`--code-type`.
+
+### `lib/highlight` — `highlightLines`, `languageOf`, `tokenClass`
+
+A small line-based highlighter, not a parser: comments, strings, numbers,
+keywords, literals (`true`, `null`, `None`…) and capitalised type names for
+`js`, `ts`, `json` (keys apart from values), `csharp`, `python`, `bash`,
+`go`, `sql`; `plain` turns it off. Block comments carry across lines.
+`languageOf(fileName)` picks the language from an extension. No grammar
+library is shipped.
+
+### `common/code-block` — `CodeBlock`
+
+Read-only code. Props: `code`, `language` (default from `filename`),
+`filename` or `title` (header), `startLine` (for a slice of a file),
+`highlight` (line numbers as shown), `lineNumbers` (default true), `wrap`
+(controlled; without it a wrap toggle sits in the header), `copy` (default
+true), `maxHeight`, `actions` (extra header buttons). The line-number
+gutter stays put while long lines scroll sideways. Without a header the
+copy button appears on hover (always on phones).
+
+### `common/json-viewer` — `JsonViewer`
+
+Collapsible JSON-like data. Props: `value`, `defaultExpandDepth` (default
+1; 0 all closed, `Infinity` all open), `sortKeys`, `toolbar` (default true:
+"Tümünü aç", "Tümünü kapat", copy as JSON), `label`. Collapsed containers
+show their key or item count; strings over 160 characters are cut with a
+"Tamamını göster" button; bigints are copied as strings.
+
+### `common/stack-trace` — `StackTrace`, `stackTraceText`, types `StackException`, `StackFrame`
+
+Exceptions shaped like Sentry's `exception.values` (cause first, frames
+oldest first). `StackFrame`: `function`, `module`, `filename`, `absPath`,
+`lineNo`, `colNo`, `inApp`, `context` (`pre`, `line`, `post`), `vars`,
+`package`. Application frames are emphasised and badged; runs of library
+frames fold into one row until "Tüm kareler" is on (when no frame is in-app
+nothing folds). A frame opens to a `CodeBlock` of its context (failing line
+highlighted) and a `JsonViewer` of its variables; the first application
+frame starts open. Toggles: "En yeni üstte" (`defaultNewestFirst`, default
+true), "Tüm kareler", "Ham" (plain text, also what the copy button copies,
+built by `stackTraceText`). The raised exception comes first, its causes
+after a "Neden olan" divider. `mechanism.handled` shows "İşlenmedi" /
+"İşlendi".
+
+### `common/log-viewer` — `LogViewer`, types `LogLine`, `LogLevel`
+
+Virtualised log (`lines`: `id`, `time`, `level` `debug | info | warn |
+error | fatal`, `source`, `message`). Props: `height` (default "24rem"),
+`follow` (default true), `showSource`, `toolbar`, `emptyText`. Toolbar:
+Turkish-aware search that highlights matches and steps through them
+(Enter / Shift+Enter, counter announced politely), level chips with counts
+(hide or show a level), wrap toggle, copy of the visible lines. Following
+the tail: while scrolled to the bottom new lines keep it there (decided
+from the scroll position before the lines arrived, so a pending scroll is
+not overridden); scrolled up, a button counts new lines and jumps back.
+Warnings and errors tint their rows. The scroll area is focusable
+(`role="log"`).
+
+### `lib/use-virtual` — `useVirtualizer`
+
+Windowing hook: `count`, `estimate` (row height before measuring),
+`overscan`, `scrollRef`. Returns `items` (`index`, `start`, `size`),
+`totalSize`, `measure(index)` (callback ref; a ResizeObserver keeps
+heights current, so rows may wrap or grow), `scrollToIndex(index, align)`
+and `reset()` (forget measurements after the row content changes, e.g. a
+filter or wrapping).
+
 ## Navigation and layout
 
 ### `ui/tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `TabsBadge`, `TabsNav`, `TabsNavItem`, `tabsListVariants`

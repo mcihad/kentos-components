@@ -311,6 +311,17 @@
 
   --tabs-fg-active: var(--navy-800);
   --tabs-indicator: var(--navy-800);
+
+  /* Code (lib/highlight, CodeBlock, StackTrace, LogViewer). */
+  --code-bg: var(--neutral-50);
+  --code-gutter: var(--neutral-400);
+  --code-line-hl: rgb(197 140 30 / 0.14);
+  --code-line-hl-border: var(--amber-500);
+  --code-comment: var(--neutral-500);
+  --code-string: var(--green-700);
+  --code-number: var(--amber-700);
+  --code-keyword: var(--violet-700);
+  --code-type: var(--teal-700);
 }
 
 .dark {
@@ -378,6 +389,16 @@
   --tooltip-bg: var(--chrome-500);
   --tabs-fg-active: var(--text-strong);
   --tabs-indicator: var(--navy-400);
+
+  --code-bg: var(--chrome-900);
+  --code-gutter: var(--neutral-500);
+  --code-line-hl: rgb(197 140 30 / 0.16);
+  --code-line-hl-border: var(--amber-400);
+  --code-comment: var(--neutral-400);
+  --code-string: var(--green-300);
+  --code-number: var(--amber-300);
+  --code-keyword: var(--violet-300);
+  --code-type: var(--teal-300);
 }
 
 /* 3. Theme scopes. Each is one class on <html>; they compose.

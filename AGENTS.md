@@ -19,7 +19,8 @@ The **KentOS design system** ("KentOS Yönetim" kit) as one package,
 shadcn/ui (new-york) primitives on Radix, composites built on them (form
 field, input groups, OTP, choice cards, combobox and multi-select,
 calendar and date pickers, description list, timeline, relative time,
-filter chips, tag input, stepper, tree view, data table,
+filter chips, tag input, stepper, tree view, code block, JSON viewer,
+stack trace, log viewer (virtualised), data table,
 dialogs, drawer, menus, stat cards, empty/error states, appearance panel,
 avatar, table classes), the application shell and page frame, two charts
 and Turkish formatting and date helpers. It is consumed as **TypeScript source** (no build step)

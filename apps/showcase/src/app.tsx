@@ -28,6 +28,7 @@ import {
   BookOpenIcon,
   CalendarDaysIcon,
   ChartColumnIcon,
+  CodeXmlIcon,
   FolderOpenIcon,
   FormInputIcon,
   LayersIcon,
@@ -55,6 +56,7 @@ import { type PageMeta, PageMetaContext, ToastToneContext } from "./demo";
 import { BasicsPage } from "./pages/basics";
 import { ButtonsPage } from "./pages/buttons";
 import { ChoicesPage } from "./pages/choices";
+import { CodePage } from "./pages/code";
 import { ContentPage } from "./pages/content";
 import { DataPage } from "./pages/data";
 import { DataTablePage } from "./pages/data-table";
@@ -211,6 +213,26 @@ const pages: ShowcasePage[] = [
       "ağaç",
     ],
     component: BasicsPage,
+  },
+  {
+    id: "code",
+    label: "Kod ve veri",
+    group: "Bileşenler",
+    icon: CodeXmlIcon,
+    keywords: [
+      "CodeBlock",
+      "kod",
+      "JsonViewer",
+      "JSON",
+      "StackTrace",
+      "yığın izi",
+      "stack trace",
+      "LogViewer",
+      "günlük",
+      "log",
+      "useVirtualizer",
+    ],
+    component: CodePage,
   },
   {
     id: "feedback",
