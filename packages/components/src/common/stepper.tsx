@@ -143,7 +143,7 @@ export function Step({
     </span>
   );
   const text = (
-    <span className={cn("grid min-w-0 gap-0.5", !vertical && "max-sm:sr-only")}>
+    <span className={cn("grid min-w-0 gap-0.5 pt-1.5", !vertical && "max-sm:sr-only")}>
       <span
         className={cn(
           "font-medium text-sm leading-snug",
@@ -165,7 +165,7 @@ export function Step({
   );
   const headClass = cn(
     "flex min-w-0 gap-3 rounded-md outline-none",
-    vertical ? "items-start" : "flex-col items-center text-center sm:flex-row sm:items-center sm:text-left",
+    vertical ? "items-start" : "flex-col items-center text-center sm:flex-row sm:items-start sm:text-left",
   );
   const headEl = href ? (
     <a
@@ -199,7 +199,7 @@ export function Step({
       aria-current={state === "current" ? "step" : undefined}
       className={cn(
         "relative flex min-w-0",
-        vertical ? "flex-col pb-6 last:pb-0" : "flex-1 items-center gap-3 last:flex-none",
+        vertical ? "flex-col pb-6 last:pb-0" : "flex-1 items-center last:flex-none",
         className,
       )}
       {...props}
@@ -210,11 +210,13 @@ export function Step({
         <span
           aria-hidden
           className={cn(
-            "rounded-full transition-colors duration-(--duration-base)",
+            "transition-colors duration-(--duration-base)",
             state === "complete" ? "bg-(--brand-bg)" : "bg-(--border-default)",
             vertical
-              ? "absolute top-10 bottom-2 left-[calc(1rem-1px)] w-0.5"
-              : "mx-1 h-0.5 min-w-4 flex-1 self-start max-sm:mt-[0.9375rem] sm:self-center",
+              ? // From the bottom of this circle to the top of the next one.
+                "absolute top-8 bottom-0 left-[calc(1rem-1px)] w-0.5"
+              : // Circle to circle on phones; after the title from sm up.
+                "mt-[0.9375rem] h-0.5 min-w-4 flex-1 self-start sm:ml-3",
           )}
         />
       ) : null}
