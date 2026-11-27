@@ -140,6 +140,18 @@ function ErrorLine({ message }: { message?: string }) {
   );
 }
 
+/**
+ * While the dialog closes, keeps showing what it showed when last open.
+ * Callers often clear the data behind a dialog as they close it
+ * (`onOpenChange={() => setItem(null)}`); without this the title, tone and
+ * buttons would change mid-fade and the dialog would flicker.
+ */
+function HoldWhileClosing({ open, children }: { open: boolean; children: ReactNode }) {
+  const shown = useRef(children);
+  if (open) shown.current = children;
+  return <>{open ? children : shown.current}</>;
+}
+
 type Controlled = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -171,20 +183,22 @@ export function MessageDialog({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
-        <Heading tone={tone} icon={icon} title={title} description={description}>
-          {children}
-        </Heading>
-        <div className={footerClass}>
-          <Button
-            variant={tone === "danger" ? "destructive" : "default"}
-            onClick={() => {
-              onOk?.();
-              onOpenChange(false);
-            }}
-          >
-            {okLabel}
-          </Button>
-        </div>
+        <HoldWhileClosing open={open}>
+          <Heading tone={tone} icon={icon} title={title} description={description}>
+            {children}
+          </Heading>
+          <div className={footerClass}>
+            <Button
+              variant={tone === "danger" ? "destructive" : "default"}
+              onClick={() => {
+                onOk?.();
+                onOpenChange(false);
+              }}
+            >
+              {okLabel}
+            </Button>
+          </div>
+        </HoldWhileClosing>
       </AlertDialogContent>
     </AlertDialog>
   );
@@ -284,43 +298,45 @@ export function ConfirmDialog({
       }}
     >
       <AlertDialogContent>
-        <Heading tone={tone} icon={icon} title={title} description={description}>
-          {children}
-        </Heading>
-        {confirmText !== undefined ? (
-          <div className="grid gap-2">
-            <Label htmlFor={inputId} className="font-normal text-sm">
-              {confirmTextLabel ?? (
-                <span>
-                  Onaylamak için <strong className="font-mono font-semibold">{confirmText}</strong> yazın
-                </span>
-              )}
-            </Label>
-            <Input
-              id={inputId}
-              value={typed}
-              onChange={(e) => setTyped(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") void run();
-              }}
-              autoComplete="off"
-              spellCheck={false}
-              disabled={pending}
-            />
+        <HoldWhileClosing open={open}>
+          <Heading tone={tone} icon={icon} title={title} description={description}>
+            {children}
+          </Heading>
+          {confirmText !== undefined ? (
+            <div className="grid gap-2">
+              <Label htmlFor={inputId} className="font-normal text-sm">
+                {confirmTextLabel ?? (
+                  <span>
+                    Onaylamak için <strong className="font-mono font-semibold">{confirmText}</strong> yazın
+                  </span>
+                )}
+              </Label>
+              <Input
+                id={inputId}
+                value={typed}
+                onChange={(e) => setTyped(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") void run();
+                }}
+                autoComplete="off"
+                spellCheck={false}
+                disabled={pending}
+              />
+            </div>
+          ) : null}
+          <ErrorLine message={error} />
+          <div className={footerClass}>
+            <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
+            <Button
+              variant={tone === "danger" ? "destructive" : "default"}
+              disabled={blocked || pending}
+              onClick={() => void run()}
+            >
+              {pending ? <Spinner label={pendingLabel ?? confirmLabel} /> : null}
+              {pending && pendingLabel ? pendingLabel : confirmLabel}
+            </Button>
           </div>
-        ) : null}
-        <ErrorLine message={error} />
-        <div className={footerClass}>
-          <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
-          <Button
-            variant={tone === "danger" ? "destructive" : "default"}
-            disabled={blocked || pending}
-            onClick={() => void run()}
-          >
-            {pending ? <Spinner label={pendingLabel ?? confirmLabel} /> : null}
-            {pending && pendingLabel ? pendingLabel : confirmLabel}
-          </Button>
-        </div>
+        </HoldWhileClosing>
       </AlertDialogContent>
     </AlertDialog>
   );
@@ -419,56 +435,58 @@ export function InputDialog({
   return (
     <Dialog open={open} onOpenChange={(next) => (pending ? undefined : onOpenChange(next))}>
       <DialogContent showCloseButton={false} className="sm:max-w-md">
-        <form onSubmit={(e) => void submit(e)} className="grid gap-4" noValidate>
-          <div className="grid gap-1.5">
-            <DialogTitle>{title}</DialogTitle>
-            {description ? <DialogDescription>{description}</DialogDescription> : null}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor={id}>{label}</Label>
-            <Field
-              ref={field}
-              id={id}
-              type={multiline ? undefined : type}
-              value={value}
-              onChange={(e) => {
-                setValue(e.target.value);
-                if (error) setError(undefined);
-              }}
-              placeholder={placeholder}
-              maxLength={maxLength}
-              aria-invalid={!!error}
-              aria-describedby={error || hint ? `${id}-note` : undefined}
-              disabled={pending}
-              autoFocus
-              rows={multiline ? 4 : undefined}
-            />
-            {error ? (
-              <p id={`${id}-note`} role="alert" className="text-(--status-danger-fg) text-sm">
-                {error}
-              </p>
-            ) : hint ? (
-              <p id={`${id}-note`} className="text-muted-foreground text-sm">
-                {hint}
-              </p>
-            ) : null}
-            {maxLength ? (
-              <p className="justify-self-end text-subtle text-xs tabular">
-                {value.length}/{maxLength}
-              </p>
-            ) : null}
-          </div>
-          <ErrorLine message={submitError} />
-          <div className={footerClass}>
-            <Button type="button" variant="outline" disabled={pending} onClick={() => onOpenChange(false)}>
-              {cancelLabel}
-            </Button>
-            <Button type="submit" disabled={pending}>
-              {pending ? <Spinner label={pendingLabel ?? submitLabel} /> : null}
-              {pending && pendingLabel ? pendingLabel : submitLabel}
-            </Button>
-          </div>
-        </form>
+        <HoldWhileClosing open={open}>
+          <form onSubmit={(e) => void submit(e)} className="grid gap-4" noValidate>
+            <div className="grid gap-1.5">
+              <DialogTitle>{title}</DialogTitle>
+              {description ? <DialogDescription>{description}</DialogDescription> : null}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor={id}>{label}</Label>
+              <Field
+                ref={field}
+                id={id}
+                type={multiline ? undefined : type}
+                value={value}
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  if (error) setError(undefined);
+                }}
+                placeholder={placeholder}
+                maxLength={maxLength}
+                aria-invalid={!!error}
+                aria-describedby={error || hint ? `${id}-note` : undefined}
+                disabled={pending}
+                autoFocus
+                rows={multiline ? 4 : undefined}
+              />
+              {error ? (
+                <p id={`${id}-note`} role="alert" className="text-(--status-danger-fg) text-sm">
+                  {error}
+                </p>
+              ) : hint ? (
+                <p id={`${id}-note`} className="text-muted-foreground text-sm">
+                  {hint}
+                </p>
+              ) : null}
+              {maxLength ? (
+                <p className="justify-self-end text-subtle text-xs tabular">
+                  {value.length}/{maxLength}
+                </p>
+              ) : null}
+            </div>
+            <ErrorLine message={submitError} />
+            <div className={footerClass}>
+              <Button type="button" variant="outline" disabled={pending} onClick={() => onOpenChange(false)}>
+                {cancelLabel}
+              </Button>
+              <Button type="submit" disabled={pending}>
+                {pending ? <Spinner label={pendingLabel ?? submitLabel} /> : null}
+                {pending && pendingLabel ? pendingLabel : submitLabel}
+              </Button>
+            </div>
+          </form>
+        </HoldWhileClosing>
       </DialogContent>
     </Dialog>
   );
@@ -500,21 +518,23 @@ export function BusyDialog({
           if (!onCancel) e.preventDefault();
         }}
       >
-        <div className="grid justify-items-center gap-3 py-2 text-center">
-          <span className="grid size-12 place-items-center rounded-full bg-brand-subtle text-brand-ink">
-            <Spinner className="size-6" label="Çalışıyor" />
-          </span>
-          <AlertDialogTitle className="text-md">{title}</AlertDialogTitle>
-          {description ? <AlertDialogDescription>{description}</AlertDialogDescription> : null}
-          {!description ? (
-            <AlertDialogDescription className="sr-only">Lütfen bekleyin</AlertDialogDescription>
+        <HoldWhileClosing open={open}>
+          <div className="grid justify-items-center gap-3 py-2 text-center">
+            <span className="grid size-12 place-items-center rounded-full bg-brand-subtle text-brand-ink">
+              <Spinner className="size-6" label="Çalışıyor" />
+            </span>
+            <AlertDialogTitle className="text-md">{title}</AlertDialogTitle>
+            {description ? <AlertDialogDescription>{description}</AlertDialogDescription> : null}
+            {!description ? (
+              <AlertDialogDescription className="sr-only">Lütfen bekleyin</AlertDialogDescription>
+            ) : null}
+          </div>
+          {onCancel ? (
+            <Button variant="outline" onClick={onCancel}>
+              {cancelLabel}
+            </Button>
           ) : null}
-        </div>
-        {onCancel ? (
-          <Button variant="outline" onClick={onCancel}>
-            {cancelLabel}
-          </Button>
-        ) : null}
+        </HoldWhileClosing>
       </AlertDialogContent>
     </AlertDialog>
   );
@@ -580,52 +600,54 @@ export function ProgressDialog({
           }
         }}
       >
-        <Heading
-          tone={done ? "success" : "info"}
-          icon={done ? CircleCheckIcon : undefined}
-          title={done && doneTitle ? doneTitle : title}
-          description={description}
-        />
-        <div className="grid gap-2">
-          <div className="flex items-baseline justify-between gap-3 text-sm">
-            <span className="min-w-0 truncate text-muted-foreground" aria-live="polite">
-              {status}
-            </span>
-            {percent !== null ? (
-              <span className="font-semibold text-strong tabular">%{done ? 100 : percent}</span>
+        <HoldWhileClosing open={open}>
+          <Heading
+            tone={done ? "success" : "info"}
+            icon={done ? CircleCheckIcon : undefined}
+            title={done && doneTitle ? doneTitle : title}
+            description={description}
+          />
+          <div className="grid gap-2">
+            <div className="flex items-baseline justify-between gap-3 text-sm">
+              <span className="min-w-0 truncate text-muted-foreground" aria-live="polite">
+                {status}
+              </span>
+              {percent !== null ? (
+                <span className="font-semibold text-strong tabular">%{done ? 100 : percent}</span>
+              ) : null}
+            </div>
+            <Progress
+              value={done ? max : value}
+              max={max}
+              aria-label="İlerleme"
+              indicatorClassName={done ? "bg-(--status-success-fg)" : undefined}
+            />
+          </div>
+          {steps?.length ? (
+            <ol className="grid gap-2 rounded-lg border bg-sunken px-3 py-2.5 text-sm">
+              {steps.map((step, i) => (
+                <li
+                  // biome-ignore lint/suspicious/noArrayIndexKey: steps are positional.
+                  key={i}
+                  data-state={step.state}
+                  className="flex items-center gap-2.5 data-[state=active]:font-medium data-[state=active]:text-strong data-[state=pending]:text-muted-foreground"
+                >
+                  <StepIcon state={step.state} />
+                  <span className="min-w-0 flex-1">{step.label}</span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          <div className={footerClass}>
+            {done ? (
+              <Button onClick={() => onOpenChange(false)}>{doneLabel}</Button>
+            ) : onCancel ? (
+              <Button variant="outline" onClick={onCancel}>
+                {cancelLabel}
+              </Button>
             ) : null}
           </div>
-          <Progress
-            value={done ? max : value}
-            max={max}
-            aria-label="İlerleme"
-            indicatorClassName={done ? "bg-(--status-success-fg)" : undefined}
-          />
-        </div>
-        {steps?.length ? (
-          <ol className="grid gap-2 rounded-lg border bg-sunken px-3 py-2.5 text-sm">
-            {steps.map((step, i) => (
-              <li
-                // biome-ignore lint/suspicious/noArrayIndexKey: steps are positional.
-                key={i}
-                data-state={step.state}
-                className="flex items-center gap-2.5 data-[state=active]:font-medium data-[state=active]:text-strong data-[state=pending]:text-muted-foreground"
-              >
-                <StepIcon state={step.state} />
-                <span className="min-w-0 flex-1">{step.label}</span>
-              </li>
-            ))}
-          </ol>
-        ) : null}
-        <div className={footerClass}>
-          {done ? (
-            <Button onClick={() => onOpenChange(false)}>{doneLabel}</Button>
-          ) : onCancel ? (
-            <Button variant="outline" onClick={onCancel}>
-              {cancelLabel}
-            </Button>
-          ) : null}
-        </div>
+        </HoldWhileClosing>
       </AlertDialogContent>
     </AlertDialog>
   );
@@ -658,24 +680,26 @@ export function LoadingDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={cn("sm:max-w-lg", className)} aria-busy={loading}>
-        <div className="grid gap-1.5 pr-8">
-          <DialogTitle>{title}</DialogTitle>
-          {description ? <DialogDescription>{description}</DialogDescription> : null}
-        </div>
-        {loading ? (
-          <div className="grid gap-2.5" role="status" aria-label="Yükleniyor">
-            {Array.from({ length: lines }, (_, i) => (
-              <Skeleton
-                // biome-ignore lint/suspicious/noArrayIndexKey: placeholders.
-                key={i}
-                className={cn("h-4", i === lines - 1 ? "w-2/3" : i % 2 ? "w-5/6" : "w-full")}
-              />
-            ))}
+        <HoldWhileClosing open={open}>
+          <div className="grid gap-1.5 pr-8">
+            <DialogTitle>{title}</DialogTitle>
+            {description ? <DialogDescription>{description}</DialogDescription> : null}
           </div>
-        ) : (
-          <div className="min-w-0 text-sm">{children}</div>
-        )}
-        {footer ? <div className={footerClass}>{footer}</div> : null}
+          {loading ? (
+            <div className="grid gap-2.5" role="status" aria-label="Yükleniyor">
+              {Array.from({ length: lines }, (_, i) => (
+                <Skeleton
+                  // biome-ignore lint/suspicious/noArrayIndexKey: placeholders.
+                  key={i}
+                  className={cn("h-4", i === lines - 1 ? "w-2/3" : i % 2 ? "w-5/6" : "w-full")}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="min-w-0 text-sm">{children}</div>
+          )}
+          {footer ? <div className={footerClass}>{footer}</div> : null}
+        </HoldWhileClosing>
       </DialogContent>
     </Dialog>
   );
@@ -748,62 +772,64 @@ export function CountdownDialog({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent onEscapeKeyDown={() => onConfirm?.()}>
-        <div className="flex gap-4">
-          <div className="relative grid size-16 shrink-0 place-items-center" aria-hidden>
-            <svg viewBox="0 0 64 64" className="absolute inset-0 size-16 -rotate-90">
-              <circle
-                cx="32"
-                cy="32"
-                r={ringRadius}
-                fill="none"
-                stroke="var(--surface-muted)"
-                strokeWidth="5"
-              />
-              <circle
-                key={open ? "running" : "idle"}
-                cx="32"
-                cy="32"
-                r={ringRadius}
-                fill="none"
-                stroke={stroke}
-                strokeWidth="5"
-                strokeLinecap="round"
-                strokeDasharray={ringLength}
-                style={{
-                  ["--ring-length" as string]: `${ringLength}`,
-                  animation: open ? `kentos-countdown ${seconds}s linear forwards` : undefined,
+        <HoldWhileClosing open={open}>
+          <div className="flex gap-4">
+            <div className="relative grid size-16 shrink-0 place-items-center" aria-hidden>
+              <svg viewBox="0 0 64 64" className="absolute inset-0 size-16 -rotate-90">
+                <circle
+                  cx="32"
+                  cy="32"
+                  r={ringRadius}
+                  fill="none"
+                  stroke="var(--surface-muted)"
+                  strokeWidth="5"
+                />
+                <circle
+                  key={open ? "running" : "idle"}
+                  cx="32"
+                  cy="32"
+                  r={ringRadius}
+                  fill="none"
+                  stroke={stroke}
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeDasharray={ringLength}
+                  style={{
+                    ["--ring-length" as string]: `${ringLength}`,
+                    animation: open ? `kentos-countdown ${seconds}s linear forwards` : undefined,
+                  }}
+                />
+              </svg>
+              <span className="font-semibold text-lg text-strong tabular">{remaining}</span>
+            </div>
+            <div className="grid min-w-0 flex-1 content-start gap-1.5 pt-1">
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+              <AlertDialogDescription aria-live="polite">{text}</AlertDialogDescription>
+            </div>
+          </div>
+          <div className={footerClass}>
+            {cancelLabel ? (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  onCancel?.();
+                  onOpenChange(false);
                 }}
-              />
-            </svg>
-            <span className="font-semibold text-lg text-strong tabular">{remaining}</span>
-          </div>
-          <div className="grid min-w-0 flex-1 content-start gap-1.5 pt-1">
-            <AlertDialogTitle>{title}</AlertDialogTitle>
-            <AlertDialogDescription aria-live="polite">{text}</AlertDialogDescription>
-          </div>
-        </div>
-        <div className={footerClass}>
-          {cancelLabel ? (
+              >
+                {cancelLabel}
+              </Button>
+            ) : null}
             <Button
-              variant="outline"
+              variant={tone === "danger" ? "destructive" : "default"}
               onClick={() => {
-                onCancel?.();
+                onConfirm?.();
                 onOpenChange(false);
               }}
             >
-              {cancelLabel}
+              {confirmLabel}
             </Button>
-          ) : null}
-          <Button
-            variant={tone === "danger" ? "destructive" : "default"}
-            onClick={() => {
-              onConfirm?.();
-              onOpenChange(false);
-            }}
-          >
-            {confirmLabel}
-          </Button>
-        </div>
+          </div>
+        </HoldWhileClosing>
       </AlertDialogContent>
     </AlertDialog>
   );

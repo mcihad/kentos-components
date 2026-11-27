@@ -578,6 +578,11 @@ Controlled (`open`, `onOpenChange`) dialogs for the common moments. `tone`
 (`DialogToneIcon`) and, for `danger`, a destructive main button. Buttons
 stack full width on phones.
 
+While closing, each dialog keeps showing what it showed when last open, so
+clearing the data behind it in `onOpenChange` (`setItem(null)`) does not
+change the title, tone or buttons mid-fade. After an async `onConfirm` or
+`onSubmit` succeeds the dialog stays pending as it fades out.
+
 | Component         | Use                                                                                                                                                       | Main props                                                                                                                                                                                               |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `MessageDialog`   | A message acknowledged with one button (the standard alert dialog).                                                                                       | `tone`, `icon` (or `false`), `title`, `description`, `children`, `okLabel` ("Tamam"), `onOk`                                                                                                             |
